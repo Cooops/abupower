@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    {% include 'styles.html' %}
+    <title>Revised</title>
+  </head>
+  <header style="background: #eee">
+    {% include 'nav_generic.html' %}
+  </header>
+  <body id="body" class="dark-mode" style="background: inherit;">
+    <section class="container-fluid" style="padding-bottom: 1%;">
+        <div class="dualsNotifier" style="text-align: center;"><h1 class="titleNotifier" style="color: white; font-size: 3.5em; font-weight: bold; padding-bottom: 1%;">Revised</h1>Click any of the <b>Dual Icons</b> below to jump into their respective pages.</div>
+        <div class="dualsImg">
+            <a class="indexDualsThumb" title="Underground Sea" href="/revised/stats/duals/underground-sea"><img class="subTitleImageIndex" src="/static/underground_sea.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Tropical Island"href="/revised/stats/duals/tropical-island"><img class="subTitleImageIndex" src="/static/tropical_island.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Volcanic Island"href="/revised/stats/duals/volcanic-island"><img class="subTitleImageIndex" src="/static/volcanic_island.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Tundra"href="/revised/stats/duals/tundra"><img class="subTitleImageIndex" src="/static/tundra.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Savannah"href="/revised/stats/duals/savannah"><img class="subTitleImageIndex" src="/static/savannah.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Taiga"href="/revised/stats/duals/taiga"><img class="subTitleImageIndex" src="/static/taiga.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Scrubland"href="/revised/stats/duals/scrubland"><img class="subTitleImageIndex" src="/static/scrubland.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Plateau"href="/revised/stats/duals/plateau"><img class="subTitleImageIndex" src="/static/plateau.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Bayou"href="/revised/stats/duals/bayou"><img class="subTitleImageIndex" src="/static/bayou.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Badlands"href="/revised/stats/duals/badlands"><img class="subTitleImageIndex" src="/static/badlands.jpg" width="65px" height="65px"></a>
+        </div>
+        <div class="card-container">
+            <div class="card-deck">
+                    <div class="card">
+                        <div class="card-body">
+                        <!-- <h5 class="card-title"><i class="fas fa-camera"></i> Duals Index Snapshot</h5> -->
+                        <h5 class="card-title">Duals Index Snapshot</h5>
+                        <p class="card-text">
+                            The overall trend for <span class="cardGeneralSet">Revised Duals</span> over the past 90 days appears to be
+                            <span class="cardGeneralTrend">positive</span>.
+                            The index currently sits at <span id="cardGeneralSum">{{ "${:,.2f}".format(revisedDataAvgDuals[-1])|safe }}</span> <span class="text-muted">(</span><span id="cardGeneralPercentChange" style="{{ get_percent_change_last_sold(revisedDataAvgDuals[-2], revisedDataAvgDuals[-1], False)[1] }}">{{ get_percent_change_last_sold(revisedDataAvgDuals[-2], revisedDataAvgDuals[-1], False)[0] }}</span><span class="text-muted">)</span>,
+                            with the cumulative count of sold listings coming out to just over
+                            <span class="cardGeneralCount">{{ revisedDataCountDuals[-1]|int }}</span>, and an individual listing having an average length of
+                            <span class="cardGeneralLength">{{ "%0.0f"|format(revisedDataLengthDuals[-1])|int }}</span> days. There are currently
+                            <span class="cardActivityDepth">{{ "%0.0f"|format(get_active_depth(7))|int }}</span> active copies on the market.The cumulative sales amount to roughly
+                            <span class="cardGeneralCumulativeSum">{{ "${:,.0f}".format(revisedDataCumulativePriceDuals[-1]) }}</span>, with an average sales price of
+                            <span class="text-muted">{{ "${:,.0f}".format(revisedDataCumulativePriceDuals[-1]/revisedDataCountDuals[-1]|int) }}</span>. A yearly adjusted outlook would shift the subtotal to
+                            <span class="cardGeneralCumulativeSum">{{ "${:,.0f}".format(revisedDataCumulativePriceDuals[-1]*4.0555555) }}</span>.
+                        </p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                        <h5 class="card-title">Active Listings Snapshot</h5>
+                            <p class="card-text">
+                                The newest available listing is a
+                                <a class="cardActivityText" href="{{ revisedActiveDataAllHrefDuals[0] }}" target="_blank">{{ revisedActiveDataAllNameDuals[0].split('Revised')[1].split('MTG')[0].rstrip() }}️</a> at a price point of
+                                <span class="cardActivityPrice">{{ revisedActiveDataAllPriceDuals[0].split('.')[0]|safe }}</span>,
+                                which is 
+                                <span class="cardActivityChange" style="{{ get_percent_change_last_sold(revisedActiveDataAllNameDuals[0], revisedActiveDataAllPriceDuals[0].split('$')[1], True)[1] }}">{{ get_percent_change_last_sold(revisedActiveDataAllNameDuals[0], revisedActiveDataAllPriceDuals[0].split('$')[1], True)[0]|safe }}</span>
+                                relative to the average,
+                                <span class="text-muted">{{ "${:,.0f}".format(get_percent_change_last_sold(revisedActiveDataAllNameDuals[0], revisedActiveDataAllPriceDuals[0].split('$')[1], True)[2][0]) }}</span>.
+                                Roughly
+                                <span class="cardActivityCount">{{ get_count(revisedActiveDataAllNameDuals[0])[0][0] }}</span>
+                                copies have sold in the past 90 days, with an average length of 
+                                <span class="cardActivityLength">{{ "%0.0f"|format(get_length(revisedActiveDataAllNameDuals[0])[0][0])|int }}</span>
+                                days. There are currently 
+                                <span class="cardActivityDepth">{{ "%0.0f"|format(get_depth(revisedActiveDataAllNameDuals[0]))|int }}</span>
+                                active copies on the market. <a class="card-text" href="/revised/stats/duals/{{ revisedActiveDataAllNameDuals[0].split('Revised')[1].split('MTG')[0].lstrip()|lower() }}"><small class="text-muted" id="seeMore0">See more</small></a>
+                                </p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Completed Listings Snapshot</h5>
+                            <p class="card-text">
+                                The last card to sell was a 
+                                <a class="cardActivityText" href="{{ revisedDataAllHrefDuals[0] }}" target="_blank">{{ revisedDataAllNameDuals[0].split('Revised')[1].split('MTG')[0] }}️</a>
+                                at a price point of
+                                <span class="cardActivityPrice">{{ revisedDataAllPriceDuals[0].split('.')[0]|safe }}</span>,
+                                which is 
+                                <span class="cardActivityChange" style="{{ get_percent_change_last_sold(revisedDataAllNameDuals[0], revisedDataAllPriceDuals[0].split('$')[1], True)[1] }}">{{ get_percent_change_last_sold(revisedDataAllNameDuals[0], revisedDataAllPriceDuals[0].split('$')[1], True)[0]|safe }}</span>
+                                relative to the average, 
+                                <span class="text-muted">{{ "${:,.0f}".format(get_percent_change_last_sold(revisedDataAllNameDuals[0], revisedDataAllPriceDuals[0].split('$')[1], True)[2][0]) }}</span>.
+                                Roughly
+                                <span class="cardActivityCount">{{ get_count(revisedDataAllNameDuals[0])[0][0] }}</span>
+                                copies have sold in the past 90 days, with an average length of 
+                                <span class="cardActivityLength">{{ "%0.0f"|format(get_length(revisedDataAllNameDuals[0])[0][0])|int }}</span>
+                                days. There are currently 
+                                <span class="cardActivityDepth">{{ "%0.0f"|format(get_depth(revisedDataAllNameDuals[0]))|int }}</span>
+                                active copies on the market. <a class="card-text" href="/revised/stats/duals/{{ revisedActiveDataAllNameDuals[0].split('Revised')[1].split('MTG')[0].lstrip()|lower() }}"><small class="text-muted" id="seeMore0">See more</small></a>
+                            </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- end top section (cards) -->
+        <!-- / -->
+        <!-- \ -->
+        <!-- / -->
+        <!-- begin middle section (charts) -->
+
+        <!-- <div class="container-fluid" style="background: hsl(222, 100%, 97%); margin-bottom: 10px; padding-bottom: 5px;"> -->
+        <!-- <div class="container-fluid" style="margin-bottom: 10px; padding-bottom: 5px; background: inherit;"> -->
+        <!-- <section id="chart-contianer" style="background: #eee; padding-top: 1%;"> -->
+        <div class="card-deck" style="padding: 5px; padding-top: 10px;">
+            <div class="card">
+                <canvas id="mainChartIndex"></canvas>
+            </div>
+            <div class="card">
+                <canvas id="mainChartCount"></canvas>
+            </div>
+        </div>
+        <div class="card-deck" style="padding: 5px; padding-top: 10px;">
+            <div class="card">
+                <canvas id="mainChartLength"></canvas>
+            </div>
+            <div class="card">
+                <!-- TODO: placeholder for cumulative sum (gross revenue) over time @ 9/23/2018 -->
+                <canvas id="mainChartIndex0"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- end middle section (graphs) -->
+    <!-- / -->
+    <!-- \ -->
+    <!-- / -->
+    <!-- begin middle section (table) -->
+
+    <div class="container-fluid" style="background: #eee;">
+        <!-- <button id="button" class="btn btn-secondary btn-sm" onclick="readyDatatable();" onsubmit="return false">Can you flip it? (╯°□°）╯︵ ┻━┻</button> -->
+        <div class="table-responsive-sm">
+            <table id="mainTable" class="table">
+                <thead>
+                    <tr class="tableTitles">
+                        <th id="tableNick">Nick</th>
+                        <th>Avg Price</th>
+                        <th>%</th>
+                        <!-- <th>Weekly Change</th> -->
+                        <th>Avg Length</th>
+                        <th>%</th>
+                        <th>Total Sold</th>
+                        <th>%</th>
+                        <!-- <th>Active Depth</th> -->
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <script>
+        // regist cart borders (so the background is properly filled)
+        Chart.pluginService.register({
+            beforeDraw: function (chart, easing) {
+                if (chart.config.options.chartArea && chart.config.options.chartArea.backgroundColor) {
+                    var helpers = Chart.helpers;
+                    var ctx = chart.chart.ctx;
+                    var chartArea = chart.chartArea;
+
+                    ctx.save();
+                    ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
+                    ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
+                    ctx.restore();
+                }
+            }
+        });
+        // Global parameters
+        Chart.defaults.global.responsive = true;
+        Chart.defaults.global.defaultFontFamily = '"Fira Sans", sans-serif';
+        Chart.defaults.global.defaultFontStyle = "Bold";
+        // Chart.defaults.global.animation.duration = 3000;
+        // Chart.defaults.global.defaultFontColor = "#F6F6F6";
+
+        // get chart canvas
+        var ctx = document.getElementById("mainChartIndex").getContext("2d");
+        // define the chart data
+        var gradientFill = ctx.createLinearGradient(500, 0, 100, 0);
+        gradientFill.addColorStop(0, "#6b8ee0");
+        gradientFill.addColorStop(1, "#6b8ee0");
+        // draw the chart
+        var chartData = {
+            labels : [{% for item in revisedDataAvgTimestampDuals %}
+                         "{{ item }}",
+                     {% endfor %}],
+            datasets : [{
+                label: '{{ dualsLegend }}',
+                fill: true,
+                lineTension: 0.4,
+                backgroundColor: 'hsl(157, 66%, 89%)',
+                borderColor: "hsl(157, 66%, 49%)",
+                borderWidth: 3,
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: gradientFill,
+                pointBackgroundColor: gradientFill,
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: gradientFill,
+                pointHoverBorderColor: 'white',
+                pointHoverBorderWidth: 2,
+                pointRadius: 0,
+                pointHitRadius: 10,
+                data : [{% for item in revisedDataAvgDuals %}
+                            {{ item }},
+                        {% endfor %}],
+            }]
+            }
+            // create the chart using the chart canvas
+            var myChart = new Chart(ctx, {
+            type: 'line',
+            data: chartData,
+            options: {
+                tooltips: {
+                    titleFontSize: 12,
+                    bodyFontSize: 12,
+                },
+                chartArea: {
+                    // backgroundColor: 'hsl(207, 97%, 12%)'
+                },
+                layout: {
+                    padding: {
+                        left: 8,
+                        right: 8,
+                        top: 5,
+                        bottom: 5,
+                        }
+                },
+                animation: {
+                    easing: "linear"
+                    },
+                legend: {
+                    position: "top",
+                    display: true,
+                    labels: {
+                        fontSize: 12,
+                        fontColor: "#6c757d",
+                        },
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            fontSize: 10,
+                            autoSkip: true,
+                            maxTicksLimit: 5,
+                            suggestedMax: {{ (revisedDataAvgDuals[-1]*1.0005)|round }},
+                            scaleLabel: "padding",
+                            fontColor: "hsl(208, 7%, 46%)",
+                            // Include a dollar sign on the y-axis tick numbers
+                            callback: function(value, index, values) {
+                                return '$' + value;}
+                        },
+                        gridLines: {
+                            display: false,
+                            color: 'hsl(208, 9%, 38%)',
+                            lineWidth: .2,
+                            drawBorder: false,
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            fontSize: 10,
+                            stepSize: 100,
+                            autoSkip: true,
+                            maxTicksLimit: 8,
+                            scaleLabel: "<%= ' ' + value%>",
+                            fontColor: "hsl(208, 7%, 46%)",
+                            },
+                        gridLines: {
+                            display: false,
+                            color: 'hsl(208, 9%, 38%)',
+                            lineWidth: .2,
+                            drawBorder: false,
+                        },
+                    }]
+                }
+                },
+            });
+    </script>
+    <script>
+        // get chart canvas
+        var ctx = document.getElementById("mainChartCount").getContext("2d");
+        // define the chart data
+
+        var chartData = {
+        labels : [{% for item in revisedDataCountTimestampDuals %}
+                    "{{item}}",
+                    {% endfor %}],
+        datasets : [{
+            label: '{{ revisedDataCountLegendDuals }}',
+            fill: true,
+            lineTension: 0.4,
+            backgroundColor: "hsl(39, 80%, 89%)",
+            borderColor: "hsl(39, 80%, 52%)",
+            borderWidth: 3,
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: gradientFill,
+            pointBackgroundColor: gradientFill,
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: gradientFill,
+            pointHoverBorderColor: 'white',
+            pointHoverBorderWidth: 2,
+            pointRadius: 0,
+            pointHitRadius: 10,
+            data : [{% for item in revisedDataCountDuals %}
+                        {{item}},
+                    {% endfor %}],
+        }]
+        }
+        // create the chart using the chart canvas
+        var myChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+            tooltips: {
+                titleFontSize: 12,
+                bodyFontSize: 12,
+            },
+            chartArea: {
+                // backgroundColor: 'hsl(207, 97%, 12%)'
+            },
+            layout: {
+                padding: {
+                    left: 8,
+                    right: 8,
+                    top: 5,
+                    bottom: 5,
+                    }
+            },
+            animation: {
+                easing: "linear"
+                },
+            legend: {
+                position: "top",
+                display: true,
+                labels: {
+                    fontSize: 12,
+                    fontColor: "#6c757d",
+                    },
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        autoSkip: true,
+                        maxTicksLimit: 5,
+                        suggestedMax: {{ (revisedDataCountDuals[-1]*1.0005)|round }},
+                        scaleLabel: "padding",
+                        fontColor: "hsl(208, 7%, 46%)",
+                    },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        stepSize: 100,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        scaleLabel: "<%= ' ' + value%>",
+                        fontColor: "hsl(208, 7%, 46%)",
+                        },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    },
+                }]
+            }
+            },
+        });
+    </script>
+    <script>
+        // get chart canvas
+        var ctx = document.getElementById("mainChartLength").getContext("2d");
+        // define the chart data
+
+        var chartData = {
+        labels : [{% for item in revisedDataLengthTimestampDuals %}
+                    "{{item}}",
+                    {% endfor %}],
+        datasets : [{
+            label: '{{ revisedDataLengthLegendDuals }}',
+            fill: true,
+            lineTension: 0.4,
+            backgroundColor: "hsl(300, 71%, 89%)",
+            borderColor: "hsl(300, 71%, 45%)",
+            borderWidth: 3,
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: gradientFill,
+            pointBackgroundColor: gradientFill,
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: gradientFill,
+            pointHoverBorderColor: 'white',
+            pointHoverBorderWidth: 2,
+            pointRadius: 0,
+            pointHitRadius: 10,
+            data : [{% for item in revisedDataLengthDuals %}
+                        {{item}},
+                    {% endfor %}],
+        }]
+        }
+        // create the chart using the chart canvas
+        var myChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+            tooltips: {
+                titleFontSize: 12,
+                bodyFontSize: 12,
+            },
+            chartArea: {
+                // backgroundColor: 'hsl(207, 97%, 12%)'
+            },
+            layout: {
+                padding: {
+                    left: 8,
+                    right: 8,
+                    top: 5,
+                    bottom: 5,
+                    }
+            },
+            animation: {
+                easing: "linear"
+                },
+            legend: {
+                position: "top",
+                display: true,
+                labels: {
+                    fontSize: 12,
+                    fontColor: "#6c757d",
+                    },
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        autoSkip: true,
+                        maxTicksLimit: 5,
+                        suggestedMax: {{ (revisedDataLengthDuals[-1]*1.0005)|round }},
+                        scaleLabel: "padding",
+                        fontColor: "hsl(208, 7%, 46%)",
+                    },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        stepSize: 100,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        scaleLabel: "<%= ' ' + value%>",
+                        fontColor: "hsl(208, 7%, 46%)",
+                        },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    },
+                }]
+            }
+            },
+        });
+    </script>
+    <script>
+        // get chart canvas
+        var ctx = document.getElementById("mainChartIndex0").getContext("2d");
+        // define the chart data
+
+        var chartData = {
+            labels : [
+                    {% for item in revisedDataCumulativeTimestampDuals %}
+                        "{{item}}",
+                    {% endfor %}],
+        datasets : [{
+            label: '{{ revisedDataCumulativeLegendDuals }}',
+            fill: true,
+            lineTension: 0.4,
+            backgroundColor: "hsl(110, 51%, 89%)",
+            borderColor: "hsl(110, 51%, 41%)",
+            borderWidth: 3,
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: gradientFill,
+            pointBackgroundColor: gradientFill,
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: gradientFill,
+            pointHoverBorderColor: 'white',
+            pointHoverBorderWidth: 2,
+            pointRadius: 0,
+            pointHitRadius: 10,
+            data : [{% for item in revisedDataCumulativePriceDuals %}
+                        {{item}},
+                    {% endfor %}],
+            }]
+        }
+        // create the chart using the chart canvas
+        var myChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+            tooltips: {
+                titleFontSize: 12,
+                bodyFontSize: 12,
+            },
+            chartArea: {
+                // backgroundColor: 'hsl(207, 97%, 12%)'
+            },
+            layout: {
+                padding: {
+                    left: 8,
+                    right: 8,
+                    top: 5,
+                    bottom: 5,
+                    }
+            },
+            animation: {
+                easing: "linear"
+                },
+            legend: {
+                position: "top",
+                display: true,
+                labels: {
+                    fontSize: 12,
+                    fontColor: "#6c757d",
+                    },
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        autoSkip: true,
+                        maxTicksLimit: 5,
+                        suggestedMax: {{ (revisedDataCumulativePriceDuals[0]*1.0005)|round }},
+                        scaleLabel: "padding",
+                        fontColor: "hsl(208, 7%, 46%)",
+                        // Include a dollar sign on the y-axis tick numbers
+                        callback: function(value, index, values) {
+                            return '$' + value;}
+                    },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        stepSize: 100,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        scaleLabel: "<%= ' ' + value%>",
+                        fontColor: "hsl(208, 7%, 46%)",
+                        },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    },
+                }]
+            }
+            },
+        });
+    </script>
+    <script src="/static/colorize.js"></script>
+    <script>
+        // fetch data from `api` and push all JSON objects to an all-inclusive array (dataSet)
+        function fetchTableAPI() {
+            let getTableData = $.get("/api/revised/duals/table")
+            return getTableData
+        };
+        // generated and populate dataTable _only_ when the user has scrolled 2/3rd of the way down the page
+        $(window).scroll(function() {
+            if ($(window).scrollTop() > $('body').height() / 3) {
+                readyDatatable();
+            }
+        });
+        const tableFetcher = fetchTableAPI();
+        function arrayify() {
+            //if (typeof(tableFetcher) == 'undefined') {
+            let array = tableFetcher.responseJSON
+            let dataSet = []
+            for (var i = 0; i < array.results.length; i++) {
+                let nick = `<div style='text-align: left !important; color: hsl(205, 16%, 27%); font-size: 1em;'><a style="color: hsl(203, 78%, 49%);" href='/revised/stats/duals/${array.results[i].nick.split('Revised')[1].split('MTG')[0].trim().replace(' ', '-').toLowerCase()}'>${array.results[i].nick.split('MTG')[0]}</a></div>`
+                let price = `<div style='text-align: left !important; color: hsl(157, 66%, 49%); font-size: 1em;'>${array.results[i].price}</div>`
+                //let priceChange = `<div style='text-align: center !important; color: hsl(208.2,7.3%,45.7%); font-size: .80em;'>${array.results[i].priceChange}</div>`
+                let priceChange = colorizeData(array.results[i].priceChange.split('%')[0]);
+                let length = `<div style='text-align: left !important; font-size: 1em; color: hsl(300, 71%, 45%);'>${array.results[i].length}</div>`
+                let lengthChange = colorizeData(array.results[i].lengthChange.split('%')[0]);
+                let count = `<div style='text-align: left !important; font-size: 1em; color: hsl(39, 80%, 52%);'>${array.results[i].count}</div>`
+                let countChange = colorizeData(array.results[i].countChange.split('%')[0]);
+                // let count = `<div style='text-align: center !important;'>${array.results[i].count}</div>`
+                dataSet.push([nick, price, priceChange, length, lengthChange, count, countChange]);
+            }
+            return dataSet
+        }
+        // $(document).ready(function readyDatatable() {
+        function readyDatatable() {
+            try {
+                // we are no longer seeing errors as alerts
+                $.fn.dataTable.ext.errMode = 'throw';
+
+
+                // begin generating table html
+                let dataSet = arrayify()
+                let table = $('#mainTable').DataTable( {
+                    data: dataSet,
+                    columns: [
+                        { title: "Nick" },
+                        { title: "Avg Price" },
+                        { title: "Percent Change" },
+                        { title: "Avg Length" },
+                        { title: "Percent Change" },
+                        { title: "Total Sold" },
+                        { title: "Percent Change" },
+                        //{ title: "Location" },
+                    ],
+                    "iDisplayLength": 10,
+                    "order": [[ 1, "desc" ]],
+                })
+            }
+            catch(error) {
+                console.error(error)
+            }
+        };
+    </script>
+    {% include 'footer.html' %}
+  </body>
+</html>
