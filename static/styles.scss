@@ -1,0 +1,685 @@
+// etsablish outside imports
+// @import url(https://fonts.googleapis.com/css?family=Inconsolata);
+@import url('https://fonts.googleapis.com/css?family=Fira+Sans');
+@viewport {
+    width: device-width ;
+    zoom: 1.0 ;
+  }
+
+
+// establish global variables
+// begin dark variables
+$darkBackgroundColor: hsl(210, 20%, 12%);
+$darkerBackgroundColor: hsl(240, 8%, 14%);
+$darkBorderColor: hsl(205, 16%, 27%);
+$darkTextColor: hsl(211, 44%, 70%);
+$darkSubTextColor: hsl(208, 9%, 38%);
+$darkTopTextColor: hsl(210, 72%, 65%);
+$darkBlueBackground: hsl(207, 95%, 8%);
+// begin light variables
+$lightBackgroundColor: hsl(0, 0%, 100%);
+$lighterBackgroundColor: white;
+$lightBorderColor: black;
+$lightTextColor: hsl(0, 0%, 0%);
+$lightSubTextColor: hsl(0, 0%, 50%);
+$lightTopTextColor: black;
+// begin misc. variables
+$blueBorder: hsl(203, 78%, 49%);
+$greyBorder: hsl(205, 16%, 27%);
+$blackBorder: hsl(0, 0%, 0%);
+$greenPrice: hsl(110, 51%, 41%);
+$lightGreenPrice: hsl(110, 51%, 41%);
+$bestGreenPrice: hsl(157, 66%, 49%);
+$em85: .85em;
+$test: hsl(10, 63%, 43%);
+$blueBackgroundColor: hsl(207, 97%, 12%);
+$blueNavColor: hsl(218, 37%, 33%);
+$blueSubTitleColor: hsl(218, 36%, 52%);
+$orangeCount: hsl(39, 80%, 52%);
+$pinkLength: hsl(300, 71%, 45%);
+$tealDepth: hsl(192, 83%, 67%);
+$purpleNavColor: hsl(222, 65%, 65%);
+$lightPurpleNavColor: hsl(222, 66%, 92%);
+$mainBackground: linear-gradient($purpleNavColor, hsl(222, 65%, 70%), $purpleNavColor);
+$pinkLengthHome: hsl(300, 71%, 45%);
+$pinkLengthHomeLight: linear-gradient( to bottom right, #F761A1 10%, #8C1BAB 100%);
+
+// begin css layout
+html {
+    height: 100% !important;
+    background-attachment: fixed;
+}
+body {
+    // background: $mainBackground !important;
+    background: white !important;
+    background-repeat: no-repeat;
+    color: $darkTextColor;
+    a {
+        color: lighten($darkTextColor, 20%);
+    }
+    p {
+        margin-bottom: 0rem;
+    }
+    ul li {
+        font-size: $em85;
+        color: $greyBorder;
+
+    }
+    .subTitle {
+        padding-top: 15px;
+        padding-left: 25px;
+        padding-bottom: 15px;
+        border-radius: 2px;
+        color: white;
+        text-align: left;
+    }
+    .subTitleText {
+        font-size: 1.55em;
+    }
+    #flipToPowerSpan {
+        text-align: center !important;
+        display: block;
+        width: 13%;
+        margin-bottom: 15px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    #indexAverageText {
+        font-size: 1.35em;
+        color: $bestGreenPrice;
+    }
+    #percentChange {
+        font-size: 1.35em;
+    }
+    .subTitleIndividual {
+        padding-top: 15px;
+        padding-left: 25px;
+        padding-bottom: 15px;
+        border-radius: 2px;
+        font-weight: bold;
+        color: $purpleNavColor;
+        text-align: left;
+    }
+    .subTitleTextIndividual, .subTitleTextIndividualSet {
+        font-size: 1.95em;
+        margin-left: 1%;
+        border-bottom: 2px solid $purpleNavColor;        
+    }
+    .subTitleTextIndividualSet {
+        color: $greyBorder !important;
+    }
+    .subTitleTextIndividual {
+        border-bottom: none;
+
+    }
+    .subTitleImageIndividual, .subTitleImageIndex {
+        border-radius: 50%; 
+        box-shadow: 0 0 3pt 2pt $greyBorder;
+        transition: all .2s ease-in-out
+    }
+    .activeImageThumbnail {
+        box-shadow: 0 0 3pt 2pt $greyBorder !important;
+    }
+    .flipButtonSet, .flipButtonName {
+        padding: 14px 25px; 
+        border-radius: 40px; 
+        box-shadow: 0 1px 4px 0 rgba(0,0,0,.14); 
+        color: $greyBorder;
+        font-size: .95em;
+        transition: all .2s ease-in-out;
+        margin-left: 1%;
+    }
+    .flipButtonName {
+        color: $greyBorder;
+    }
+    .indexDualsThumb {
+        margin-left: 15px;
+    }
+    img.subTitleImageIndex {
+        margin-top: 15px;
+        margin-bottom: 5px;
+    }
+}
+
+// begin general params
+body {
+    font-family: 'Fira Sans', sans-serif;
+    height: 100%;
+    text-align: left;
+}
+.icon {
+    position: absolute;
+    height: 100%;
+    transform: translate(-50%, -50%);
+    display: block;
+    background-color: transparent !important;
+}
+li.nav-item.active a {
+    font-size: 1.35em;
+    color: hsl(203, 97%, 15%);
+    text-decoration: none;
+    padding-bottom: 0px;
+}
+.btn.focus, .btn:focus {
+    outline: 0;
+    box-shadow: none!important;
+}
+.activeImageThumbnail {
+    transition: all .2s ease-in-out;
+    width: 100%; 
+    max-width: 150px;
+}
+#button {
+    margin-bottom: 10px; 
+    margin-left: 39%;
+    color: $darkBackgroundColor;
+    border: none; 
+    background-color: $blueBorder;
+}
+#button.move {
+    margin-left: 45% !important;
+    border: none;
+}
+#wotc-rights, #copyright {
+    font-size: .75em;
+    color: $greyBorder !important;
+}
+.faqTitle {
+    color: $darkBackgroundColor;;
+    font-size: $em85;
+    background-color: $blueBorder;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    border-radius: .2rem;
+}
+// .navbar-toggler {
+//     // background-color: $greyBorder;
+// }
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgb(57, 70, 79)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+}
+.dropdown-toggle {
+    background-color: transparent;
+    border-top: none;
+    border-bottom: none;
+    border-right: none;
+    border-left: none;
+}
+.dropdown-menu{
+    background-color: $darkBlueBackground;
+    border-top: none;
+    border-bottom: none;
+    border-right: none;
+    border-left: none;
+    border: 1px solid $greyBorder;
+}
+.flipButtonWrapper:hover {
+    background-color: none !important;
+    background: none !important;
+    border: none !important;
+    color: none !important;
+}
+.flipButton, .flipButtonSet, .flipButtonName, .flipButtonSetGeneral {
+    background-color: white;
+    padding: 14px 15px; 
+    border-radius: 40px; 
+    box-shadow: 0 1px 4px 0 rgba(0,0,0,.14); 
+    color: hsl(222, 65%, 65%); 
+    // font-size: .75em;
+    font-size: .95em;
+    transition: all .2s ease-in-out;
+    font-weight: normal;
+}
+.flipButtonSetGeneral {
+    font-size: .55em;
+}
+span.flipButton:hover, span.flipButtonSet:hover, .flipButtonName:hover, .flipButtonSetGeneral:hover {
+    background-color: white !important;
+    padding: 14px 15px !important; 
+    border-radius: 40px !important; 
+    box-shadow: 0 1px 4px 0 rgba(0,0,0,.14) !important; 
+    color: $blueBorder !important; 
+    font-size: 16px !important;
+}
+.indexDualsThumb:hover {
+    background: none;
+}
+img.subTitleImageIndex:hover {
+    background: none;
+    transform: scale(1.15);
+    transition: all .2s ease-in-out;
+}
+img#alphaVolcanicImg:hover {
+    transform: none !important;
+    transition: none !important;
+}
+#alphaDualsThumb:hover {
+    transform: none !important;
+}
+// begin card params
+.card-container-home {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    padding-left: 150px;
+    padding-right: 150px;
+}
+#cardGrossPower, #cardGrossDuals, #cardCountPower, #cardCountDuals {
+    background-color: $purpleNavColor !important;
+    box-shadow: none;
+}
+.card-title-home, #cardTextGrossPower, #cardTextGrossDuals, #cardTextSmallPower, #cardTextSmallDuals, #cardTextCountPower, #cardTextCountDuals, #cardTextLengthPower, #cardTextLengthDuals {
+    font-size: 1.85em !important;
+    color: white;
+    text-align: center;
+}
+#cardTextGrossPower, #cardTextGrossDuals {
+    color: $bestGreenPrice;
+}
+#cardTextCountPower, #cardTextCountDuals {
+    color: $orangeCount;
+}
+#text-muted-home {
+    font-size: 100% !important;
+}
+#cardTextGrossPower, #cardTextGrossDuals, #cardTextCountPower, #cardTextCountDuals, #cardTextLengthPower, #cardTextCountPower {
+    font-size: 3.2em !important;
+    font-weight: bold;
+}
+#cardTextSmallPower, #cardTextSmallDuals {
+    font-size: 1.15em !important;
+}
+#cardGrossPowerBody, #cardGrossDualsBody, #cardCountPowerBody, #cardLengthPowerBody, #cardCountDualsBody, #cardLengthDualsBody {
+    padding-top: 2.5rem !important;
+    padding-bottom: 2.5rem !important;
+}
+div#cardGrossPower, div#cardGrossDuals, div#cardCountPower, div#cardCountDuals {
+    transition: all .2s ease-in-out;
+}
+div#cardGrossPower:hover, div#cardGrossDuals:hover, div#cardCountPower:hover, div#cardCountDuals:hover {
+    background-color: lighten($purpleNavColor, 5%) !important;
+    transform: scale(1.05) !important;
+    transition: all .2s ease-in-out;
+}
+#individualCardAveragePrice, #individualCardTotalSold, #individualCardAverageLength, #individualCardGross, #individualCardActive {
+    color: $purpleNavColor;
+    text-align: center !important;
+}
+.individual-card-title {
+    font-size: 1.10em;
+}
+.individual-card-text {
+    font-size: 1.05em;
+}
+.individual-card-smol {
+    font-weight: normal;
+    color: $purpleNavColor;
+}
+.cardIndividualLink {
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    display: inline-block !important;
+    background-color: transparent !important;
+    margin-top: 50px !important;
+    color: $greyBorder;
+}
+.chevron {
+    display: inline-block !important;
+    margin-top: 5.7% !important;
+    margin-left: 1% !important;
+}
+
+// begin general card
+.card-container {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+.card {
+    border: none;
+    box-shadow: .5px .5px .5px .5px lightgrey;
+    border-radius: 15px;
+}
+.card-title {
+    color: $purpleNavColor;
+    text-align: left;
+}
+h5.card-title-about {
+    color: red !important;
+}
+.card-text {
+    text-align: left;
+}
+.cardActivityText {
+    color: $blueBorder !important;
+    border-bottom: 2px solid $blueBorder;
+}
+.cardActivityPrice {
+    color: $bestGreenPrice; 
+}
+.cardGeneralCumulativeSum {
+    color: $greenPrice;
+}
+.cardActivityAvg {
+    color: $greyBorder;
+}
+.cardActivityCount, .cardGeneralCount {
+    color: $orangeCount;
+}
+.cardActivityLength, span.cardGeneralLength {
+    color: $pinkLength;
+}
+.cardActivityDepth {
+    color: $tealDepth;
+}
+span.cardGeneralTrend {
+    color: $greenPrice; // temporary -- need to wrap this in a simple if/then function @ 9/23/2018
+}
+.seeMore0, .seeMore1 {
+    text-align: left;
+}
+.dualsNotifier {
+    font-size: 1.05em;
+    color: lighten($greyBorder, 15%) !important;
+    margin-top: 2%;
+}
+.table-responsive-sm {
+    padding-bottom: 5px;
+}
+th {
+    background-color: white;
+    color: $purpleNavColor;
+    font-size: 1.05em;
+    // white-space: nowrap !important;
+    text-align: left;
+}
+table.dataTable thead>tr>th.sorting_asc, table.dataTable thead>tr>th.sorting_desc, table.dataTable thead>tr>th.sorting, table.dataTable thead>tr>td.sorting_asc, table.dataTable thead>tr>td.sorting_desc, table.dataTable thead>tr>td.sorting {
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+}
+.tableTitles {
+    margin:0 !important;
+    padding:0 !important;
+}
+.odd {
+    background-color: hsl(222, 100%, 97%);
+    transition:all 0.2s ease-out;
+}
+.even {
+    background-color: white;
+    transition:all 0.2s ease-out;
+}
+.p
+.page-item.active .page-link {
+    border-color: hsl(222, 100%, 97%);
+    background-color: $purpleNavColor;
+}
+.fa-twitter, .fa-github, .fa-google {
+    color: white !important;
+}
+.powerImg {
+    margin-top: 1%;
+}
+.dualsImg, .powerImg {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center !important;
+}
+
+// begin a hover params
+a:hover, {
+    color: white !important;
+    border-bottom: 2px solid $blueBorder;
+    background: $blueBorder;
+    text-decoration: none;
+    padding-bottom: 0px;
+}
+a.link:hover {
+    color: white !important;
+}
+#dark-light-button:hover {
+    color: $blueBorder !important;
+    border-color: transparent !important;
+}
+.icon:hover {
+    color: $darkSubTextColor;
+}
+button#button:hover {
+    color: white;
+    background: hsl(203, 87%, 63%);
+}
+.snapshotCard3Url:hover {
+    background: $blueBorder;
+    color: white !important;
+}
+.seeAll:hover {
+    color: white !important;
+}
+.activeImageThumbnail:hover {
+    transform: scale(1.45);
+}
+.fa-twitter:hover {
+    color: hsl(203, 89%, 53%) !important;
+    background: transparent;
+    border-bottom: none;
+    transform: scale(1.25) !important;
+}
+.fa-github:hover {
+    color: hsl(264, 28%, 45%) !important;
+    background: transparent;
+    border-bottom: none;
+    transform: scale(1.25) !important;
+}
+.fa-google:hover {
+    color: hsl(359, 70%, 53%) !important;
+    background: transparent;
+    border-bottom: none;
+    transform: scale(1.25) !important;
+}
+.copyright-end:hover {
+    color: white !important;
+    background: $blueBorder;
+}
+.tableTitle:hover {
+    color: white !important;
+    background-color: $blueBorder;
+}
+#seeMore0:hover, #seeMore1:hover {
+    color: white !important;
+}
+.dropdown {
+    font-size: .90em !important;
+    background-color: transparent !important;
+    border-bottom: none !important;
+}
+.dropdown-item {
+    font-size: .90em !important;
+    background-color: transparent !important;
+    border-bottom: none !important;
+}
+.dropdown-item.active, .dropdown-item:active {
+    color: white !important;
+    font-size: .90em !important;
+}
+.dropdown-item.active, .dropdown-item:hover {
+    color: white !important;
+    font-size: .90em !important;
+    border-bottom: none !important;
+}
+.dropdown-menu.dropdown-menu-right.show {
+    background-color: $purpleNavColor !important;
+    border: 1px solid $greyBorder;
+}
+th:hover {
+    background-color: $blueBorder;
+    color: white;
+    border: none;
+}
+.page-link:hover {
+    border-color: white;
+    background-color: $purpleNavColor;
+    height: 100%;
+}
+.nav-link:hover {
+    background: none !important;
+    color: $blueBorder !important;
+    border: none !important;
+    border-bottom: none !important;
+    text-decoration: none !important;
+    padding-bottom: 8px !important;
+}
+
+// begin nav params
+.nav-item, .nav-item-right {
+    font-size: 1em !important;
+}
+.nav-link {
+    font-size: 1.35em;
+}
+ul.dropdown-menu {
+    background-color: #000;
+}
+ul.nav a {
+    color: white !important;
+}
+
+// begin home params
+body {
+  height: calc(100vh - 8em); 
+}
+.line-1 {
+    color: white;
+    position: relative;
+    top: 20%;  
+    width: 24em;
+    margin: 0 auto;
+    border-right: 3px solid #dde5f8;
+    font-size: 300%;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    transform: translateY(-50%);    
+}
+
+// begin animation
+.anim-typewriter{
+  animation: typewriter 4s steps(44) 1s 1 normal both,
+             blinkTextCursor 1250ms steps(44) infinite normal;
+}
+@keyframes typewriter{
+  from{width: 0;}
+  to{width: 21em;}
+}
+@keyframes blinkTextCursor{
+  from{border-right-color: darken(#dde5f8, 10%)}
+  to{border-right-color: transparent;}
+}
+
+#home-nav, #home-div {
+    animation: fadeIn 3s 6s forwards;
+    opacity: 0; 
+  }
+  @keyframes fadeIn {
+    0% {opacity: 0;}
+    100% {opacity: 1;}
+ } 
+
+// begin media queries params
+// first media query -- makes _some_ sense now :D @ 9/7/2018
+// @media not (max-width: 639px) {
+@media (max-width: 800px) {
+    .individual-card-title, .individual-card-text {
+        font-size: .85em;
+    }
+}
+@media (max-width: 1000px) {
+    .line-1 {
+        font-size:180%;
+    }
+    .card-container-home {
+        margin-top: 2%;
+        margin-bottom: 1%;
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+}
+@media (max-width: 500px) {
+    .line-1 {
+        font-size: 90%;
+    }
+    .card-title-home, #cardTextGrossPower, #cardTextGrossDuals, #cardTextSmallPower, #cardTextSmallDuals, #cardTextCountPower, #cardTextCountDuals, #cardTextLengthPower, #cardTextLengthDuals {
+        font-size: 1.05em !important;
+    }
+    .subTitleImageIndividual {
+        width: 75px;
+        height: 75px;
+    }
+    .individual-card-title, .individual-card-text {
+        font-size: 150%;
+    }
+    .flipButton, .flipButtonSetGeneral {
+        font-size: .35em !important;
+    }
+}
+// @media (max-width: 350px) {
+//     .flipButton, .flipButtonSetGeneral {
+//         font-size: .25em !important;
+//         font-weight: bold;
+//     }
+// }
+// @media (max-width:)
+// @media (max-width: 900px) {
+//     /* CSS rules for any device that is wider than 639 pixels */
+//     .flipButtonWrapper {
+//         margin-top: 5.5% !important;
+//     }
+// }
+// @media (max-width: 1100px) {
+//     /* CSS rules for any device that is wider than 639 pixels */
+//     .flipButtonWrapper {
+//         margin-top: 3.5% !important;
+//     }
+// }
+// @media (min-width: 601px) and (max-width: 1000px) {
+   /* CSS rules for any device that is wider than 639 pixels */
+    // #revisedDualsImg {
+    //     margin-left: 6%; 
+    //     margin-top: 1%; 
+    //     margin-bottom: 2%;
+    // }
+// }
+// @media (max-width: 1200px) {
+//     #stackedChartContainer {
+//         max-width: 1200px;
+//         width: 100%;
+//     }
+// }
+// // begin firstChartContainer params
+// @media (min-width: 760px) {
+//     #firstChartContainer {
+//         max-width: 760px;
+//         width: 100%;
+//     }
+// }
+// @media (max-width: 760px) {
+//     #firstChartContainer {
+//         max-width: 760px;
+//         width: 100%;
+//     }
+// }
+// // begin stackedChartContainer params
+// @media (min-width: 760px) {
+//     #firstHomeChartContainer {
+//         max-width: 760px;
+//         width: 100%;
+//     }
+// }
+// @media (max-width: 760px) {
+//     #firstHomeChartContainer {
+//         max-width: 760px;
+//         width: 100%;
+//     }
+// }
+
