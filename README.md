@@ -34,7 +34,7 @@ This application is written using [Python 3.6.0](https://www.python.org/download
 
 ## Micro API
 
-Check out the api documention [API.md](API.md) for more details.
+Check out the Micro API documention [API.md](API.md) for more details.
 
 ## General Thoughts
 
