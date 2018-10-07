@@ -32,6 +32,10 @@ This application is written using [Python 3.6.0](https://www.python.org/download
 
 [Here](https://github.com/Cooops/newABUPOWER/blob/94995f12bd293820ff013a16d535efe37a4a6942/fetch_completed_products.py#L117) is a link to the current keywords I am pre-filtering. If you have any recommendations, please don't hesitate to reach out. I am always looking to improve the search features (and regex is tough ^^).
 
+## Micro API
+
+Check out the micro api documention [API.md](API.md).
+
 ## General Thoughts
 
 - The application is certainly not 100% optimized, as this was a learning project first and foremost. The focus was on making it functional before anything else. Overall, I am very satisfied with how it turned out.
