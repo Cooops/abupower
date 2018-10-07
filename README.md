@@ -1,6 +1,6 @@
 ## Synopsis
 
-A functional and extremely lightweight application that aggregates Magic: the Gathering data from eBay, normalizes it, calculates it, and renders it in both text and plot form at the endpoint: https://www.abupower.com. The goal is to allow users to keep tabs on Alpha, Beta, and Unlimited Duals and Power 9 data points.
+A functional and extremely lightweight application that aggregates Magic: the Gathering data from eBay, normalizes it, and renders it in both text and plot form at the endpoint: https://www.abupower.com. The goal is to allow users to keep tabs on Alpha, Beta, and Unlimited Duals and Power 9 data points.
 
 
 ## Key Python Libraries
