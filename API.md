@@ -1,4 +1,4 @@
-## Basic API Documentation
+## Micro API Documentation
   _A fetching API for ABU Power and ABUR Duals, both the indexes themselves and the individual data points._
 
 ## URL
