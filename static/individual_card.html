@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    {% include 'styles.html' %}
+    <title>{{ cardNameIndividual }}</title>
+  </head>
+  <header style="background: #eee">
+    {% include 'nav_generic.html' %}
+  </header>
+  <body id="body" class="dark-mode" style="background: inherit; padding-bottom: 15%;">
+    <div class="container-fluid">
+        <div class="dualsNotifier" style="text-align: center;"><h1 class="titleNotifier" style="color: white; font-size: 3.5em; font-weight: bold; padding-bottom: 1%;">{{ cardNameIndividual }} <span style="color: #000;"><u>{{ secondCardNameIndividual }}</text-muted></u> <img class="subTitleImageIndividual" src="/static/{{ secondCardNameIndividual|replace(' ', '_')|lower() }}.jpg" width="100px" height="100px" style="margin-right: 1%;"></h1></div>
+        <script src="/static/colorize.js"></script>
+        <div class="card-container">
+            <div class="card-deck">
+                    <div id="individualCardAveragePrice" class="card">
+                        <i class="fas fa-hand-holding-usd"></i>
+                        <div class="card-body">
+                        <h5 class="individual-card-title" style="text-align: center; font-size: 1.5em; color: black;">Avg Price</h5>                        
+                            <p class="individual-card-text" style="color: hsl(157, 66%, 49%); text-align: center; font-size: 1.5em;">
+                                {{ price[0] }}
+                                <small id="priceChange" class="individual-card-smol">
+                                    <script>
+                                        var colors = parseFloat({{ priceChange[0].split('%')[0] }})
+                                        colorizeDataAndInsert(colors, "priceChange");
+                                    </script>
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                    <div id="individualCardTotalSold" class="card">
+                        <i class="fas fa-box-open"></i>
+                        <div class="card-body">
+                        <h5 class="individual-card-title" style="text-align: center; font-size: 1.5em; color: black;">Total Sold</h5>                        
+                            <p class="individual-card-text" style="color: hsl(39, 80%, 52%); text-align: center; font-size: 1.5em;">
+                                {{ count[0] }}
+                                <small id="countChange" class="individual-card-smol">
+                                    <script>
+                                        var colors = parseFloat({{ countChange[0].split('%')[0] }})
+                                        colorizeDataAndInsert(colors, "countChange");
+                                    </script>
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                    <div id="individualCardAverageLength" class="card">
+                        <i class="fas fa-ruler"></i>
+                        <div class="card-body">
+                        <h5 class="individual-card-title" style="text-align: center; font-size: 1.5em; color: black;">Avg Length</h5>                        
+                            <p class="individual-card-text" style="color: hsl(300, 71%, 45%); text-align: center; font-size: 1.5em;">
+                                {{ length[0] }}
+                                <small id="lengthChange" class="individual-card-smol">
+                                    <script>
+                                        var colors = parseFloat({{ lengthChange[0].split('%')[0] }})
+                                        colorizeDataAndInsert(colors, "lengthChange");
+                                    </script>
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                    <div id="individualCardGross" class="card">
+                        <i class="fas fa-cart-plus"></i>
+                        <div class="card-body">
+                        <h5 class="individual-card-title" style="text-align: center; font-size: 1.5em; color: black;">Gross Sold</h5>                        
+                            <p class="individual-card-text" style="color: hsl(110, 51%, 41%); text-align: center; font-size: 1.5em;">
+                                {{ cumSum[0] }}
+                                <small id="cumSumChange" class="individual-card-smol">
+                                    <script>
+                                        var colors = parseFloat({{ cumSumChange[0].split('%')[0] }})
+                                        colorizeDataAndInsert(colors, "cumSumChange");
+                                    </script>
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                    <div id="individualCardActive" class="card">
+                        <i class="fas fa-bell"></i>
+                        <div class="card-body">
+                        <h5 class="individual-card-title" style="text-align: center; font-size: 1.5em; color: black;">Active Listings</h5>                        
+                            <p class="individual-card-text" style="color: hsl(192, 83%, 67%); text-align: center; font-size: 1.5em;">
+                                {{ cardStatsActiveCountIndividual[-1] }}
+                                <small id="cumSumChange" class="individual-card-smol">
+                                    <script>
+                                        var colors = parseFloat({{ cumSumChange[0].split('%')[0] }})
+                                        colorizeDataAndInsert(colors, "cumSumChange");
+                                    </script>
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    <!-- end top container (cards) -->
+    <!-- / -->
+    <!-- \ -->
+    <!-- / -->
+    <!-- begin middle container (charts) -->
+        <div class="card-deck" style="padding: 5px; padding-top: 10px;">
+            <div class="card">
+                <canvas id="mainChartIndex"></canvas>
+            </div>
+            <div class="card">
+                <canvas id="mainChartCount"></canvas>
+            </div>
+        </div>
+        <div class="card-deck" style="padding: 5px; padding-top: 10px;">
+            <div class="card">
+                <canvas id="mainChartLength"></canvas>
+            </div>
+            <div class="card">
+                <!-- TODO: placeholder for cumulative sum (gross revenue) over time @ 9/23/2018 -->
+                <canvas id="mainChartSum"></canvas>
+            </div>
+        </div>
+        <div class="card-deck" style="padding: 5px; padding-top: 10px;">
+            <div class="card">
+                <!-- TODO: placeholder for cumulative sum (gross revenue) over time @ 9/23/2018 -->
+                <canvas id="mainChartSpot"></canvas>
+            </div>
+            <div class="card">
+                <!-- TODO: placeholder for cumulative sum (gross revenue) over time @ 9/23/2018 -->
+                <canvas id="mainChartActiveDepth"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <!-- end middle container (graphs) -->
+    <!-- / -->
+    <!-- \ -->
+    <!-- / -->
+    <!-- begin middle container (table) -->
+    <div class="container-fluid" style="background: #eee;">
+        <!-- <button id="button" class="btn btn-secondary btn-sm" onclick="readyDatatable();" onsubmit="return false">Can you flip it? (╯°□°）╯︵ ┻━┻</button> -->
+        <div class="table-responsive-sm">
+            <table id="mainTable" class="table">
+                <thead>
+                    <tr class="tableTitles">
+                        <th>Thumb</th>
+                        <th>End Date</th>
+                        <th>Nick</th>
+                        <th>Title</th>
+                        <th>Price</th>
+                        <!-- <th>Avg Price</th> -->
+                        <th>%</th>
+                        <th>Length</th>
+                        <th>%</th>
+                        <th>Total Sold</th>
+                        <th>Listing Type</th>
+                        <th>Location</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <script>
+        // register cart borders (so the background is properly filled)
+        Chart.pluginService.register({
+            beforeDraw: function (chart, easing) {
+                if (chart.config.options.chartArea && chart.config.options.chartArea.backgroundColor) {
+                    var helpers = Chart.helpers;
+                    var ctx = chart.chart.ctx;
+                    var chartArea = chart.chartArea;
+
+                    ctx.save();
+                    ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
+                    ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
+                    ctx.restore();
+                }
+            }
+        });
+
+        // Global parameters
+        Chart.defaults.global.responsive = true;
+        Chart.defaults.global.defaultFontFamily = '"Fira Sans", sans-serif';
+        Chart.defaults.global.defaultFontStyle = "Bold";
+        // Chart.defaults.global.animation.duration = 3000;
+        // Chart.defaults.global.defaultFontColor = "#F6F6F6";
+
+        // get chart canvas
+        var ctx = document.getElementById("mainChartIndex").getContext("2d");
+        // define the chart data
+        var gradientFill = ctx.createLinearGradient(500, 0, 100, 0);
+        gradientFill.addColorStop(0, "#6b8ee0");
+        gradientFill.addColorStop(1, "#6b8ee0");
+
+        var chartData = {
+        //labels : [{% for item in cardDateIndividual %}
+                   // "{{ item[0:3] }}. {{ item[-2] }}{{ item[-1] }}",
+               //  {% endfor %}],
+        labels : [{% for item in cardStatsTimestampIndividual %}
+                    "{{ item }}",
+                 {% endfor %}],
+        datasets : [{
+            label: '{{ priceLegend }}',
+            fill: true,
+            lineTension: 0.4,
+            backgroundColor: "hsl(157, 66%, 89%)",
+            borderColor: "hsl(157, 66%, 49%)",
+            borderWidth: 3,
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: gradientFill,
+            pointBackgroundColor: gradientFill,
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: gradientFill,
+            pointHoverBorderColor: 'white',
+            pointHoverBorderWidth: 2,
+            pointRadius: 0,
+            pointHitRadius: 10,
+            data : [{% for item in cardStatsAvgIndividual %}
+                        {{ item }},
+                    {% endfor %}],
+        },
+        ]
+        }
+        // create the chart using the chart canvas
+        var myChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+            tooltips: {
+                titleFontSize: 8,
+                bodyFontSize: 8,
+            },
+            chartArea: {
+                // backgroundColor: 'hsl(207, 97%, 12%)'
+            },
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 10,
+                    top: 10,
+                    bottom: 10,
+                    }
+            },
+            animation: {
+                easing: "linear"
+                },
+            legend: {
+                position: "top",
+                display: true,
+                labels: {
+                    fontSize: 12,
+                    fontColor: "#6c757d",
+                    },
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        autoSkip: true,
+                        maxTicksLimit: 15,
+                        suggestedMax: {{ (cardStatsAvgIndividual[-1]*1.0005)|round }},
+                        scaleLabel: "padding",
+                        fontColor: "hsl(208, 7%, 46%)",
+                        // Include a dollar sign on the y-axis tick numbers
+                        callback: function(value, index, values) {
+                            return '$' + value;}
+                    },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        stepSize: 100,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        fontColor: "hsl(208, 7%, 46%)",
+                        maxRotation: 0,
+                        minRotation: 0
+                        },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    },
+                }]
+            }
+            },
+        });
+    </script>
+    <script>
+        // get chart canvas
+        var ctx = document.getElementById("mainChartCount").getContext("2d");
+        // define the chart data
+
+        var chartData = {
+        labels : [{% for item in cardStatsTimestampIndividual %}
+                    "{{ item }}",
+                  {% endfor %}],
+        datasets : [{
+            label: '{{ countLegend }}',
+            fill: true,
+            lineTension: 0.4,
+            backgroundColor: "hsl(39, 80%, 89%)",
+            borderColor: "hsl(39, 80%, 52%)",
+            borderWidth: 3,
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: gradientFill,
+            pointBackgroundColor: gradientFill,
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: gradientFill,
+            pointHoverBorderColor: 'white',
+            pointHoverBorderWidth: 2,
+            pointRadius: 0,
+            pointHitRadius: 10,
+            data : [{% for item in cardStatsCountIndividual %}
+                        {{item}},
+                    {% endfor %}],
+        }]
+        }
+        // create the chart using the chart canvas
+        var myChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+            tooltips: {
+                titleFontSize: 8,
+                bodyFontSize: 8,
+            },
+            chartArea: {
+                // backgroundColor: 'hsl(207, 97%, 12%)'
+            },
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 10,
+                    top: 10,
+                    bottom: 10,
+                    }
+            },
+            animation: {
+                easing: "linear"
+                },
+            legend: {
+                position: "top",
+                display: true,
+                labels: {
+                    fontSize: 12,
+                    fontColor: "#6c757d",
+                    },
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        autoSkip: true,
+                        maxTicksLimit: 15,
+                        suggestedMax: {{ (cardStatsCountIndividual[-1]*1.0005)|round }},
+                        scaleLabel: "padding",
+                        fontColor: "hsl(208, 7%, 46%)",
+                    },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        stepSize: 100,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        scaleLabel: "<%= ' ' + value%>",
+                        fontColor: "hsl(208, 7%, 46%)",
+                        maxRotation: 0,
+                        minRotation: 0
+                        },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    },
+                }]
+            }
+            },
+        });
+    </script>
+    <script>
+        // get chart canvas
+        var ctx = document.getElementById("mainChartLength").getContext("2d");
+        // define the chart data
+
+        var chartData = {
+        labels : [{% for item in cardStatsTimestampIndividual %}
+                    "{{item}}",
+                    {% endfor %}],
+        datasets : [{
+            label: '{{ lengthLegend }}',
+            fill: true,
+            lineTension: 0.4,
+            backgroundColor: "hsl(300, 71%, 89%)",
+            borderColor: "hsl(300, 71%, 45%)",
+            borderWidth: 3,
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: gradientFill,
+            pointBackgroundColor: gradientFill,
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: gradientFill,
+            pointHoverBorderColor: 'white',
+            pointHoverBorderWidth: 2,
+            pointRadius: 0,
+            pointHitRadius: 10,
+            data : [{% for item in cardStatsLengthIndividual %}
+                        {{item}},
+                    {% endfor %}],
+        }]
+        }
+        // create the chart using the chart canvas
+        var myChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+            tooltips: {
+                titleFontSize: 8,
+                bodyFontSize: 8,
+            },
+            chartArea: {
+                // backgroundColor: 'hsl(207, 97%, 12%)'
+            },
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 10,
+                    top: 10,
+                    bottom: 10,
+                    }
+            },
+            animation: {
+                easing: "linear"
+                },
+            legend: {
+                position: "top",
+                display: true,
+                labels: {
+                    fontSize: 12,
+                    fontColor: "#6c757d",
+                    },
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        autoSkip: true,
+                        maxTicksLimit: 15,
+                        suggestedMax: {{ (cardStatsLengthIndividual[-1]*1.0005)|round }},
+                        scaleLabel: "padding",
+                        fontColor: "hsl(208, 7%, 46%)",
+                    },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        stepSize: 100,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        scaleLabel: "<%= ' ' + value%>",
+                        fontColor: "hsl(208, 7%, 46%)",
+                        maxRotation: 0,
+                        minRotation: 0
+                        },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    },
+                }]
+            }
+            },
+        });
+    </script>
+    <script>
+        // get chart canvas
+        var ctx = document.getElementById("mainChartSum").getContext("2d");
+        // define the chart data
+
+        var chartData = {
+        labels : [{% for item in cardStatsTimestampIndividual %}
+                    "{{item}}",
+                    {% endfor %}],
+        datasets : [{
+            label: '{{ sumLegend }}',
+            fill: true,
+            lineTension: 0.4,
+            backgroundColor: "hsl(110, 51%, 89%)",
+            borderColor: "hsl(110, 51%, 41%)",
+            borderWidth: 3,
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: gradientFill,
+            pointBackgroundColor: gradientFill,
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: gradientFill,
+            pointHoverBorderColor: 'white',
+            pointHoverBorderWidth: 2,
+            pointRadius: 0,
+            pointHitRadius: 10,
+            data : [{% for item in cardStatsSumIndividual %}
+                        {{item}},
+                    {% endfor %}],
+        }]
+        }
+        // create the chart using the chart canvas
+        var myChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+            tooltips: {
+                titleFontSize: 8,
+                bodyFontSize: 8,
+            },
+            chartArea: {
+                // backgroundColor: 'hsl(207, 97%, 12%)'
+            },
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 10,
+                    top: 10,
+                    bottom: 10,
+                    }
+            },
+            animation: {
+                easing: "linear"
+                },
+            legend: {
+                position: "top",
+                display: true,
+                labels: {
+                    fontSize: 12,
+                    fontColor: "#6c757d",
+                    },
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        autoSkip: true,
+                        maxTicksLimit: 15,
+                        suggestedMax: {{ (cardStatsSumIndividual[-1]*1.0005)|round }},
+                        scaleLabel: "padding",
+                        fontColor: "hsl(208, 7%, 46%)",
+                        callback: function(value, index, values) {
+                            return '$' + value;}
+                    },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        stepSize: 100,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        scaleLabel: "<%= ' ' + value%>",
+                        fontColor: "hsl(208, 7%, 46%)",
+                        maxRotation: 0,
+                        minRotation: 0
+                        },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    },
+                }]
+            }
+            },
+        });
+    </script>
+    <script>
+        // get chart canvas
+        var ctx = document.getElementById("mainChartSpot").getContext("2d");
+        // define the chart data
+
+        var chartData = {
+            labels : [
+                    {% for item in cardDateIndividual %}
+                        "{{ item[0:3] }}. {{ item[-2] }}{{ item[-1] }}",
+                    {% endfor %}],
+        datasets : [{
+            label: '{{ spotLegend }}',
+            fill: true,
+            lineTension: 0.4,
+            backgroundColor: '#dde5f8',
+            borderColor: gradientFill,
+            borderWidth: 3,
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: gradientFill,
+            pointBackgroundColor: gradientFill,
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: gradientFill,
+            pointHoverBorderColor: 'white',
+            pointHoverBorderWidth: 2,
+            pointRadius: 0,
+            pointHitRadius: 10,
+            data : [{% for item in cardPriceIndividual %}
+                        {{ item }},
+                    {% endfor %}],
+            }]
+        }
+        // create the chart using the chart canvas
+        var myChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+            tooltips: {
+                titleFontSize: 8,
+                bodyFontSize: 8,
+            },
+            chartArea: {
+                // backgroundColor: 'hsl(207, 97%, 12%)'
+            },
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 10,
+                    top: 10,
+                    bottom: 10,
+                    }
+            },
+            animation: {
+                easing: "linear"
+                },
+            legend: {
+                position: "top",
+                display: true,
+                labels: {
+                    fontSize: 12,
+                    fontColor: "#6c757d",
+                    },
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        autoSkip: true,
+                        maxTicksLimit: 15,
+                        suggestedMax: {{ (cardPriceIndividual[-1]*1.0005)|round }},
+                        scaleLabel: "padding",
+                        fontColor: "hsl(208, 7%, 46%)",
+                        // Include a dollar sign on the y-axis tick numbers
+                        callback: function(value, index, values) {
+                            return '$' + value;}
+                    },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        stepSize: 100,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        scaleLabel: "<%= ' ' + value%>",
+                        fontColor: "hsl(208, 7%, 46%)",
+                        maxRotation: 0,
+                        minRotation: 0
+                        },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    },
+                }]
+            }
+            },
+        });
+    </script>
+    <script>
+        // get chart canvas
+        var ctx = document.getElementById("mainChartActiveDepth").getContext("2d");
+        // define the chart data
+
+        var chartData = {
+            labels : [
+                    {% for item in cardStatsActiveTimestampIndividual %}
+                        "{{ item }} ",
+                    {% endfor %}],
+        datasets : [{
+            label: '{{ depthLegend }}',
+            fill: true,
+            lineTension: 0.4,
+            backgroundColor: "hsl(192, 83%, 89%)",
+            borderColor: "hsl(192, 83%, 67%)",
+            borderWidth: 3,
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: gradientFill,
+            pointBackgroundColor: gradientFill,
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: gradientFill,
+            pointHoverBorderColor: 'white',
+            pointHoverBorderWidth: 2,
+            pointRadius: 0,
+            pointHitRadius: 10,
+            data : [{% for item in cardStatsActiveCountIndividual %}
+                        {{ item }},
+                    {% endfor %}],
+            }]
+        }
+        // create the chart using the chart canvas
+        var myChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+            tooltips: {
+                titleFontSize: 8,
+                bodyFontSize: 8,
+            },
+            chartArea: {
+                // backgroundColor: 'hsl(207, 97%, 12%)'
+            },
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 10,
+                    top: 10,
+                    bottom: 10,
+                    }
+            },
+            animation: {
+                easing: "linear"
+                },
+            legend: {
+                position: "top",
+                display: true,
+                labels: {
+                    fontSize: 12,
+                    fontColor: "#6c757d",
+                    },
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        autoSkip: true,
+                        maxTicksLimit: 15,
+                        suggestedMax: {{ (cardStatsActiveCountIndividual[-1] + (cardStatsActiveCountIndividual[-1]/4))|round }},
+                        scaleLabel: "padding",
+                        fontColor: "hsl(208, 7%, 46%)",
+                    },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        stepSize: 100,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        scaleLabel: "<%= ' ' + value%>",
+                        fontColor: "hsl(208, 7%, 46%)",
+                        maxRotation: 0,
+                        minRotation: 0
+                        },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    },
+                }]
+            }
+            },
+        });
+    </script>
+    <script>
+        // fetch data from `api` and push all JSON objects to an all-inclusive array (dataSet)
+        function fetchTableAPI() {
+            // let modCardName = '{{ secondCardNameIndividual }}'.toLowerCase().replace(' ', '-')
+            let modCardName = '{{ secondCardNameIndividual }}'.toLowerCase()
+            if (window.location.href.includes("duals")) {
+                let getTableData = $.get(`/api/{{ cardNameIndividual|lower() }}/duals/${modCardName}`)
+                return getTableData
+            }
+            else {
+                let getTableData = $.get(`/api/{{ cardNameIndividual|lower() }}/power/${modCardName}`)
+                return getTableData
+            }
+        };
+        // generated and populate dataTable _only_ when the user has scrolled 2/3rd of the way down the page
+        $(window).scroll(function() {
+            if ($(window).scrollTop() > $('body').height() / 3) {
+                readyDatatable();
+            }
+        });
+        const tableFetcher = fetchTableAPI();
+        function arrayify() {
+            //if (typeof(tableFetcher) == 'undefined') {
+            let array = tableFetcher.responseJSON
+            let dataSet = []
+            for (var i = 0; i < array.results.length; i++) {
+                let endDate = `<div style='text-align: center !important; color: hsl(205, 16%, 27%); font-size: 1em;'>${array.results[i].end}</div>`
+                let thumb = `<td><a href='${array.results[i].url}' target='_blank'><img style='border-radius: 5px;' class ='activeImageThumbnail' src='${array.results[i].thumb}' alt='N/A'></img></a></td>`
+                let title = `<a class='tableTitle' href=${array.results[i].url} target='_blank' style='color: hsl(203, 78%, 49%); font-size: 1em;'>${array.results[i].title}</a>`
+                let nick = `<div style='text-align: center !important; color: hsl(205, 16%, 27%); font-size: 1em;'>${array.results[i].nick}</div>`
+                let price = `<div style='text-align: center !important; color: hsl(157, 66%, 49%); font-size: 1m;'>$${array.results[i].price}</div>`
+                let avg = `<div style='text-align: center !important; color: hsl(208.2,7.3%,45.7%); font-size: 1em;'>$${parseInt(array.results[i].avg.split('$')[1])}</div>`
+                let regLength = `<div style='text-align: center !important; color: hsl(300, 71%, 45%); font-size: 1em;'>${array.results[i].regLength}</div>`
+                let count = `<div style='text-align: center !important; color: hsl(39, 80%, 52%); font-size: 1em;'>${array.results[i].count}</div>`
+                let type = `<div style='text-align: center !important; color: hsl(205, 16%, 27%); font-size: 1em;'>${array.results[i].type}</div>`
+                let loc = `<div style='text-align: center !important; color: hsl(205, 16%, 27%); font-size: 1em;'>${array.results[i].loc}</div>`
+                // let loc = `<div style='text-align: center !important; color: hsl(211, 44%, 70%); font-size: .80em;'>${array.results[i].loc}</div>`
+                // let spread = `<div style='text-align: center !important; color: hsl(211, 44%, 70%); font-size: .80em;'>${array.results[i].spread}</div>`                // let count = `
+                // append color-styling depending on the int being neg or pos
+                let colors = parseFloat(array.results[i].spread)
+                if (colors === 0) {
+                    spread = `<div style='text-align: center !important; color: hsl(208, 9%, 38%); font-size: 1em;'>±${array.results[i].spread.toFixed(2)}%</div>`
+                   // dataSet.push([thumb, endDate, nick, title, price, avg, spread, length, count, type]);
+                }
+                else if (colors > 0) {
+                    spread = `<div style='text-align: center !important; color: rgb(143,198,132); font-size: 1em;'>+${array.results[i].spread.toFixed(2)}%</div>`
+                   // dataSet.push([thumb, endDate, nick, title, price, avg, spread, length, count, type]);
+                }
+                else {
+                    spread = `<div style='text-align: center !important; color: rgb(213,90,65); font-size: 1em;'>${array.results[i].spread.toFixed(2)}%</div>`
+                   //dataSet.push([thumb, endDate, nick, title, price, avg, spread, length, count, type]);
+                }
+                
+                // append color-styling depending on the int being neg or pos
+                let lenColors = parseFloat(array.results[i].lengthChange)
+                if (lenColors === 0) {
+                    length = `<div style='text-align: center !important; color: hsl(208, 9%, 38%); font-size: 1em;'>${array.results[i].lengthChange.toFixed(2)}%</div>`
+                }
+                //else if (lenColors < 7) {
+                    //length = `<div style='text-align: center !important; color: hsl(300, 71%, 45%); font-size: .80em;'>${array.results[i].lengthChange}</div>`
+                //}
+                else if (lenColors < 12) {
+                    length = `<div style='text-align: center !important; color: rgb(143,198,132); font-size: 1em;'>${array.results[i].lengthChange.toFixed(2)}%</div>`
+                }
+                else {
+                    length = `<div style='text-align: center !important; color: rgb(213,90,65); font-size: 1em;'>${array.results[i].lengthChange.toFixed(2)}%</div>`
+                }
+
+               
+                // push data to array and begin writing it to `mainTable`
+                dataSet.push([thumb, endDate, nick, title, price, spread, regLength, length, count, type, loc]);
+            }
+            return dataSet
+        }
+        // $(document).ready(function readyDatatable() {
+        function readyDatatable() {
+            try {
+                // we are no longer seeing errors as alerts
+                $.fn.dataTable.ext.errMode = 'throw';
+                
+                // var tableButton = document.querySelector("#button");
+
+                // begin generating table html
+                let dataSet = arrayify()
+                let table = $('#mainTable').DataTable( {
+                    data: dataSet,
+                    columns: [
+                        { title: "Thumb"},
+                        { title: "End Date" },
+                        { title: "Nick" },
+                        { title: "Title" },
+                        { title: "Price" },
+                        // { title: "Avg Price" },
+                        { title: "%" },
+                        { title: "Length" },
+                        { title: "%" },
+                        { title: "Total Sold" },
+                        { title: "Listing Type" },
+                        { title: "Location" },
+                    ],
+                    "iDisplayLength": 10,
+                    "order": [[ 1, "desc" ]],
+                })
+            }
+            catch(error) {
+                console.error(error)
+            }
+        };
+    </script>
+    {% include 'footer.html' %}
+  </body>
+</html>

@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    {% include 'styles.html' %}
+    <title>Alpha</title>
+  </head>
+  <header style="background: #eee">
+    {% include 'nav_generic.html' %}
+  </header>
+  <body id="body" class="dark-mode" style="background: inherit; padding-bottom: 15%;">
+    <div class="container-fluid">
+        <div class="dualsNotifier" style="text-align: center;"><h1 class="titleNotifier" style="color: white; font-size: 3.5em; font-weight: bold; padding-bottom: 1%;">Alpha</h1></div>
+        <div class="powerImg">
+            <a class="indexDualsThumb" title="Black Lotus" href="/alpha/stats/power/black-lotus"><img class="subTitleImageIndex" src="/static/black_lotus.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Mox Sapphire" href="/alpha/stats/power/mox-sapphire"><img class="subTitleImageIndex" src="/static/mox_sapphire.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Mox Jet" href="/alpha/stats/power/mox-jet"><img class="subTitleImageIndex" src="/static/mox_jet.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Mox Emerald" href="/alpha/stats/power/mox-emerald"><img class="subTitleImageIndex" src="/static/mox_emerald.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Mox Ruby" href="/alpha/stats/power/mox-ruby"><img class="subTitleImageIndex" src="/static/mox_ruby.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Mox Pearl" href="/alpha/stats/power/mox-pearl"><img class="subTitleImageIndex" src="/static/mox_pearl.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Ancestral Recall" href="/alpha/stats/power/ancestral-recall"><img class="subTitleImageIndex" src="/static/ancestral_recall.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Time Walk" href="/alpha/stats/power/time-walk"><img class="subTitleImageIndex" src="/static/time_walk.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Timetwister" href="/alpha/stats/power/timetwister"><img class="subTitleImageIndex" src="/static/timetwister.jpg" width="65px" height="65px"></a>
+        </div>
+        <div class="dualsNotifier" style="text-align: center; padding-top: 1%;">Click any of the <b>Power Icons above</b> or <b>Dual Icons below</b> to jump into their respective pages.</div>
+        <div class="dualsImg">
+            <a class="indexDualsThumb" title="Underground Sea" href="/alpha/stats/duals/underground-sea"><img class="subTitleImageIndex" src="/static/underground_sea.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Tropical Island"href="/alpha/stats/duals/tropical-island"><img class="subTitleImageIndex" src="/static/tropical_island.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Volcanic Island"href="/alpha/stats/duals/volcanic-island"><img class="subTitleImageIndex" src="/static/volcanic_island.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Tundra"href="/alpha/stats/duals/tundra"><img class="subTitleImageIndex" src="/static/tundra.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Savannah"href="/alpha/stats/duals/savannah"><img class="subTitleImageIndex" src="/static/savannah.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Taiga"href="/alpha/stats/duals/taiga"><img class="subTitleImageIndex" src="/static/taiga.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Scrubland"href="/alpha/stats/duals/scrubland"><img class="subTitleImageIndex" src="/static/scrubland.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Plateau"href="/alpha/stats/duals/plateau"><img class="subTitleImageIndex" src="/static/plateau.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Bayou"href="/alpha/stats/duals/bayou"><img class="subTitleImageIndex" src="/static/bayou.jpg" width="65px" height="65px"></a>
+            <a class="indexDualsThumb" title="Badlands"href="/alpha/stats/duals/badlands"><img class="subTitleImageIndex" src="/static/badlands.jpg" width="65px" height="65px"></a>
+        </div>
+        <div class="card-container">
+            <!-- <div class="card-deck" style="padding-left: 5%; padding-right: 5%;"> -->
+            <div class="card-deck">
+                    <!-- <div class="card" style="margin-right: 15% !important;"> -->
+                    <div class="card">
+                        <div class="card-body">
+                        <h5 class="card-title">Alpha Power Snapshot</h5>
+                        <p class="card-text">
+                            The overall trend for <span class="cardGeneralSet">Alpha Power</span> over the past 90 days appears to be
+                            <span class="cardGeneralTrend">positive</span>.
+                            The index currently sits at <span id="cardGeneralSum" style="color: hsl(157, 66%, 49%) !important;">{{ "${:,.2f}".format(alphaDataAvgPower[-1])|safe }}</span> <span class="text-muted">(</span><span id="cardGeneralPercentChange" style="{{ get_percent_change_last_sold(alphaDataAvgPower[-2], alphaDataAvgPower[-1], False)[1] }}">{{ get_percent_change_last_sold(alphaDataAvgPower[-2], alphaDataAvgPower[-1], False)[0] }}</span><span class="text-muted">)</span>,
+                            with the cumulative count of sold listings coming out to just over
+                            <span class="cardGeneralCount">{{ alphaDataCountPower[-1]|int }}</span>, with each listing having an average length of
+                            <span class="cardGeneralLength">{{ "%0.0f"|format(alphaDataLengthPower[-1])|int }}</span> days. There are currently
+                            <span class="cardActivityDepth">{{ "%0.0f"|format(get_active_depth(2))|int }}</span> active copies on the market. The cumulative sales amount to roughly
+                            <span class="cardGeneralCumulativeSum">{{ "${:,.0f}".format(alphaDataCumulativePricePower[-1]) }}</span>, with an average sales price of
+                            <span class="text-muted">{{ "${:,.0f}".format(alphaDataCumulativePricePower[-1]/alphaDataCountPower[-1]|int) }}</span>. A yearly adjusted outlook would shift the subtotal to
+                            <span class="cardGeneralCumulativeSum">{{ "${:,.0f}".format(alphaDataCumulativePricePower[-1]*4.0555555) }}</span>.
+                        </p>
+                        </div>
+                    </div>  
+                    <div class="card">
+                        <div class="card-body">
+                        <h5 class="card-title">Alpha Duals Snapshot</h5>
+                        <p class="card-text">
+                            The overall trend for <span class="cardGeneralSet">Alpha Duals</span> over the past 90 days appears to be
+                            <span class="cardGeneralTrend">positive</span>.
+                            The index currently sits at <span id="cardGeneralSum" style="color: hsl(157, 66%, 49%) !important;">{{ "${:,.2f}".format(alphaDataAvgDuals[-1])|safe }}</span> <span class="text-muted">(</span><span id="cardGeneralPercentChange" style="{{ get_percent_change_last_sold(alphaDataAvgDuals[-2], alphaDataAvgDuals[-1], False)[1] }}">{{ get_percent_change_last_sold(alphaDataAvgDuals[-2], alphaDataAvgDuals[-1], False)[0] }}</span><span class="text-muted">)</span>,
+                            with the cumulative count of sold listings coming out to just over
+                            <span class="cardGeneralCount">{{ alphaDataCountDuals[-1]|int }}</span>, with each listing having an average length of
+                            <span class="cardGeneralLength">{{ "%0.0f"|format(alphaDataLengthDuals[-1])|int }}</span> days. There are currently
+                            <span class="cardActivityDepth">{{ "%0.0f"|format(get_active_depth(5))|int }}</span> active copies on the market. The cumulative sales amount to roughly
+                            <span class="cardGeneralCumulativeSum">{{ "${:,.0f}".format(alphaDataCumulativePriceDuals[-1]) }}</span>, with an average sales price of
+                            <span class="text-muted">{{ "${:,.0f}".format(alphaDataCumulativePriceDuals[-1]/alphaDataCountDuals[-1]|int) }}</span>. A yearly adjusted outlook would shift the subtotal to
+                            <span class="cardGeneralCumulativeSum">{{ "${:,.0f}".format(alphaDataCumulativePriceDuals[-1]*4.0555555) }}</span>.
+                        </p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                        <h5 class="card-title">Active & Completed Snapshot</h5>
+                        <p class="card-text">
+                            The newest available listing is a
+                            <a class="cardActivityText" href="{{ alphaActiveDataAllHrefDuals[0] }}" target="_blank">{{ alphaActiveDataAllNameDuals[0].split('Alpha')[1].split('MTG')[0].rstrip() }}️</a> at a price point of
+                            <span class="cardActivityPrice">{{ alphaActiveDataAllPriceDuals[0].split('.')[0]|safe }}</span>,
+                            which is 
+                            <span class="cardActivityChange" style="{{ get_percent_change_last_sold(alphaActiveDataAllNameDuals[0], alphaActiveDataAllPriceDuals[0].split('$')[1], True)[1] }}">{{ get_percent_change_last_sold(alphaActiveDataAllNameDuals[0], alphaActiveDataAllPriceDuals[0].split('$')[1], True)[0]|safe }}</span>
+                            relative to the average,
+                            <span class="text-muted">{{ "${:,.0f}".format(get_percent_change_last_sold(alphaActiveDataAllNameDuals[0], alphaActiveDataAllPriceDuals[0].split('$')[1], True)[2][0]) }}</span>.
+                            Roughly
+                            <span class="cardActivityCount">{{ get_count(alphaActiveDataAllNameDuals[0])[0][0] }}</span>
+                            copies have sold in the past 90 days, with an average length of 
+                            <span class="cardActivityLength">{{ "%0.0f"|format(get_length(alphaActiveDataAllNameDuals[0])[0][0])|int }}</span>
+                            days. There are currently 
+                            <span class="cardActivityDepth">{{ "%0.0f"|format(get_depth(alphaActiveDataAllNameDuals[0]))|int }}</span>
+                            active copies on the market. <a class="card-text" href="/alpha/stats/duals/{{ alphaActiveDataAllNameDuals[0].split('Alpha')[1].split('MTG')[0].lstrip()|lower() }}"><small class="text-muted" id="seeMore0">See more</small></a>
+                        </p>
+                        <hr>
+                        <p class="card-text">
+                            The last card to sell was a 
+                            <a class="cardActivityText" href="{{ alphaDataAllHrefDuals[0] }}" target="_blank">{{ alphaDataAllNameDuals[0].split('Alpha')[1].split('MTG')[0].rstrip() }}️</a>
+                            at a price point of
+                            <span class="cardActivityPrice">{{ alphaDataAllPriceDuals[0].split('.')[0]|safe }}</span>,
+                            which is 
+                            <span class="cardActivityChange" style="{{ get_percent_change_last_sold(alphaDataAllNameDuals[0], alphaDataAllPriceDuals[0].split('$')[1], True)[1] }}">{{ get_percent_change_last_sold(alphaDataAllNameDuals[0], alphaDataAllPriceDuals[0].split('$')[1], True)[0]|safe }}</span>
+                            relative to the average, 
+                            <span class="text-muted">{{ "${:,.0f}".format(get_percent_change_last_sold(alphaDataAllNameDuals[0], alphaDataAllPriceDuals[0].split('$')[1], True)[2][0]) }}</span>.
+                            Roughly
+                            <span class="cardActivityCount">{{ get_count(alphaDataAllNameDuals[0])[0][0] }}</span>
+                            copies have sold in the past 90 days, with an average length of 
+                            <span class="cardActivityLength">{{ "%0.0f"|format(get_length(alphaDataAllNameDuals[0])[0][0])|int }}</span>
+                            days. There are currently 
+                            <span class="cardActivityDepth">{{ "%0.0f"|format(get_depth(alphaDataAllNameDuals[0]))|int }}</span>
+                            active copies on the market. <a class="card-text" href="/alpha/stats/duals/{{ alphaDataAllNameDuals[0].split('Alpha')[1].split('MTG')[0].lstrip()|lower() }}"><small class="text-muted" id="seeMore0">See more</small></a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- end top section (cards) -->
+        <!-- / -->
+        <!-- \ -->
+        <!-- / -->
+        <!-- begin middle section (charts) -->
+
+        <!-- <div class="container-fluid" style="background: hsl(222, 100%, 97%); margin-bottom: 10px; padding-bottom: 5px;"> -->
+        <!-- <div class="container-fluid" style="margin-bottom: 10px; padding-bottom: 5px; background: inherit;"> -->
+        <!-- <section id="chart-contianer" style="background: #eee; padding-top: 1%;"> -->
+            <div class="card-deck" style="padding: 5px; padding-top: 10px;">
+                <div class="card">
+                    <canvas id="mainChartIndexPower"></canvas>
+                </div>
+                <div class="card">
+                    <canvas id="mainChartIndex"></canvas>
+                </div>
+            </div>
+            <div class="card-deck" style="padding: 5px; padding-top: 10px;">
+                <div class="card">
+                    <canvas id="mainChartLengthPower"></canvas>
+                </div>
+                <div class="card">
+                    <canvas id="mainChartLength"></canvas>
+                </div>
+            </div>
+            <div class="card-deck" style="padding: 5px; padding-top: 10px;">
+                <div class="card">
+                    <canvas id="mainChartCountPower"></canvas>
+                </div>
+                <div class="card">
+                    <canvas id="mainChartCount"></canvas>
+                </div>
+            </div>
+            <div class="card-deck" style="padding: 5px; padding-top: 10px;">
+                <div class="card">
+                    <canvas id="mainChartSumPower"></canvas>
+                </div>
+                <div class="card">
+                    <canvas id="mainChartSum"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end middle section (graphs) -->
+    <!-- / -->
+    <!-- \ -->
+    <!-- / -->
+    <!-- begin middle section (table) -->
+
+    <div class="container-fluid" style="background: #eee;">
+        <!-- <button id="button" class="btn btn-secondary btn-sm" onclick="readyDatatable();" onsubmit="return false">Can you flip it? (╯°□°）╯︵ ┻━┻</button> -->
+        <div class="table-responsive-sm">
+            <table id="mainTable" class="table">
+                <thead>
+                    <tr class="tableTitles">
+                        <th id="tableNick">Nick</th>
+                        <th>Avg Price</th>
+                        <th>%</th>
+                        <!-- <th>Weekly Change</th> -->
+                        <th>Avg Length</th>
+                        <th>%</th>
+                        <th>Total Sold</th>
+                        <th>%</th>
+                        <!-- <th>Active Depth</th> -->
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <script>
+        // regist cart borders (so the background is properly filled)
+        Chart.pluginService.register({
+            beforeDraw: function (chart, easing) {
+                if (chart.config.options.chartArea && chart.config.options.chartArea.backgroundColor) {
+                    var helpers = Chart.helpers;
+                    var ctx = chart.chart.ctx;
+                    var chartArea = chart.chartArea;
+
+                    ctx.save();
+                    ctx.fillStyle = chart.config.options.chartArea.backgroundColor;
+                    ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
+                    ctx.restore();
+                }
+            }
+        });
+        // Global parameters
+        Chart.defaults.global.responsive = true;
+        Chart.defaults.global.defaultFontFamily = '"Fira Sans", sans-serif';
+        Chart.defaults.global.defaultFontStyle = "Bold";
+        // Chart.defaults.global.animation.duration = 3000;
+        // Chart.defaults.global.defaultFontColor = "#F6F6F6";
+
+        // get chart canvas
+        var ctx = document.getElementById("mainChartIndexPower").getContext("2d");
+        // define the chart data
+        var gradientFill = ctx.createLinearGradient(500, 0, 100, 0);
+        gradientFill.addColorStop(0, "#6b8ee0");
+        gradientFill.addColorStop(1, "#6b8ee0");
+
+        var chartData = {
+        labels : [{% for item in alphaDataAvgTimestampPower %}
+                        "{{ item }}",
+                    {% endfor %}],
+        datasets : [{
+            label: '{{ powerLegend }}',
+            fill: true,
+            lineTension: 0.4,
+            backgroundColor: "hsl(157, 66%, 89%)",
+            borderColor: "hsl(157, 66%, 49%)",
+            borderWidth: 3,
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: gradientFill,
+            pointBackgroundColor: gradientFill,
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: gradientFill,
+            pointHoverBorderColor: 'white',
+            pointHoverBorderWidth: 2,
+            pointRadius: 0,
+            pointHitRadius: 10,
+            data : [{% for item in alphaDataAvgPower %}
+                        {{ item }},
+                    {% endfor %}],
+        }]
+        }
+        // create the chart using the chart canvas
+        var myChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+            tooltips: {
+                titleFontSize: 12,
+                bodyFontSize: 12,
+            },
+            chartArea: {
+                // backgroundColor: 'hsl(207, 97%, 12%)'
+            },
+            layout: {
+                padding: {
+                    left: 8,
+                    right: 8,
+                    top: 5,
+                    bottom: 5,
+                    }
+            },
+            animation: {
+                easing: "linear"
+                },
+            legend: {
+                position: "top",
+                display: true,
+                labels: {
+                    fontSize: 12,
+                    fontColor: "#6c757d",
+                    },
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        suggestedMax: {{ (alphaDataAvgPower[-1]*1.0005)|round }},
+                        scaleLabel: "padding",
+                        fontColor: "hsl(208, 7%, 46%)",
+                        // Include a dollar sign on the y-axis tick numbers
+                        callback: function(value, index, values) {
+                            return '$' + value;}
+                    },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        stepSize: 100,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        scaleLabel: "<%= ' ' + value%>",
+                        fontColor: "hsl(208, 7%, 46%)",
+                        },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    },
+                }]
+            }
+            },
+        });
+    </script>
+    <script>
+        // get chart canvas
+        var ctx = document.getElementById("mainChartIndex").getContext("2d");
+        // define the chart data
+        var gradientFill = ctx.createLinearGradient(500, 0, 100, 0);
+        gradientFill.addColorStop(0, "#6b8ee0");
+        gradientFill.addColorStop(1, "#6b8ee0");
+
+        var chartData = {
+        labels : [{% for item in alphaDataAvgTimestampDuals %}
+                     "{{ item }}",
+                 {% endfor %}],
+        datasets : [{
+            label: '{{ dualsLegend }}',
+            fill: true,
+            lineTension: 0.4,
+            backgroundColor: "hsl(157, 66%, 89%)",
+            borderColor: "hsl(157, 66%, 49%)",
+            borderWidth: 3,
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: gradientFill,
+            pointBackgroundColor: gradientFill,
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: gradientFill,
+            pointHoverBorderColor: 'white',
+            pointHoverBorderWidth: 2,
+            pointRadius: 0,
+            pointHitRadius: 10,
+            data : [{% for item in alphaDataAvgDuals %}
+                        {{ item }},
+                    {% endfor %}],
+        }]
+        }
+        // create the chart using the chart canvas
+        var myChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+            tooltips: {
+                titleFontSize: 12,
+                bodyFontSize: 12,
+            },
+            chartArea: {
+                // backgroundColor: 'hsl(207, 97%, 12%)'
+            },
+            layout: {
+                padding: {
+                    left: 8,
+                    right: 8,
+                    top: 5,
+                    bottom: 5,
+                    }
+            },
+            animation: {
+                easing: "linear"
+                },
+            legend: {
+                position: "top",
+                display: true,
+                labels: {
+                    fontSize: 12,
+                    fontColor: "#6c757d",
+                    },
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        suggestedMax: {{ (alphaDataAvgDuals[-1]*1.0005)|round }},
+                        scaleLabel: "padding",
+                        fontColor: "hsl(208, 7%, 46%)",
+                        // Include a dollar sign on the y-axis tick numbers
+                        callback: function(value, index, values) {
+                            return '$' + value;}
+                    },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        stepSize: 100,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        scaleLabel: "<%= ' ' + value%>",
+                        fontColor: "hsl(208, 7%, 46%)",
+                        },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    },
+                }]
+            }
+            },
+        });
+    </script>
+    <script>
+        // get chart canvas
+        var ctx = document.getElementById("mainChartCountPower").getContext("2d");
+        // define the chart data
+
+        var chartData = {
+        labels : [{% for item in alphaDataCountTimestampPower %}
+                    "{{item}}",
+                    {% endfor %}],
+        datasets : [{
+            label: '{{ countLegend }}',
+            fill: true,
+            lineTension: 0.4,
+            backgroundColor: "hsl(39, 80%, 89%)",
+            borderColor: "hsl(39, 80%, 52%)",
+            borderWidth: 3,
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: gradientFill,
+            pointBackgroundColor: gradientFill,
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: gradientFill,
+            pointHoverBorderColor: 'white',
+            pointHoverBorderWidth: 2,
+            pointRadius: 0,
+            pointHitRadius: 10,
+            data : [{% for item in alphaDataCountPower %}
+                        {{item}},
+                    {% endfor %}],
+        }]
+        }
+        // create the chart using the chart canvas
+        var myChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+            tooltips: {
+                titleFontSize: 12,
+                bodyFontSize: 12,
+            },
+            chartArea: {
+                // backgroundColor: 'hsl(207, 97%, 12%)'
+            },
+            layout: {
+                padding: {
+                    left: 8,
+                    right: 8,
+                    top: 5,
+                    bottom: 5,
+                    }
+            },
+            animation: {
+                easing: "linear"
+                },
+            legend: {
+                position: "top",
+                display: true,
+                labels: {
+                    fontSize: 12,
+                    fontColor: "#6c757d",
+                    },
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        suggestedMax: {{ (alphaDataCountPower[-1]*1.0005)|round }},
+                        scaleLabel: "padding",
+                        fontColor: "hsl(208, 7%, 46%)",
+                    },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        stepSize: 100,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        scaleLabel: "<%= ' ' + value%>",
+                        fontColor: "hsl(208, 7%, 46%)",
+                        },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    },
+                }]
+            }
+            },
+        });
+    </script>
+    <script>
+        // get chart canvas
+        var ctx = document.getElementById("mainChartCount").getContext("2d");
+        // define the chart data
+
+        var chartData = {
+        labels : [{% for item in alphaDataCountTimestampDuals %}
+                    "{{item}}",
+                    {% endfor %}],
+        datasets : [{
+            label: '{{ countLegend }}',
+            fill: true,
+            lineTension: 0.4,
+            backgroundColor: "hsl(39, 80%, 89%)",
+            borderColor: "hsl(39, 80%, 52%)",
+            borderWidth: 3,
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: gradientFill,
+            pointBackgroundColor: gradientFill,
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: gradientFill,
+            pointHoverBorderColor: 'white',
+            pointHoverBorderWidth: 2,
+            pointRadius: 0,
+            pointHitRadius: 10,
+            data : [{% for item in alphaDataCountDuals %}
+                        {{item}},
+                    {% endfor %}],
+        }]
+        }
+        // create the chart using the chart canvas
+        var myChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+            tooltips: {
+                titleFontSize: 12,
+                bodyFontSize: 12,
+            },
+            chartArea: {
+                // backgroundColor: 'hsl(207, 97%, 12%)'
+            },
+            layout: {
+                padding: {
+                    left: 8,
+                    right: 8,
+                    top: 5,
+                    bottom: 5,
+                    }
+            },
+            animation: {
+                easing: "linear"
+                },
+            legend: {
+                position: "top",
+                display: true,
+                labels: {
+                    fontSize: 12,
+                    fontColor: "#6c757d",
+                    },
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        suggestedMax: {{ (alphaDataCountDuals[-1]*1.0005)|round }},
+                        scaleLabel: "padding",
+                        fontColor: "hsl(208, 7%, 46%)",
+                    },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        stepSize: 100,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        scaleLabel: "<%= ' ' + value%>",
+                        fontColor: "hsl(208, 7%, 46%)",
+                        },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    },
+                }]
+            }
+            },
+        });
+    </script>
+    <script>
+        // get chart canvas
+        var ctx = document.getElementById("mainChartLengthPower").getContext("2d");
+        // define the chart data
+
+        var chartData = {
+        labels : [{% for item in alphaDataLengthTimestampPower %}
+                    "{{item}}",
+                    {% endfor %}],
+        datasets : [{
+            label: '{{ lengthLegend }}',
+            fill: true,
+            lineTension: 0.4,
+            backgroundColor: "hsl(300, 71%, 89%)",
+            borderColor: "hsl(300, 71%, 45%)",
+            borderWidth: 3,
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: gradientFill,
+            pointBackgroundColor: gradientFill,
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: gradientFill,
+            pointHoverBorderColor: 'white',
+            pointHoverBorderWidth: 2,
+            pointRadius: 0,
+            pointHitRadius: 10,
+            data : [{% for item in alphaDataLengthPower %}
+                        {{item}},
+                    {% endfor %}],
+        }]
+        }
+        // create the chart using the chart canvas
+        var myChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+            tooltips: {
+                titleFontSize: 12,
+                bodyFontSize: 12,
+            },
+            chartArea: {
+                // backgroundColor: 'hsl(207, 97%, 12%)'
+            },
+            layout: {
+                padding: {
+                    left: 8,
+                    right: 8,
+                    top: 5,
+                    bottom: 5,
+                    }
+            },
+            animation: {
+                easing: "linear"
+                },
+            legend: {
+                position: "top",
+                display: true,
+                labels: {
+                    fontSize: 12,
+                    fontColor: "#6c757d",
+                    },
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        suggestedMax: {{ (alphaDataLengthPower[-1]*1.0005)|round }},
+                        scaleLabel: "padding",
+                        fontColor: "hsl(208, 7%, 46%)",
+                    },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        stepSize: 100,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        scaleLabel: "<%= ' ' + value%>",
+                        fontColor: "hsl(208, 7%, 46%)",
+                        },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    },
+                }]
+            }
+            },
+        });
+    </script>
+    <script>
+        // get chart canvas
+        var ctx = document.getElementById("mainChartLength").getContext("2d");
+        // define the chart data
+
+        var chartData = {
+        labels : [{% for item in alphaDataLengthTimestampDuals %}
+                    "{{item}}",
+                    {% endfor %}],
+        datasets : [{
+            label: '{{ lengthLegend }}',
+            fill: true,
+            lineTension: 0.4,
+            backgroundColor: "hsl(300, 71%, 89%)",
+            borderColor: "hsl(300, 71%, 45%)",
+            borderWidth: 3,
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: gradientFill,
+            pointBackgroundColor: gradientFill,
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: gradientFill,
+            pointHoverBorderColor: 'white',
+            pointHoverBorderWidth: 2,
+            pointRadius: 0,
+            pointHitRadius: 10,
+            data : [{% for item in alphaDataLengthDuals %}
+                        {{item}},
+                    {% endfor %}],
+        }]
+        }
+        // create the chart using the chart canvas
+        var myChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+            tooltips: {
+                titleFontSize: 12,
+                bodyFontSize: 12,
+            },
+            chartArea: {
+                // backgroundColor: 'hsl(207, 97%, 12%)'
+            },
+            layout: {
+                padding: {
+                    left: 8,
+                    right: 8,
+                    top: 5,
+                    bottom: 5,
+                    }
+            },
+            animation: {
+                easing: "linear"
+                },
+            legend: {
+                position: "top",
+                display: true,
+                labels: {
+                    fontSize: 12,
+                    fontColor: "#6c757d",
+                    },
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        suggestedMax: {{ (alphaDataLengthDuals[-1]*1.0005)|round }},
+                        scaleLabel: "padding",
+                        fontColor: "hsl(208, 7%, 46%)",
+                    },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        stepSize: 100,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        scaleLabel: "<%= ' ' + value%>",
+                        fontColor: "hsl(208, 7%, 46%)",
+                        },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    },
+                }]
+            }
+            },
+        });
+    </script>
+    <script>
+        // get chart canvas
+        var ctx = document.getElementById("mainChartSumPower").getContext("2d");
+        // define the chart data
+
+        var chartData = {
+            labels : [
+                    {% for item in alphaDataCumulativeTimestampPower %}
+                        "{{item}}",
+                    {% endfor %}],
+        datasets : [{
+            label: '{{ sumLegend }}',
+            fill: true,
+            lineTension: 0.4,
+            backgroundColor: "hsl(110, 51%, 89%)",
+            borderColor: "hsl(110, 51%, 41%)",
+            borderWidth: 3,
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: gradientFill,
+            pointBackgroundColor: gradientFill,
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: gradientFill,
+            pointHoverBorderColor: 'white',
+            pointHoverBorderWidth: 2,
+            pointRadius: 0,
+            pointHitRadius: 10,
+            data : [{% for item in alphaDataCumulativePricePower %}
+                        {{item}},
+                    {% endfor %}],
+            }]
+        }
+        // create the chart using the chart canvas
+        var myChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+            tooltips: {
+                titleFontSize: 12,
+                bodyFontSize: 12,
+            },
+            chartArea: {
+                // backgroundColor: 'hsl(207, 97%, 12%)'
+            },
+            layout: {
+                padding: {
+                    left: 8,
+                    right: 8,
+                    top: 5,
+                    bottom: 5,
+                    }
+            },
+            animation: {
+                easing: "linear"
+                },
+            legend: {
+                position: "top",
+                display: true,
+                labels: {
+                    fontSize: 12,
+                    fontColor: "#6c757d",
+                    },
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        suggestedMax: {{ (alphaDataCumulativePricePower[0]*1.0005)|round }},
+                        scaleLabel: "padding",
+                        fontColor: "hsl(208, 7%, 46%)",// Include a dollar sign on the y-axis tick numbers
+                        callback: function(value, index, values) {
+                            return '$' + value;}
+                    },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        stepSize: 100,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        scaleLabel: "<%= ' ' + value%>",
+                        fontColor: "hsl(208, 7%, 46%)",
+                        },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    },
+                }]
+            }
+            },
+        });
+    </script>
+    <script>
+        // get chart canvas
+        var ctx = document.getElementById("mainChartSum").getContext("2d");
+        // define the chart data
+
+        var chartData = {
+            labels : [
+                    {% for item in alphaDataCumulativeTimestampDuals %}
+                        "{{item}}",
+                    {% endfor %}],
+        datasets : [{
+            label: '{{ sumLegend }}',
+            fill: true,
+            lineTension: 0.4,
+            backgroundColor: "hsl(110, 51%, 89%)",
+            borderColor: "hsl(110, 51%, 41%)",
+            borderWidth: 3,
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: gradientFill,
+            pointBackgroundColor: gradientFill,
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: gradientFill,
+            pointHoverBorderColor: 'white',
+            pointHoverBorderWidth: 2,
+            pointRadius: 0,
+            pointHitRadius: 10,
+            data : [{% for item in alphaDataCumulativePriceDuals %}
+                        {{item}},
+                    {% endfor %}],
+            }]
+        }
+        // create the chart using the chart canvas
+        var myChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+            tooltips: {
+                titleFontSize: 12,
+                bodyFontSize: 12,
+            },
+            chartArea: {
+                // backgroundColor: 'hsl(207, 97%, 12%)'
+            },
+            layout: {
+                padding: {
+                    left: 8,
+                    right: 8,
+                    top: 5,
+                    bottom: 5,
+                    }
+            },
+            animation: {
+                easing: "linear"
+                },
+            legend: {
+                position: "top",
+                display: true,
+                labels: {
+                    fontSize: 12,
+                    fontColor: "#6c757d",
+                    },
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        suggestedMax: {{ (alphaDataCumulativePriceDuals[0]*1.0005)|round }},
+                        scaleLabel: "padding",
+                        fontColor: "hsl(208, 7%, 46%)",
+                        // Include a dollar sign on the y-axis tick numbers
+                        callback: function(value, index, values) {
+                            return '$' + value;}
+                    },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontSize: 10,
+                        stepSize: 100,
+                        autoSkip: true,
+                        maxTicksLimit: 8,
+                        scaleLabel: "<%= ' ' + value%>",
+                        fontColor: "hsl(208, 7%, 46%)",
+                        },
+                    gridLines: {
+                        display: false,
+                        color: 'hsl(208, 9%, 38%)',
+                        lineWidth: .2,
+                        drawBorder: false,
+                    },
+                }]
+            }
+            },
+        });
+    </script>
+    <script src="/static/colorize.js"></script>
+    <script>
+        // fetch data from `api` and push all JSON objects to an all-inclusive array (dataSet)
+        function fetchTableAPI() {
+            resultsArray = []
+            var getTableData = $.get("/api/alpha/duals/table")
+            var getTableDataPower = $.get("/api/alpha/power/table")
+            resultsArray.push(getTableData, getTableDataPower)
+            return resultsArray
+        };
+        // generated and populate dataTable _only_ when the user has scrolled 2/3rd of the way down the page
+        $(window).scroll(function() {
+            if ($(window).scrollTop() > $('body').height() / 3) {
+                readyDatatable();
+            }
+        });
+        const tableFetcher = fetchTableAPI();
+        function arrayify() {
+            //if (typeof(tableFetcher) == 'undefined') {
+            let dualsArray = tableFetcher[0].responseJSON
+            let powerArray = tableFetcher[1].responseJSON
+            let dataSet = []
+            for (var i = 0; i < dualsArray.results.length; i++) {
+                let nick = `<div style='text-align: left !important; color: hsl(205, 16%, 27%); font-size: 1em;'><a style="color: hsl(203, 78%, 49%);" href='/alpha/stats/duals/${dualsArray.results[i].nick.split('Alpha')[1].split('MTG')[0].trim().replace(' ', '-').toLowerCase()}'>${dualsArray.results[i].nick.split('MTG')[0]}</a></div>`
+                let price = `<div style='text-align: left !important; color: hsl(157, 66%, 49%); font-size: 1em;'>${dualsArray.results[i].price}</div>`
+                //let priceChange = `<div style='text-align: center !important; color: hsl(208.2,7.3%,45.7%); font-size: .80em;'>${array.results[i].priceChange}</div>`
+                let priceChange = colorizeData(dualsArray.results[i].priceChange.split('%')[0]);
+                let length = `<div style='text-align: left !important; font-size: 1em; color: hsl(300, 71%, 45%);'>${dualsArray.results[i].length}</div>`
+                let lengthChange = colorizeData(dualsArray.results[i].lengthChange.split('%')[0]);
+                let count = `<div style='text-align: left !important; font-size: 1em; color: hsl(192, 83%, 67%);'>${dualsArray.results[i].count}</div>`
+                let countChange = colorizeData(dualsArray.results[i].countChange.split('%')[0]);
+                // let count = `<div style='text-align: center !important;'>${array.results[i].count}</div>`
+                dataSet.push([nick, price, priceChange, length, lengthChange, count, countChange]);
+            }
+            for (var i = 0; i < powerArray.results.length; i++) {
+                let nick = `<div style='text-align: left !important; color: hsl(205, 16%, 27%); font-size: 1em;'><a style="color: hsl(203, 78%, 49%);"href='/alpha/stats/power/${powerArray.results[i].nick.split('Alpha')[1].split('MTG')[0].trim().replace(' ', '-').toLowerCase()}'>${powerArray.results[i].nick.split('MTG')[0]}</a></div>`
+                let price = `<div style='text-align: left !important; color: hsl(157, 66%, 49%); font-size: 1em;'>${powerArray.results[i].price}</div>`
+                //let priceChange = `<div style='text-align: center !important; color: hsl(208.2,7.3%,45.7%); font-size: .80em;'>${array.results[i].priceChange}</div>`
+                let priceChange = colorizeData(powerArray.results[i].priceChange.split('%')[0]);
+                let length = `<div style='text-align: left !important; font-size: 1em; color: hsl(300, 71%, 45%);'>${powerArray.results[i].length}</div>`
+                let lengthChange = colorizeData(powerArray.results[i].lengthChange.split('%')[0]);
+                let count = `<div style='text-align: left !important; font-size: 1em; color: hsl(39, 80%, 52%);'>${powerArray.results[i].count}</div>`
+                let countChange = colorizeData(powerArray.results[i].countChange.split('%')[0]);
+                // let count = `<div style='text-align: center !important;'>${array.results[i].count}</div>`
+                dataSet.push([nick, price, priceChange, length, lengthChange, count, countChange]);
+            }
+            return dataSet
+        }
+        // $(document).ready(function readyDatatable() {
+        function readyDatatable() {
+            try {
+                // we are no longer seeing errors as alerts
+                $.fn.dataTable.ext.errMode = 'throw';
+
+
+                // begin generating table html
+                let dataSet = arrayify()
+                let table = $('#mainTable').DataTable( {
+                    data: dataSet,
+                    columns: [
+                        { title: "Nick" },
+                        { title: "Avg Price" },
+                        { title: "Percent Change" },
+                        { title: "Avg Length" },
+                        { title: "Percent Change" },
+                        { title: "Total Sold" },
+                        { title: "Percent Change" },
+                        //{ title: "Location" },
+                    ],
+                    "iDisplayLength": 20,
+                    "order": [[ 1, "desc" ]],
+                })
+            }
+            catch(error) {
+                console.error(error)
+            }
+        };
+    </script>
+    <script>
+        document.getElementById('buttonToggler').addEventListener('click', function () {
+            //  this.style.display = 'none';
+            containerDiv = document.getElementById('containerToggler')
+            containerDiv.classList.add('hide')
+            // this.classList.add('hide')
+        });
+    </script>
+    {% include 'footer.html' %}
+  </body>
+</html>

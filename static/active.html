@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Active</title>
+    </head>
+    <body id="body" class="dark-mode">
+        {% include 'nav_active.html' %}
+        <div class="container-fluid">
+            <div class="row" style="border-bottom: .5px solid hsl(205, 16%, 27%); margin-bottom: 15px; padding-top: 15px; padding-left: 15px; color: hsl(210, 72%, 65%); ">
+                    <h2 style="width: 50%;"><span class="activeListingsTitle">Active Listings</span></h2>
+                    <div style="width: 48%; text-align: right; margin-top: 5px; margin-bottom: 0% !important; padding-bottom: 0% !important;">
+                        <span class="activeListingsLastUpdated">
+                            This page was last updated on:
+                            <strong>
+                                <span class="activeListingsLastUpdatedDate">
+                                    <script>
+                                        var testlast = document.lastModified;
+                                        document.write(" " + testlast.substr(0, 10));
+                                    </script> 
+                                </span> 
+                            </strong>    
+                        </span> 
+                    </div>
+            </div>
+            <div class="table-responsive-sm">
+                <table id="table" class="table table-striped table-bordered table-dark" style="width: 100%;">
+                    <script>
+                        // function for truncating strings
+                        function truncate(string){
+                            if (string.length > 5)
+                                return string.substring(0,100)+'...';
+                            else
+                                return string;
+                            };
+                         // fetch data from `api` and push all JSON objects to an all-inclusive array (dataSet)
+                        function fetchTableAPI() {
+                            let getTableData = $.get("/api/unlimited/active")
+                            return getTableData
+                        };
+                        const tableFetcher = fetchTableAPI();
+                        function arrayify() {
+                            //if (typeof(tableFetcher) == 'undefined') {
+                            let array = tableFetcher.responseJSON
+                            let dataSet = []
+                            for (var i = 0; i < array.results.length; i++) {
+                                let endDate = `<div style='text-align: center !important; color: hsl(211, 44%, 70%);'>${array.results[i].activeStart}</div>`
+                                let thumb = `<td style=><a href='${array.results[i].activeHref}' target='_blank'><img class ='activeImageThumbnail' src='${array.results[i].activeThumb}' alt='N/A'></img></a></td>`
+                                let title = `<a class='tableTitle' href=${array.results[i].activeHref} target='_blank' style='color: #1B95E0; border-bottom: 2px solid hsl(203, 78%, 49%);'>${array.results[i].activeTitle}</a>`
+                                let nick = `<div style='text-align: center !important; color: hsl(211, 44%, 70%)'>${array.results[i].activeName.split('MTG')[0]}</div>`
+                                let price = `<div style='text-align: center !important; color: hsl(211, 44%, 70%);'>${array.results[i].activePrice}</div>`
+                                let avg = `<div style='text-align: center !important; color: hsl(211, 44%, 70%);'>${array.results[i].avg}</div>`
+                                //let length = `<div style='text-align: center !important;'>${array.results[i].length}</div>`
+                                // // let count = `<div style='text-align: center !important;'>${array.results[i].count}</div>`
+                                //let type = `<div style='text-align: center !important;'>${array.results[i].type}</div>`
+                                let spread = ``
+                                let depth = ``
+                                let count = ``
+                                //let count = ``
+
+                                // append color-styling depending on the int being neg or pos
+                                let colors = parseFloat(array.results[i].spread)
+                                if (colors === 0) {
+                                    spread = `<div style='text-align: center !important; color: hsl(208, 9%, 38%);'>±${array.results[i].spread.toFixed(2)}%</div>`
+                                // dataSet.push([thumb, endDate, nick, title, price, avg, spread, length, count, type]);
+                                }
+                                else if (colors > 0) {
+                                    spread = `<div style='text-align: center !important; color: rgb(143,198,132);'>+${array.results[i].spread.toFixed(2)}%</div>`
+                                // dataSet.push([thumb, endDate, nick, title, price, avg, spread, length, count, type]);
+                                }
+                                else {
+                                    spread = `<div style='text-align: center !important; color: rgb(213,90,65);'>${array.results[i].spread.toFixed(2)}%</div>`
+                                //dataSet.push([thumb, endDate, nick, title, price, avg, spread, length, count, type]);
+                                }
+                                // append color-styling depending on the int being neg or pos
+                                let depthColors = parseFloat(array.results[i].activeDepth)
+                                if (depthColors === 0) {
+                                    depth = `<div style='text-align: center !important; color: hsl(208, 9%, 38%);'>${array.results[i].activeDepth}</div>`
+                                }
+                                else if (depthColors < 6) {
+                                    depth = `<div style='text-align: center !important; color: #FFDC00;'>${array.results[i].activeDepth}</div>`
+                                }
+                                else if (depthColors < 10) {
+                                    depth = `<div style='text-align: center !important; color: #FFDC00;'>${array.results[i].activeDepth}</div>`
+                                }
+                                else {
+                                    depth = `<div style='text-align: center !important; color: hsl(110, 51%, 41%);'>${array.results[i].activeDepth}</div>`
+                                }
+                                // append color-styling depending on the int being neg or pos
+                                let soldColors = parseFloat(array.results[i].count)
+                                if (soldColors === 0) {
+                                    count = `<div style='text-align: center !important; color: hsl(208, 9%, 38%);'>${array.results[i].count}</div>`
+                                // dataSet.push([thumb, endDate, nick, title, price, avg, spread, length, count, type]);
+                                }
+                                else if (soldColors < 20) {
+                                    count = `<div style='text-align: center !important; color: #FFDC00;'>${array.results[i].count}</div>`
+                                // dataSet.push([thumb, endDate, nick, title, price, avg, spread, length, count, type]);
+                                }
+                                else if (soldColors < 30) {
+                                    count = `<div style='text-align: center !important; color: #FFDC00;'>${array.results[i].count}</div>`
+                                // dataSet.push([thumb, endDate, nick, title, price, avg, spread, length, count, type]);
+                                }
+                                else {
+                                    count = `<div style='text-align: center !important; color: hsl(110, 51%, 41%);'>${array.results[i].count}</div>`
+                                //dataSet.push([thumb, endDate, nick, title, price, avg, spread, length, count, type]);
+                                }
+                                
+                                // append color-styling depending on the int being neg or pos
+                                let lengthColors = parseFloat(array.results[i].length)
+                                if (lengthColors === 0) {
+                                    length = `<div style='text-align: center !important; color: hsl(208, 9%, 38%);'>${array.results[i].length}</div>`
+                                // dataSet.push([thumb, endDate, nick, title, price, avg, spread, length, count, type]);
+                                }
+                                else if (lengthColors < 20) {
+                                    length = `<div style='text-align: center !important; color: #FFDC00;'>${array.results[i].length}</div>`
+                                // dataSet.push([thumb, endDate, nick, title, price, avg, spread, length, count, type]);
+                                }
+                                else if (lengthColors < 30) {
+                                    length = `<div style='text-align: center !important; color: #FFDC00;'>${array.results[i].length}</div>`
+                                // dataSet.push([thumb, endDate, nick, title, price, avg, spread, length, count, type]);
+                                }
+                                else {
+                                    length = `<div style='text-align: center !important; color: hsl(110, 51%, 41%);'>${array.results[i].length}</div>`
+                                //dataSet.push([thumb, endDate, nick, title, price, avg, spread, length, count, type]);
+                                }
+                                dataSet.push([thumb, endDate, nick, title, price, avg, spread, length, depth, count]);
+                            }
+                            return dataSet
+                        }
+                        // $(document).ready(function readyDatatable() {
+                        tableFetcher.done(function readyDatatable() {
+                            try {
+                                // we are no longer seeing errors as alerts
+                                $.fn.dataTable.ext.errMode = 'throw';
+                                
+                                // begin generating table html
+                                let dataSet = arrayify()
+                                let table = $('#table').DataTable( {
+                                    data: dataSet,
+                                    columns: [
+                                        { title: "Thumb"},
+                                        { title: "Start Date" },
+                                        { title: "Nick" },
+                                        { title: "Title" },
+                                        { title: "Price" },
+                                        { title: "Avg Price" },
+                                        { title: "Spread" },
+                                        { title: "Avg Length" },
+                                        { title: "Active #" },
+                                        { title: "Total Sold" },
+                                        //{ title: "Avg Length" },
+                                        //{ title: "Total Sold" },
+                                        //{ title: "Listing Type" },
+                                        //{ title: "Location" },
+                                    ],
+                                    "iDisplayLength": 50,
+                                    "order": [[ 1, "desc" ]],
+                                })
+                            }
+                            catch(error) {
+                                console.error(error)
+                            }
+                        });
+                    </script>
+                </table>
+            </div>
+        </div>
+    </body>
+    {% include 'footer.html' %}
+</html>
