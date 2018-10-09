@@ -23,7 +23,7 @@ This application is written using [Python 3.6.0](https://www.python.org/download
 - `gen_utils.py` - As the name states, contains general utilities that are used a large number of times in different files.
 - `build_dataframes.py` - Used to call every database related function and populate the respective pandas dataframes, representing easy-to-proces containers to pass data around in and manipulate.
 - `fetch_active_products.py` - A script to fetch active listings using eBay's `Finding` API (findItemsByKeywords). Ran automatically once a day via a scheduled cron-job.
-- `fetch_completed_products.py` - A script to fetch completed listings using eBay's `Finding` API (findCompletedItems). Ran automatically once a day via a scheduled cron-job. Run on a cron-job once a day.
+- `fetch_completed_products.py` - A script to fetch completed listings using eBay's `Finding` API (findCompletedItems). Ran automatically once a day via a scheduled cron-job. Ran automatically once a day via a scheduled cron-job.
 - `populate_active_meta_data.py` -  A script to calculate the stats for all of the active listings in the database before populating a meta_data table. Ran automatically once a day via a scheduled cron-job.
 - `populate_completed_meta_data.py` -  A script to calculate the stats for all of the completed listings in the database before populating a meta_data table. Ran automatically once a day via a scheduled cron-job.
 - `populate_historical_data.py` -  A script to calculate the stats for all of the completed listings in the database before populating a meta_data table. Ran one time as needed, particularly when adding an entirely new set to the system (i.e. Arabian Nights).
@@ -38,9 +38,9 @@ Check out the Micro API documention [API.md](API.md) for more details.
 
 ## General Thoughts
 
-- The application is certainly not 100% optimized, as this was a learning project first and foremost. The focus was on making it functional before anything else. Overall, I am very satisfied with how it turned out.
+- The application is certainly not 100% optimized, as this was a learning project first and foremost. The focus was on making it functional before anything else. Overall, I am quite satisfied with how it turned out.
 - I am not a UX/UI designer, but I tried to make the UI at least bearable. Ping me if you think it is way off.
-- I would like to add support for active listings and other sets, but for the time being I am happy with it's minimalistic nature.
+- I would like to add support for active listings and other sets, but for the time being I am ok with it's minimalistic nature.
 - eBay's API is a little wonky...this has been a good lesson that I should be careful about building any application-to-scale on top of or relying on any sort of API.
 
 ## License
