@@ -79,4 +79,4 @@
 ## Notes
 
   I am happy to answer any questions or implement any improvements that are recommended or advised. Thanks for checking out my micro API documentation :). 
-  <br><br>Last updated by Cooper Ribb @ 10/4/2018, 8:17AM CST. :blush:
+  <br><br>Last updated by Cooper Ribb @ 10/8/2018, 8:17AM CST. :blush:
