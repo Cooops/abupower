@@ -29,7 +29,7 @@
 ## Success Response
   
   * **Code:** 200 <br />
-    **Content:** `{ results : [] }`
+    **Content:** `{ results : [json array] }`
  
 ## Error Response
 
