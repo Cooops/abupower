@@ -67,7 +67,7 @@
     ```
   - Python | Requests
     ```
-    url = "/api/alpha/power/table"
+    url = "https://abupower.com/api/alpha/power/table"
     response = requests.get(url).json()
     results = response['results']
     ```
