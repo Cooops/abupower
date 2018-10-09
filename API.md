@@ -45,7 +45,7 @@
 
   - JavaScript | AJAX & XHR
     ```
-    var url = $.get(`/api/beta/duals/table`)
+    var url = $.get(`https://abupower.com/api/beta/duals/table`)
     var response = url.responseJSON['results']
     ```
     &
@@ -61,7 +61,7 @@
       }
     });
 
-    xhr.open("GET", "http://abupower.com/api/unlimited/duals/tundra");
+    xhr.open("GET", "https://abupower.com/api/unlimited/duals/tundra");
 
     xhr.send(data);
     ```
@@ -73,7 +73,7 @@
     ```
   - Linux | cURL
     ```
-    curl --request GET --url http://abupower.com/api/alpha/power/table
+    curl --request GET --url https://abupower.com/api/alpha/power/table
     ```
 
 ## Notes
