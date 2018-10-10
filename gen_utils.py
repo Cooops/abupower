@@ -57,3 +57,27 @@ def get_data(value):
         """)
     data = fetch_data(query)
     return data
+
+def get_api_key():
+    """() -> api_key
+
+    Reads the `CONFIG.ini` file for the [eBayAPI] indicator, reads in the respective api_key, and returns the value."""
+    api_key = CONFIG['eBayAPI']['api_key']
+    return api_key
+
+def get_search_words():
+    """() -> list
+
+    Reads a .txt file for search words and returns the corresponding values in list form."""
+    with open("search_words.txt") as txtFile:
+        words = []
+        for line in txtFile:
+            words.append(line)
+        return(words)
+
+def get_test_search_words():
+    """() -> list
+
+    Returns a list of selected search words we can test against"""
+    words = ['Unlimited Black Lotus MTG', 'Revised Tropical Island MTG', 'Beta Badlands MTG']
+    return words
