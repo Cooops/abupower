@@ -73,7 +73,7 @@ def get_search_words():
         words = []
         for line in txtFile:
             words.append(line)
-        return(words)
+        return words
 
 def get_test_search_words():
     """() -> list
