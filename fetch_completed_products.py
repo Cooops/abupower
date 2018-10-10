@@ -1,9 +1,10 @@
 from ebaysdk.finding import Connection
 from ebaysdk.exception import ConnectionError
 import time
-from gen_utils import get_trace_and_log
 import psycopg2
 import re
+from db_queries import prune_active
+from gen_utils import database_connection, get_api_key, get_search_words, get_test_search_words, get_trace_and_log
 
 completed_product_ids = []
 completed_product_nick = []
@@ -27,27 +28,18 @@ class SearchRequest(object):
         self.search_body_pages = {
             'keywords': keyword,
             'itemFilter': [
-                # can be used, etc as well
-                # {'name': 'Condition', 'value': 'New'},
-                # {'name': 'LocatedIn', 'value': 'US'},
-                # {'name': 'LocatedIn', 'value': 'CA'},
-                # US only sellers -- can also limit by feedback score, business type, top-rated status, charity, etc.
                 {'name': 'MinPrice', 'value': '59', 'paramName': 'Currency', 'paramValue': 'USD'},
                 {'name': 'MaxPrice', 'value': '9999999', 'paramName': 'Currency', 'paramValue': 'USD'},
-                # pre-filter to only actionable items (non-bids, etc.)
-                # {'name': 'ListingType', 'value': ['FixedPrice', 'StoreInventory', 'AuctionWithBIN']},
                 # sold items only
                 {'name': 'SoldItemsOnly', 'value': 'true'},
             ],
             'paginationInput': {
-                # always 100 (maximum) &
                 'entriesPerPage': '100',
-                # always 1, as we want to pull the maximum number of pages given a maximum of 100 results per page
                 'pageNumber': '1'
             },
-            # can filter this to multiple different options as well (Best Offer, Most Watched, etc.)
             'sortOrder': 'PricePlusShippingLowest'
         }
+        self.api = Connection(siteid='EBAY-US', appid=self.api_key, config_file=None)
 
     def get_pages(self):
         """() -> dict
@@ -58,9 +50,8 @@ class SearchRequest(object):
         Returns an integer with the total number of pages.
         """
         try:
-            api = Connection(siteid='EBAY-US', appid=self.api_key, config_file=None)
-            api.execute('findCompletedItems', self.search_body_pages)
-            self.data = api.response.dict()
+            self.api.execute('findCompletedItems', self.search_body_pages)
+            self.data = self.api.response.dict()
             self.pages = int(self.data['paginationOutput']['totalPages'])
             return self.pages
         except ConnectionError as e:
@@ -82,12 +73,9 @@ class SearchRequest(object):
             search_body_data = {
                 'keywords': self.keyword,
                 # 'categoryId': self.cat_id,
-                'itemFilter': [  # We also need to REMOVE duplicate listings in the future (?)
-                    # {'name': 'Condition', 'value': 'New'},  # NEW ONLY FOR NOW
-                    # {'name': 'LocatedIn', 'value': 'US'},
+                'itemFilter': [
                     {'name': 'MinPrice', 'value': '59', 'paramName': 'Currency', 'paramValue': 'USD'},
                     {'name': 'MaxPrice', 'value': '9999999', 'paramName': 'Currency', 'paramValue': 'USD'},
-                    # {'name': 'ListingType', 'value': ['FixedPrice', 'StoreInventory', 'AuctionWithBIN']},
                     # sold items only
                     {'name': 'SoldItemsOnly', 'value': 'true'},
                 ],
@@ -96,19 +84,12 @@ class SearchRequest(object):
                      'pageNumber': f'{page}'},
                 # can filter this to multiple different options as well
                 'sortOrder': 'PricePlusShippingLowest'}
-
-            api.execute('findCompletedItems', search_body_data)
-            self.data = api.response.dict()
+            self.api.execute('findCompletedItems', search_body_data)
+            self.data = self.api.response.dict()
             time.sleep(1)
         except KeyError as e:
             get_trace_and_log(e)
 
-        # outliers = ["Collector's", "collector's edition", "Collectors", "International", "CE", "Ce", "IE", "Ie",
-        #             "Poster", "Proxy", "Misprint", "Puzzle", "READ DESCRIPTION", "PLAYTEST", "error", "display",
-        #             "promo", "display/promo", "framed", "Reprint", "Booster", "Pack", "Factory Sealed", "RP", 
-        #             "Headlamp", "Headlamps", "car", "Car", "Truck", "Headlights", "Repacks", "repacks", "repack", 
-        #             "repacks", "Rubber", "Seat", "Box", "Collector''s", 'Collector"s', "Stickers", "stickers",
-        #             "Sticker", "sticker"]
         outliers = [
              re.compile(r"\bce\b", re.I),
              re.compile(r"\bie\b", re.I),
@@ -214,7 +195,8 @@ class SearchRequest(object):
                         completed_product_nick.append(word)
                         completed_product_titles.append(item['title'])
                         completed_product_ids.append(item['itemId'])
-                        completed_product_prices.append(item['sellingStatus']['currentPrice']['value'])
+                        # completed_product_prices.append(item['sellingStatus']['currentPrice']['value'])
+                        completed_product_prices.append(item['sellingStatus']['convertedCurrentPrice']['value'])  # take the convertedCurrentPrice instead @ 10/10/2018
                         completed_product_cat_names.append(item['primaryCategory']['categoryName'])
                         completed_product_cat_ids.append(item['primaryCategory']['categoryId'])
                         completed_product_img_url.append(item['viewItemURL'])
@@ -224,7 +206,8 @@ class SearchRequest(object):
                         completed_product_start.append(item['listingInfo']['startTime'])
                         completed_product_end.append(item['listingInfo']['endTime'])                        
                         depthCount += 1
-
+                # if the page is 1 and the max number of pages is 1 then extend the depth to fill up the list, 
+                # otherwise proceed forward
                 if self.pages == 1 and page == 1:
                     completed_product_depth.extend(depthCount for i in range(depthCount))
                 elif self.pages > 1 and page == 1:
@@ -232,75 +215,37 @@ class SearchRequest(object):
                 else:
                     depthCountMulti = int(depthCountStorage[-1]) + depthCount
                     completed_product_depth.extend(depthCountMulti for i in range(depthCountMulti))
-               
-                        # print('Title: {}'.format(item['title']))
-                        # print('Item ID: {}'.format(item['itemId']))
-                        # print('Price: ${}'.format(item['sellingStatus']['currentPrice']['value']))
-                        # print('Category Name: {}'.format(item['primaryCategory']['categoryName']))
-                        # print('Category ID: {}'.format(item['primaryCategory']['categoryId']))
-                        # print('Image Thumbnail: {}'.format(item['galleryURL']))
-                        # print('Image URL: {}'.format(item['viewItemURL']))
-                        # print('Listing type: {}'.format(item['listingInfo']['listingType']))
-                        # print('Product location: {}'.format(item['location']))
-                        # print('Condition: {}'.format(item['condition']['conditionDisplayName']))
-                        # print('Start time: {}'.format(item['listingInfo']['startTime']))
-                        # # print('Page: {}/{}'.format(int(page), int(self.data['paginationOutput']['totalPages'])))
-                        # print()
         except KeyError as e:
             get_trace_and_log(e)
 
 
-class DatabaseConnection(object):
-    def __init__(self):
-        try:
-            self.connection = psycopg2.connect("dbname='EBAYMAGIC' user='postgres' host='localhost' password='magicarb123' port='5432'")
-            self.connection.autocommit = True
-            self.cursor = self.connection.cursor()
-            print("Successfully connected to database.")
-        except Exception as e:
-            get_trace_and_log(e)
-            print("Cannot connect to database.")
 
-    def insert_completed_products(self, zipFile):
-        for a, b, c, d, e, f, g, h, i, j, k, l, m, n in completed_products:
-            try:
-                self.cursor.execute("""INSERT INTO completed_products(completed_product_nick, completed_product_titles, completed_product_ids, completed_product_prices, completed_product_cat_names, completed_product_cat_ids, completed_product_img_thumb, completed_product_img_url, completed_product_lst_type, completed_product_con, completed_product_loc, completed_product_start, completed_product_end, completed_product_depth)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""", (a, b, c, d, e, f, g, h, i, j, k, l, m, n, ))  # MAKE SURE to leave the trailing comma (d-->,<--), this will NOT work otherwise.
-                print("Unique value inserted...")
-            except Exception as e:
-                print("Unique value skipped...")
-                # get_trace_and_log(e)
-        print()
-        print('(<*.*<) DATABASE HAS BEEN |P I P E D| (>*.*>)')
+def insert_completed_products(cursor, zipFile):
+    for a, b, c, d, e, f, g, h, i, j, k, l, m, n in zipFile:
+        try:
+            cursor.execute("""INSERT INTO completed_products(completed_product_nick, completed_product_titles, completed_product_ids, completed_product_prices, completed_product_cat_names, completed_product_cat_ids, completed_product_img_thumb, completed_product_img_url, completed_product_lst_type, completed_product_con, completed_product_loc, completed_product_start, completed_product_end, completed_product_depth)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""", (a, b, c, d, e, f, g, h, i, j, k, l, m, n, ))  # MAKE SURE to leave the trailing comma (d-->,<--), this will NOT work otherwise.
+            print("Unique value inserted...")
+        except Exception as e:
+            print("Unique value skipped...")
+            get_trace_and_log(e)
+    print("Successfully piped database.")
 
 
 if __name__ == '__main__':
-    #TODO: could add back in time vaults?
-    words = ['Alpha Black Lotus', 'Alpha Mox Sapphire', 'Alpha Mox Jet', 'Alpha Mox Pearl', 'Alpha Mox Ruby', 'Alpha Mox Emerald', 'Alpha Timetwister', 'Alpha Ancestral Recall', 'Alpha Time Walk',
-                'Beta Black Lotus MTG', 'Beta Mox Sapphire', 'Beta Mox Jet', 'Beta Mox Pearl', 'Beta Mox Ruby', 'Beta Mox Emerald', 'Beta Timetwister', 'Beta Ancestral Recall', 'Beta Time Walk',
-                'Unlimited Black Lotus MTG', 'Unlimited Mox Sapphire', 'Unlimited Mox Jet', 'Unlimited Mox Pearl', 'Unlimited Mox Ruby', 'Unlimited Mox Emerald', 'Unlimited Timetwister', 'Unlimited Ancestral Recall', 'Unlimited Time Walk',
-                'Alpha Tundra MTG', 'Alpha Underground Sea MTG', 'Alpha Badlands MTG', 'Alpha Taiga MTG', 'Alpha Savannah MTG', 'Alpha Scrubland MTG', 'Alpha Volcanic Island MTG', 'Alpha Bayou MTG', 'Alpha Plateau MTG', 'Alpha Tropical Island MTG',
-                'Beta Tundra MTG', 'Beta Underground Sea MTG', 'Beta Badlands MTG', 'Beta Taiga MTG', 'Beta Savannah MTG', 'Beta Scrubland MTG', 'Beta Volcanic Island MTG', 'Beta Bayou MTG', 'Beta Plateau MTG', 'Beta Tropical Island MTG',
-                'Unlimited Tundra MTG', 'Unlimited Underground Sea MTG', 'Unlimited Badlands MTG', 'Unlimited Taiga MTG', 'Unlimited Savannah MTG', 'Unlimited Scrubland MTG', 'Unlimited Volcanic Island MTG', 'Unlimited Bayou MTG', 'Unlimited Plateau MTG', 'Unlimited Tropical Island MTG',
-                'Revised Tundra MTG', 'Revised Underground Sea MTG', 'Revised Badlands MTG', 'Revised Taiga MTG', 'Revised Savannah MTG', 'Revised Scrubland MTG', 'Revised Volcanic Island MTG', 'Revised Bayou MTG', 'Revised Plateau MTG', 'Revised Tropical Island MTG',
-                'Alpha Time Vault MTG', 'Beta Time Vault MTG', 'Unlimited Time Vault MTG']
-    # words = ['Beta Time Walk']
-    # 'Unlimited Time Vault MTG']
+   # pull in our api key, the list of words to iterate over, and begin zipping lists before piping the db
+    api_key = get_api_key()
+    words = get_search_words()
+    # comment out the above variable and use the one below when testing (includes 3 very common values)
+    # words = get_test_search_words()
     for word in words:
         print(f'Searching keyword: {word}')
-        x = SearchRequest('YOUR-API-KEY-HERE', word)
-        pages = x.get_pages()+1
+        x = SearchRequest(api_key, word)
+        pages = x.get_pages() + 1
         for page in range(1, pages):
             x.fetch_completed_data(page)
-        ## filter out anything that computes to a value less than .05% of the average product value 
-        ## (used to remove mis-fetched outliers, not real outliers)
-        # completed_product_prices = [i for i in completed_product_prices if float(i) > calc]
-        # premod_completed_products = zip(completed_product_nick, completed_product_titles, completed_product_ids, completed_product_prices, completed_product_cat_names, completed_product_cat_ids, completed_product_img_thumb, completed_product_img_url, completed_product_lst_type, completed_product_con, completed_product_loc, completed_product_start, completed_product_end, completed_product_depth)
-        # calc = sum(float(x) for x in completed_product_prices)/float(len(completed_product_prices))*.05
-
     # begin zipping of all arrays into one big-array, just before inserting into the database
     completed_products = zip(completed_product_nick, completed_product_titles, completed_product_ids, completed_product_prices, completed_product_cat_names, completed_product_cat_ids, completed_product_img_thumb, completed_product_img_url, completed_product_lst_type, completed_product_con, completed_product_loc, completed_product_start, completed_product_end, completed_product_depth)
-    # begin piping data to the database)
-    database_connection = DatabaseConnection()
-    database_connection.insert_completed_products(completed_products)
-    #TODO: add `calc_completed_products()` here, so they execute in a batch order automaticaly @ 9/23/2018`
+    # # begin piping data to the database)
+    cursor = database_connection()
+    insert_completed_products(cursor, completed_products)
