@@ -25,7 +25,7 @@
         <h5 class="card-title-about"><i class="fas fa-link"></i> What stack did you build this with? Why?</h5>
       <p class="card-text">
         <ul>
-          <li><a class="link" href="http://old-releases.ubuntu.com/releases/16.04.4/" target="_blank" style="color: hsl(203, 78%, 49%);">Linux</a>, <a class="link" href="https://httpd.apache.org/" target="_blank" style="color: #1B95E0;">Apache</a>, <a class="link" href="https://www.postgresql.org/" target="_blank" style="color: #1B95E0;">PostgreSQL</a>, <a class="link" href="https://www.javascript.com/" target="_blank" style="color: #1B95E0;">JavaScript</a>, and <a class="link" href="https://www.python.org/downloads/release/python-360/" target="_blank" style="color: #1B95E0;">Python</a> (shout-out to <a class="link" href="http://flask.pocoo.org/" target="_blank" style="color: #1B95E0;">Flask</a>). Fast to implement with, easy to iterate over, and great for working with anything data-related, especially data
+          <li><a class="link" href="http://old-releases.ubuntu.com/releases/16.04.4/" target="_blank" style="color: hsl(203, 78%, 49%);">Linux</a>, <a class="link" href="https://www.nginx.com/" target="_blank" style="color: #1B95E0;">Nginx</a>, <a class="link" href="https://www.postgresql.org/" target="_blank" style="color: #1B95E0;">PostgreSQL</a>, <a class="link" href="https://www.javascript.com/" target="_blank" style="color: #1B95E0;">JavaScript</a>, and <a class="link" href="https://www.python.org/downloads/release/python-360/" target="_blank" style="color: #1B95E0;">Python</a> (shout-out to <a class="link" href="http://flask.pocoo.org/" target="_blank" style="color: #1B95E0;">Flask</a>). Fast to implement with, easy to iterate over, and great for working with anything data-related, especially data
                   needing to be populated by multiple unique scripts.</li>
           <li>Populated with eBay's <a class="link" href="https://developer.ebay.com/" target="_blank" style="color: hsl(203, 78%, 49%);">API</a>.</li>
           <li>Hosted through <a class="link" href="https://www.digitalocean.com/" target="_blank" style="color: hsl(203, 78%, 49%);">DigitalOcean</a>.</li>
@@ -34,15 +34,21 @@
         <h5 class="card-title-about"><i class="fas fa-link"></i> How often do you currently update the data?</h5>
       <p class="card-text">
         <ul>
-          <li>I am currently fetching the data once a day via a scheduled cron job @ 12:30pm CST.</li>
+          <li>I am currently fetching the data once a day via a scheduled cron job @ <s>12:30pm CST</s> 11:59PM UTC (6:59PM CST) for the time being 😳.</li>
         </ul>
         <!-- begin fourth question-->
         <h5 class="card-title-about"><i class="fas fa-link"></i> How and what exactly do you pre-filter?</h5>
       <p class="card-text">
         <ul>
-          <li>I welcome any additions you may find, and you can view the code <a class="link" href="https://github.com/Cooops/newABUPOWER/blob/94995f12bd293820ff013a16d535efe37a4a6942/fetch_completed_products.py#L117" target="_blank" style="color: #1B95E0;">here</a>. For ease of viewing, here is a quick reference of some of the filtered keywords (using regex):
+          <li>I welcome any additions you may find, and you can view the code <a class="link" href="https://github.com/Cooops/abupower/blob/988155b037b09e7cf7fd57f048d02eebf33365e4/fetch_completed_products.py#L113" target="_blank" style="color: #1B95E0;">here</a>. For ease of viewing, here is a quick reference of some of the filtered keywords (using regex):
               <pre style="background-color: rgb(250, 250, 250); font-family: monospace; border: 1px solid #999; display: block; padding: 5px; margin-top: 5px;">["\bCOLLECTORS\b", "\bcollector's\b", "\bcollector's edition\b", "\binternational\b", "\binternationals\b", "\binternational edition\b", "\bposter\b", "\bproxy\b", "\bmisprint\b", <br>"\bpuzzle\b", "\bplaytest\b", "\berror\b", "\bpromo\b", "\bproxy\b", "\bframed\b", "\breprint\b", "\bbooster\b", "\bpack\b", "\bfactory sealed\b"....] and many more.</pre>
         </ul>
+        <!-- begin fifth question-->
+        <h5 class="card-title-about"><i class="fas fa-link"></i> What kind of range is your data based on?</h5>
+      <p class="card-text">
+        <ul>
+            <li>Pretty much everything you see is based on a 90 day rolling average, with the exception being `Spot Price` and `Active Listing Count`.</li>
+          </ul>
         <!-- begin last question-->
         <h5 class="card-title-about"><i class="fas fa-link"></i> Ask me some questions and I can add them here...</h5>
       <p class="card-text">

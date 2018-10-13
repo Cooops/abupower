@@ -1,18 +1,6 @@
 import pandas as pd
 from db_queries import fetch_data, get_trace_and_log, prune_active
-from gen_utils import database_connection, get_search_words
-
-POWER_CONFIG = {
-    'Alpha': 'Power',
-    'Beta': 'Power',
-    'Unlimited': 'Power',
-}
-DUALS_CONFIG = {
-    'Alpha': 'Duals',
-    'Beta': 'Duals',
-    'Unlimited': 'Duals',
-    'Revised': 'Duals'
-}
+from gen_utils import database_connection, get_search_words, POWER_CONFIG, DUALS_CONFIG
 
 def generate_stat_history(setCheck, boolCheck):
     dataArray = []

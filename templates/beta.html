@@ -216,7 +216,7 @@
         gradientFill.addColorStop(1, "#6b8ee0");
 
         var chartData = {
-        labels : [{% for item in betaDataAvgTimestampPower %}
+        labels : [{% for item in dateRange %}
                         "{{ item }}",
                     {% endfor %}],
         datasets : [{
@@ -265,7 +265,7 @@
                     }
             },
             animation: {
-                easing: "linear"
+                duration: 0,
                 },
             legend: {
                 position: "top",
@@ -280,7 +280,7 @@
                     ticks: {
                         fontSize: 10,
                         autoSkip: true,
-                        maxTicksLimit: 8,
+                        maxTicksLimit: 5,
                         suggestedMax: {{ (betaDataAvgPower[-1]*1.0005)|round }},
                         scaleLabel: "padding",
                         fontColor: "hsl(208, 7%, 46%)",
@@ -297,12 +297,14 @@
                 }],
                 xAxes: [{
                     ticks: {
+                        padding: 5,
                         fontSize: 10,
-                        stepSize: 100,
                         autoSkip: true,
-                        maxTicksLimit: 8,
+                        maxTicksLimit: 7,
                         scaleLabel: "<%= ' ' + value%>",
                         fontColor: "hsl(208, 7%, 46%)",
+                        maxRotation: 0,
+                        minRotation: 0
                         },
                     gridLines: {
                         display: false,
@@ -324,7 +326,7 @@
         gradientFill.addColorStop(1, "#6b8ee0");
 
         var chartData = {
-        labels : [{% for item in betaDataAvgTimestampDuals %}
+        labels : [{% for item in dateRangeDuals %}
                      "{{ item }}",
                  {% endfor %}],
         datasets : [{
@@ -373,7 +375,7 @@
                     }
             },
             animation: {
-                easing: "linear"
+                duration: 0,
                 },
             legend: {
                 position: "top",
@@ -388,7 +390,7 @@
                     ticks: {
                         fontSize: 10,
                         autoSkip: true,
-                        maxTicksLimit: 8,
+                        maxTicksLimit: 5,
                         suggestedMax: {{ (betaDataAvgDuals[-1]*1.0005)|round }},
                         scaleLabel: "padding",
                         fontColor: "hsl(208, 7%, 46%)",
@@ -405,12 +407,14 @@
                 }],
                 xAxes: [{
                     ticks: {
+                        padding: 5,
                         fontSize: 10,
-                        stepSize: 100,
                         autoSkip: true,
-                        maxTicksLimit: 8,
+                        maxTicksLimit: 7,
                         scaleLabel: "<%= ' ' + value%>",
                         fontColor: "hsl(208, 7%, 46%)",
+                        maxRotation: 0,
+                        minRotation: 0
                         },
                     gridLines: {
                         display: false,
@@ -429,7 +433,7 @@
         // define the chart data
 
         var chartData = {
-        labels : [{% for item in betaDataCountTimestampPower %}
+        labels : [{% for item in dateRange %}
                     "{{item}}",
                     {% endfor %}],
         datasets : [{
@@ -478,7 +482,7 @@
                     }
             },
             animation: {
-                easing: "linear"
+                duration: 0,
                 },
             legend: {
                 position: "top",
@@ -493,7 +497,7 @@
                     ticks: {
                         fontSize: 10,
                         autoSkip: true,
-                        maxTicksLimit: 8,
+                        maxTicksLimit: 5,
                         suggestedMax: {{ (betaDataCountPower[-1]*1.0005)|round }},
                         scaleLabel: "padding",
                         fontColor: "hsl(208, 7%, 46%)",
@@ -507,12 +511,14 @@
                 }],
                 xAxes: [{
                     ticks: {
+                        padding: 5,
                         fontSize: 10,
-                        stepSize: 100,
                         autoSkip: true,
-                        maxTicksLimit: 8,
+                        maxTicksLimit: 7,
                         scaleLabel: "<%= ' ' + value%>",
                         fontColor: "hsl(208, 7%, 46%)",
+                        maxRotation: 0,
+                        minRotation: 0
                         },
                     gridLines: {
                         display: false,
@@ -531,7 +537,7 @@
         // define the chart data
 
         var chartData = {
-        labels : [{% for item in betaDataCountTimestampDuals %}
+        labels : [{% for item in dateRangeDuals %}
                     "{{item}}",
                     {% endfor %}],
         datasets : [{
@@ -580,7 +586,7 @@
                     }
             },
             animation: {
-                easing: "linear"
+                duration: 0,
                 },
             legend: {
                 position: "top",
@@ -595,7 +601,7 @@
                     ticks: {
                         fontSize: 10,
                         autoSkip: true,
-                        maxTicksLimit: 8,
+                        maxTicksLimit: 5,
                         suggestedMax: {{ (betaDataCountDuals[-1]*1.0005)|round }},
                         scaleLabel: "padding",
                         fontColor: "hsl(208, 7%, 46%)",
@@ -609,12 +615,14 @@
                 }],
                 xAxes: [{
                     ticks: {
+                        padding: 5,
                         fontSize: 10,
-                        stepSize: 100,
                         autoSkip: true,
-                        maxTicksLimit: 8,
+                        maxTicksLimit: 7,
                         scaleLabel: "<%= ' ' + value%>",
                         fontColor: "hsl(208, 7%, 46%)",
+                        maxRotation: 0,
+                        minRotation: 0
                         },
                     gridLines: {
                         display: false,
@@ -633,7 +641,7 @@
         // define the chart data
 
         var chartData = {
-        labels : [{% for item in betaDataLengthTimestampPower %}
+        labels : [{% for item in dateRange %}
                     "{{item}}",
                     {% endfor %}],
         datasets : [{
@@ -682,7 +690,7 @@
                     }
             },
             animation: {
-                easing: "linear"
+                duration: 0,
                 },
             legend: {
                 position: "top",
@@ -697,7 +705,7 @@
                     ticks: {
                         fontSize: 10,
                         autoSkip: true,
-                        maxTicksLimit: 8,
+                        maxTicksLimit: 5,
                         suggestedMax: {{ (betaDataLengthPower[-1]*1.0005)|round }},
                         scaleLabel: "padding",
                         fontColor: "hsl(208, 7%, 46%)",
@@ -711,12 +719,14 @@
                 }],
                 xAxes: [{
                     ticks: {
+                        padding: 5,
                         fontSize: 10,
-                        stepSize: 100,
                         autoSkip: true,
-                        maxTicksLimit: 8,
+                        maxTicksLimit: 7,
                         scaleLabel: "<%= ' ' + value%>",
                         fontColor: "hsl(208, 7%, 46%)",
+                        maxRotation: 0,
+                        minRotation: 0
                         },
                     gridLines: {
                         display: false,
@@ -735,7 +745,7 @@
         // define the chart data
 
         var chartData = {
-        labels : [{% for item in betaDataLengthTimestampDuals %}
+        labels : [{% for item in dateRangeDuals %}
                     "{{item}}",
                     {% endfor %}],
         datasets : [{
@@ -784,7 +794,7 @@
                     }
             },
             animation: {
-                easing: "linear"
+                duration: 0,
                 },
             legend: {
                 position: "top",
@@ -799,7 +809,7 @@
                     ticks: {
                         fontSize: 10,
                         autoSkip: true,
-                        maxTicksLimit: 8,
+                        maxTicksLimit: 5,
                         suggestedMax: {{ (betaDataLengthDuals[-1]*1.0005)|round }},
                         scaleLabel: "padding",
                         fontColor: "hsl(208, 7%, 46%)",
@@ -813,12 +823,14 @@
                 }],
                 xAxes: [{
                     ticks: {
+                        padding: 5,
                         fontSize: 10,
-                        stepSize: 100,
                         autoSkip: true,
-                        maxTicksLimit: 8,
+                        maxTicksLimit: 7,
                         scaleLabel: "<%= ' ' + value%>",
                         fontColor: "hsl(208, 7%, 46%)",
+                        maxRotation: 0,
+                        minRotation: 0
                         },
                     gridLines: {
                         display: false,
@@ -838,7 +850,7 @@
 
         var chartData = {
             labels : [
-                    {% for item in betaDataCumulativeTimestampPower %}
+                    {% for item in dateRange %}
                         "{{item}}",
                     {% endfor %}],
         datasets : [{
@@ -887,7 +899,7 @@
                     }
             },
             animation: {
-                easing: "linear"
+                duration: 0,
                 },
             legend: {
                 position: "top",
@@ -902,7 +914,7 @@
                     ticks: {
                         fontSize: 10,
                         autoSkip: true,
-                        maxTicksLimit: 8,
+                        maxTicksLimit: 5,
                         suggestedMax: {{ (betaDataCumulativePricePower[0]*1.0005)|round }},
                         scaleLabel: "padding",
                         fontColor: "hsl(208, 7%, 46%)",// Include a dollar sign on the y-axis tick numbers
@@ -918,12 +930,14 @@
                 }],
                 xAxes: [{
                     ticks: {
+                        padding: 5,
                         fontSize: 10,
-                        stepSize: 100,
                         autoSkip: true,
-                        maxTicksLimit: 8,
+                        maxTicksLimit: 7,
                         scaleLabel: "<%= ' ' + value%>",
                         fontColor: "hsl(208, 7%, 46%)",
+                        maxRotation: 0,
+                        minRotation: 0
                         },
                     gridLines: {
                         display: false,
@@ -943,7 +957,7 @@
 
         var chartData = {
             labels : [
-                    {% for item in betaDataCumulativeTimestampDuals %}
+                    {% for item in dateRangeDuals %}
                         "{{item}}",
                     {% endfor %}],
         datasets : [{
@@ -992,7 +1006,7 @@
                     }
             },
             animation: {
-                easing: "linear"
+                duration: 0,
                 },
             legend: {
                 position: "top",
@@ -1007,7 +1021,7 @@
                     ticks: {
                         fontSize: 10,
                         autoSkip: true,
-                        maxTicksLimit: 8,
+                        maxTicksLimit: 5,
                         suggestedMax: {{ (betaDataCumulativePriceDuals[0]*1.0005)|round }},
                         scaleLabel: "padding",
                         fontColor: "hsl(208, 7%, 46%)",
@@ -1024,12 +1038,14 @@
                 }],
                 xAxes: [{
                     ticks: {
+                        padding: 5,
                         fontSize: 10,
-                        stepSize: 100,
                         autoSkip: true,
-                        maxTicksLimit: 8,
+                        maxTicksLimit: 7,
                         scaleLabel: "<%= ' ' + value%>",
                         fontColor: "hsl(208, 7%, 46%)",
+                        maxRotation: 0,
+                        minRotation: 0
                         },
                     gridLines: {
                         display: false,

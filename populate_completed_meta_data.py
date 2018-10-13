@@ -1,6 +1,6 @@
 import pandas as pd
 from db_queries import fetch_data, get_trace_and_log, prune_completed
-from gen_utils import database_connection
+from gen_utils import database_connection, get_search_words, POWER_CONFIG, DUALS_CONFIG
 
 def generate_stat_history(setCheck, boolCheck):
     dataArray = []
@@ -107,98 +107,81 @@ def insert_index(cursor, mtgArray):
             except Exception as e:
                 get_trace_and_log(e)
 
-powerConfig = {
-    'Alpha': 'Power',
-    'Beta': 'Power',
-    'Unlimited': 'Power',
-}
-dualsConfig = {
-    'Alpha': 'Duals',
-    'Beta': 'Duals',
-    'Unlimited': 'Duals',
-    'Revised': 'Duals'
-}
-
 def pipe_duals_stats():
     # generate `cursor` (used to execute db queries)
     cursor = database_connection()
-    # iterate over `dualsConfig` and pipe each nested array.
-    for each in dualsConfig:
-        print(f"Pulling {dualsConfig[each]} from {each}")
-        dualsArray = generate_stat_history(setCheck=each, boolCheck=dualsConfig[each])
+    # iterate over `DUALS_CONFIG` and pipe each nested array.
+    for each in DUALS_CONFIG:
+        print(f"Pulling {DUALS_CONFIG[each]} from {each}")
+        dualsArray = generate_stat_history(setCheck=each, boolCheck=DUALS_CONFIG[each])
         if len(dualsArray) > 0:
             print(f"Piping nested arrays")
             insert_stats(cursor=cursor, mtgArray=dualsArray)
 
 def pipe_power_stats():
     cursor = database_connection()
-    for each in powerConfig:
-        print(f"Pulling {powerConfig[each]} from {each}")
-        powerArray = generate_stat_history(setCheck=each, boolCheck=powerConfig[each])
+    for each in POWER_CONFIG:
+        print(f"Pulling {POWER_CONFIG[each]} from {each}")
+        powerArray = generate_stat_history(setCheck=each, boolCheck=POWER_CONFIG[each])
         if len(powerArray) > 0:
             print(f"Piping nested arrays")
             insert_stats(cursor=cursor, mtgArray=powerArray)
 
 def pipe_duals_index():
     cursor = database_connection()
-    for each in dualsConfig:
+    for each in DUALS_CONFIG:
         if each == 'Alpha':
-            print(f"Forming {dualsConfig[each]} index from {each} stats")
-            dualsArray = generate_index_history(setCheck=each, setId=4, boolCheck=dualsConfig[each])
+            print(f"Forming {DUALS_CONFIG[each]} index from {each} stats")
+            dualsArray = generate_index_history(setCheck=each, setId=4, boolCheck=DUALS_CONFIG[each])
             if len(dualsArray) > 0:
                 print(f"Piping nested arrays")
                 insert_index(cursor=cursor, mtgArray=dualsArray)
         elif each == 'Beta':
-            print(f"Forming {dualsConfig[each]} index from {each} stats")
-            dualsArray = generate_index_history(setCheck=each, setId=5, boolCheck=dualsConfig[each])
+            print(f"Forming {DUALS_CONFIG[each]} index from {each} stats")
+            dualsArray = generate_index_history(setCheck=each, setId=5, boolCheck=DUALS_CONFIG[each])
             if len(dualsArray) > 0:
                 print(f"Piping nested arrays")
                 insert_index(cursor=cursor, mtgArray=dualsArray)
         elif each == 'Unlimited':
-            print(f"Forming {dualsConfig[each]} index from {each} stats")
-            dualsArray = generate_index_history(setCheck=each, setId=6, boolCheck=dualsConfig[each])
+            print(f"Forming {DUALS_CONFIG[each]} index from {each} stats")
+            dualsArray = generate_index_history(setCheck=each, setId=6, boolCheck=DUALS_CONFIG[each])
             if len(dualsArray) > 0:
                 print(f"Piping nested arrays")
                 insert_index(cursor=cursor, mtgArray=dualsArray)
         elif each == 'Revised':
-            print(f"Forming {dualsConfig[each]} index from {each} stats")
-            dualsArray = generate_index_history(setCheck=each, setId=7, boolCheck=dualsConfig[each])
+            print(f"Forming {DUALS_CONFIG[each]} index from {each} stats")
+            dualsArray = generate_index_history(setCheck=each, setId=7, boolCheck=DUALS_CONFIG[each])
             if len(dualsArray) > 0:
                 print(f"Piping nested arrays")
                 insert_index(cursor=cursor, mtgArray=dualsArray)
 
 def pipe_power_index():
     cursor = database_connection()
-    for each in powerConfig:
+    for each in POWER_CONFIG:
         if each == 'Alpha':
-            print(f"Pulling {powerConfig[each]} from {each} stats")
-            powerArray = generate_index_history(setCheck=each, setId=1, boolCheck=powerConfig[each])
+            print(f"Pulling {POWER_CONFIG[each]} from {each} stats")
+            powerArray = generate_index_history(setCheck=each, setId=1, boolCheck=POWER_CONFIG[each])
             if len(powerArray) > 0:
                 print(f"Piping nested arrays")
                 insert_index(cursor=cursor, mtgArray=powerArray)
         elif each == 'Beta':
-            print(f"Pulling {powerConfig[each]} from {each} stats")
-            powerArray = generate_index_history(setCheck=each, setId=2, boolCheck=powerConfig[each])
+            print(f"Pulling {POWER_CONFIG[each]} from {each} stats")
+            powerArray = generate_index_history(setCheck=each, setId=2, boolCheck=POWER_CONFIG[each])
             if len(powerArray) > 0:
                 print(f"Piping nested arrays")
                 insert_index(cursor=cursor, mtgArray=powerArray)
         elif each == 'Unlimited':
-            print(f"Pulling {powerConfig[each]} from {each} stats")
-            powerArray = generate_index_history(setCheck=each, setId=3, boolCheck=powerConfig[each])
+            print(f"Pulling {POWER_CONFIG[each]} from {each} stats")
+            powerArray = generate_index_history(setCheck=each, setId=3, boolCheck=POWER_CONFIG[each])
             if len(powerArray) > 0:
                 print(f"Piping nested arrays")
                 insert_index(cursor=cursor, mtgArray=powerArray)
 
 def prune_db(cursor):
-     # prune completed_products before making any further calculations (averages, etc.)
-    words = ['Alpha Black Lotus', 'Alpha Mox Sapphire', 'Alpha Mox Jet', 'Alpha Mox Pearl', 'Alpha Mox Ruby', 'Alpha Mox Emerald', 'Alpha Timetwister', 'Alpha Ancestral Recall', 'Alpha Time Walk',
-                'Beta Black Lotus MTG', 'Beta Mox Sapphire', 'Beta Mox Jet', 'Beta Mox Pearl', 'Beta Mox Ruby', 'Beta Mox Emerald', 'Beta Timetwister', 'Beta Ancestral Recall', 'Beta Time Walk',
-                'Unlimited Black Lotus MTG', 'Unlimited Mox Sapphire', 'Unlimited Mox Jet', 'Unlimited Mox Pearl', 'Unlimited Mox Ruby', 'Unlimited Mox Emerald', 'Unlimited Timetwister', 'Unlimited Ancestral Recall', 'Unlimited Time Walk',
-                'Alpha Tundra MTG', 'Alpha Underground Sea MTG', 'Alpha Badlands MTG', 'Alpha Taiga MTG', 'Alpha Savannah MTG', 'Alpha Scrubland MTG', 'Alpha Volcanic Island MTG', 'Alpha Bayou MTG', 'Alpha Plateau MTG', 'Alpha Tropical Island MTG',
-                'Beta Tundra MTG', 'Beta Underground Sea MTG', 'Beta Badlands MTG', 'Beta Taiga MTG', 'Beta Savannah MTG', 'Beta Scrubland MTG', 'Beta Volcanic Island MTG', 'Beta Bayou MTG', 'Beta Plateau MTG', 'Beta Tropical Island MTG',
-                'Unlimited Tundra MTG', 'Unlimited Underground Sea MTG', 'Unlimited Badlands MTG', 'Unlimited Taiga MTG', 'Unlimited Savannah MTG', 'Unlimited Scrubland MTG', 'Unlimited Volcanic Island MTG', 'Unlimited Bayou MTG', 'Unlimited Plateau MTG', 'Unlimited Tropical Island MTG',
-                'Revised Tundra MTG', 'Revised Underground Sea MTG', 'Revised Badlands MTG', 'Revised Taiga MTG', 'Revised Savannah MTG', 'Revised Scrubland MTG', 'Revised Volcanic Island MTG', 'Revised Bayou MTG', 'Revised Plateau MTG', 'Revised Tropical Island MTG',
-                'Alpha Time Vault MTG', 'Beta Time Vault MTG', 'Unlimited Time Vault MTG']
+    """(cursor) -> ()
+
+    Prunes active_products before making any further calculations (averages, etc.)"""
+    words = get_search_words()
     # words = ['Revised Tundra MTG']
     for value in words:
         print(f'Pruning {value}....')

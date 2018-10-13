@@ -1,6 +1,6 @@
 import pandas as pd
 from db_queries import fetch_data, get_trace_and_log
-from gen_utils import database_connection
+from gen_utils import database_connection, POWER_CONFIG, DUALS_CONFIG
 
 def generate_stat_history(setCheck, historyRange, boolCheck):
     dataArray = []
@@ -115,93 +115,81 @@ def insert_index(cursor, mtgArray):
             except Exception as e:
                 get_trace_and_log(e)
 
-powerConfig = {
-    'Alpha': 'Power',
-    'Beta': 'Power',
-    'Unlimited': 'Power',
-}
-dualsConfig = {
-    'Alpha': 'Duals',
-    'Beta': 'Duals',
-    'Unlimited': 'Duals',
-    'Revised': 'Duals'
-}
-
 def pipe_duals_stats():
     # generate `cursor` (used to execute db queries)
     cursor = database_connection()
-    # iterate over `dualsConfig` and pipe each nested array.
-    for each in dualsConfig:
-        print(f"Pulling {dualsConfig[each]} from {each}")
-        dualsArray = generate_stat_history(setCheck=each, historyRange=91, boolCheck=dualsConfig[each])
+    # iterate over `DUALS_CONFIG` and pipe each nested array.
+    for each in DUALS_CONFIG:
+        print(f"Pulling {DUALS_CONFIG[each]} from {each}")
+        dualsArray = generate_stat_history(setCheck=each, historyRange=91, boolCheck=DUALS_CONFIG[each])
         if len(dualsArray) > 0:
             print(f"Piping nested arrays")
             insert_stats(cursor=cursor, mtgArray=dualsArray)
 
 def pipe_power_stats():
     cursor = database_connection()
-    for each in powerConfig:
-        print(f"Pulling {powerConfig[each]} from {each}")
-        powerArray = generate_stat_history(setCheck=each, historyRange=91, boolCheck=powerConfig[each])
+    for each in POWER_CONFIG:
+        print(f"Pulling {POWER_CONFIG[each]} from {each}")
+        powerArray = generate_stat_history(setCheck=each, historyRange=91, boolCheck=POWER_CONFIG[each])
         if len(powerArray) > 0:
             print(f"Piping nested arrays")
             insert_stats(cursor=cursor, mtgArray=powerArray)
 
 def pipe_duals_index():
     cursor = database_connection()
-    for each in dualsConfig:
+    for each in DUALS_CONFIG:
         if each == 'Alpha':
-            print(f"Forming {dualsConfig[each]} index from {each} stats")
-            dualsArray = generate_index_history(setCheck=each, setId=4, historyRange=91, boolCheck=dualsConfig[each])
+            print(f"Forming {DUALS_CONFIG[each]} index from {each} stats")
+            dualsArray = generate_index_history(setCheck=each, setId=4, historyRange=91, boolCheck=DUALS_CONFIG[each])
             if len(dualsArray) > 0:
                 print(f"Piping nested arrays")
                 insert_index(cursor=cursor, mtgArray=dualsArray)
         elif each == 'Beta':
-            print(f"Forming {dualsConfig[each]} index from {each} stats")
-            dualsArray = generate_index_history(setCheck=each, setId=5, historyRange=91, boolCheck=dualsConfig[each])
+            print(f"Forming {DUALS_CONFIG[each]} index from {each} stats")
+            dualsArray = generate_index_history(setCheck=each, setId=5, historyRange=91, boolCheck=DUALS_CONFIG[each])
             if len(dualsArray) > 0:
                 print(f"Piping nested arrays")
                 insert_index(cursor=cursor, mtgArray=dualsArray)
         elif each == 'Unlimited':
-            print(f"Forming {dualsConfig[each]} index from {each} stats")
-            dualsArray = generate_index_history(setCheck=each, setId=6, historyRange=91, boolCheck=dualsConfig[each])
+            print(f"Forming {DUALS_CONFIG[each]} index from {each} stats")
+            dualsArray = generate_index_history(setCheck=each, setId=6, historyRange=91, boolCheck=DUALS_CONFIG[each])
             if len(dualsArray) > 0:
                 print(f"Piping nested arrays")
                 insert_index(cursor=cursor, mtgArray=dualsArray)
         elif each == 'Revised':
-            print(f"Forming {dualsConfig[each]} index from {each} stats")
-            dualsArray = generate_index_history(setCheck=each, setId=7, historyRange=91, boolCheck=dualsConfig[each])
+            print(f"Forming {DUALS_CONFIG[each]} index from {each} stats")
+            dualsArray = generate_index_history(setCheck=each, setId=7, historyRange=91, boolCheck=DUALS_CONFIG[each])
             if len(dualsArray) > 0:
                 print(f"Piping nested arrays")
                 insert_index(cursor=cursor, mtgArray=dualsArray)
 
 def pipe_power_index():
     cursor = database_connection()
-    for each in powerConfig:
+    for each in POWER_CONFIG:
         if each == 'Alpha':
-            print(f"Pulling {powerConfig[each]} from {each} stats")
-            powerArray = generate_index_history(setCheck=each, setId=1, historyRange=91, boolCheck=powerConfig[each])
+            print(f"Pulling {POWER_CONFIG[each]} from {each} stats")
+            powerArray = generate_index_history(setCheck=each, setId=1, historyRange=91, boolCheck=POWER_CONFIG[each])
             if len(powerArray) > 0:
                 print(f"Piping nested arrays")
                 insert_index(cursor=cursor, mtgArray=powerArray)
         elif each == 'Beta':
-            print(f"Pulling {powerConfig[each]} from {each} stats")
-            powerArray = generate_index_history(setCheck=each, setId=2, historyRange=91, boolCheck=powerConfig[each])
+            print(f"Pulling {POWER_CONFIG[each]} from {each} stats")
+            powerArray = generate_index_history(setCheck=each, setId=2, historyRange=91, boolCheck=POWER_CONFIG[each])
             if len(powerArray) > 0:
                 print(f"Piping nested arrays")
                 insert_index(cursor=cursor, mtgArray=powerArray)
         elif each == 'Unlimited':
-            print(f"Pulling {powerConfig[each]} from {each} stats")
-            powerArray = generate_index_history(setCheck=each, setId=3, historyRange=91, boolCheck=powerConfig[each])
+            print(f"Pulling {POWER_CONFIG[each]} from {each} stats")
+            powerArray = generate_index_history(setCheck=each, setId=3, historyRange=91, boolCheck=POWER_CONFIG[each])
             if len(powerArray) > 0:
                 print(f"Piping nested arrays")
                 insert_index(cursor=cursor, mtgArray=powerArray)
 
 
 if __name__ == '__main__':
-    inputCheck = input('Beginning batch historical fetch -- are you sure you want to proceed?: ')
+    inputCheck = input('Beginning ONE TIME batch historical fetch -- are you sure you want to proceed?: ')
     if inputCheck in ('Y', 'y'):
-        print('I understand. Beggining batch historical fetch.')
+        print('I understand. Beggining one time batch historical fetch.')
         print()
         # begin piping stats
         pipe_power_stats()

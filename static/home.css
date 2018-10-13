@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Fira+Sans");
+@import url("https://fonts.googleapis.com/css?family=K2D");
 @-ms-viewport {
   width: device-width;
   zoom: 1.0;
@@ -29,7 +29,7 @@ body {
   margin: 0;
   background: #eee;
   color: #111;
-  font-family: 'Fira Sans', sans-serif;
+  font-family: 'K2D';
   font-size: 1.6rem;
   font-weight: normal;
   line-height: 1.6;
@@ -138,7 +138,7 @@ form input {
 }
 
 form input:focus {
-  border: 0.2rem solid linear-gradient(135deg, #CE9FFC 10%, #7367F0 100%);
+  border: 0.2rem solid linear-gradient(135deg, #3B2667 10%, #BC78EC 100%);
 }
 
 form button {
@@ -207,7 +207,7 @@ ul.nav a {
 }
 
 .bg-prm {
-  background: linear-gradient(135deg, #CE9FFC 10%, #7367F0 100%);
+  background: linear-gradient(135deg, #3B2667 10%, #BC78EC 100%);
 }
 
 .icon a,
@@ -216,12 +216,12 @@ ul.nav a {
 }
 
 .icon a:hover {
-  color: linear-gradient(135deg, #CE9FFC 10%, #7367F0 100%);
+  color: linear-gradient(135deg, #3B2667 10%, #BC78EC 100%);
 }
 
 i.fas.fa-hand-holding-usd, i.fas.fa-box-open, i.fas.fa-ruler, i.fas.fa-bell, i.fas.fa-cart-plus {
-  font-size: 1.5em;
-  padding-top: 5%;
+  font-size: 1.65em;
+  padding-top: 10%;
   text-align: center !important;
 }
 
@@ -258,7 +258,7 @@ i.fab.fa-github:hover {
 
 #banner {
   padding: 16rem 2rem;
-  background: linear-gradient(135deg, #CE9FFC 10%, #7367F0 100%);
+  background: linear-gradient(135deg, #3B2667 10%, #BC78EC 100%);
   color: #eee;
 }
 
@@ -280,7 +280,7 @@ i.fab.fa-github:hover {
 
 #banner button:hover {
   background: #eee;
-  color: linear-gradient(135deg, #CE9FFC 10%, #7367F0 100%);
+  color: linear-gradient(135deg, #3B2667 10%, #BC78EC 100%);
 }
 
 #feat {
@@ -324,7 +324,6 @@ i.fab.fa-github:hover {
 
 .search-box {
   position: absolute;
-  top: 70%;
   left: 50%;
   -webkit-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
@@ -381,125 +380,7 @@ i.fab.fa-github:hover {
   width: 0px;
 }
 
-.search-box {
-  position: absolute;
-  top: 70%;
-  left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-          transform: translate(-50%, -50%);
-  background: #fff;
-  height: 56px;
-  border-radius: 78px;
-  padding: 10px;
-}
-
-.search-box:hover .s-box {
-  width: 240px;
-  padding: 0 6px;
-}
-
-.search-box:hover .s-btn {
-  background: #fff;
-}
-
-.search-box .s-btn {
-  color: #7367F0;
-  float: right;
-  width: 40px;
-  height: 40px;
-  -webkit-transition: .4s;
-  transition: .4s;
-  border-radius: 50%;
-  background: #fff;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-}
-
-.search-box .s-btn i {
-  font-size: 20px;
-}
-
-.search-box .s-box {
-  border: none;
-  background: none;
-  outline: none;
-  float: left;
-  padding: 0;
-  color: #7367F0;
-  font-size: 16px;
-  -webkit-transition: .5s;
-  transition: .5s;
-  line-height: 40px;
-  width: 0px;
-}
-
-.search-box {
-  position: absolute;
-  top: 70%;
-  left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-          transform: translate(-50%, -50%);
-  background: #fff;
-  height: 56px;
-  border-radius: 78px;
-  padding: 10px;
-}
-
-.search-box:hover .s-box {
-  width: 240px;
-  padding: 0 6px;
-}
-
-.search-box:hover .s-btn {
-  background: #fff;
-}
-
-.search-box .s-btn {
-  color: #7367F0;
-  float: right;
-  width: 40px;
-  height: 40px;
-  -webkit-transition: .4s;
-  transition: .4s;
-  border-radius: 50%;
-  background: #fff;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-}
-
-.search-box .s-btn i {
-  font-size: 20px;
-}
-
-.search-box .s-box {
-  border: none;
-  background: none;
-  outline: none;
-  float: left;
-  padding: 0;
-  color: #7367F0;
-  font-size: 16px;
-  -webkit-transition: .5s;
-  transition: .5s;
-  line-height: 40px;
-  width: 0px;
-}
-
-.nav-search-box {
+.search-box-nav {
   position: absolute;
   left: 85%;
   -webkit-transform: translate(-50%, -50%);
@@ -510,16 +391,16 @@ i.fab.fa-github:hover {
   padding: 10px;
 }
 
-.nav-search-box:hover .s-box {
+.search-box-nav:hover .s-box {
   width: 240px;
   padding: 0 6px;
 }
 
-.nav-search-box:hover .s-btn {
+.search-box-nav:hover .s-btn {
   background: #fff;
 }
 
-.nav-search-box .s-btn {
+.search-box-nav .s-btn {
   margin-top: -16% !important;
   color: #7367F0;
   float: right;
@@ -538,15 +419,13 @@ i.fab.fa-github:hover {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  margin-top: -3%;
 }
 
-.nav-search-box .s-btn i {
+.search-box-nav .s-btn i {
   font-size: 20px;
 }
 
-.nav-search-box .s-box {
-  margin-top: 0% !important;
+.search-box-nav .s-box {
   border: none;
   background: none;
   outline: none;
@@ -563,11 +442,11 @@ i.fab.fa-github:hover {
 .container-fluid {
   padding-top: 1%;
   padding-bottom: 1%;
-  background: linear-gradient(135deg, #CE9FFC 10%, #7367F0 100%);
+  background: linear-gradient(135deg, #3B2667 10%, #BC78EC 100%);
 }
 
 .dualsNotifier {
-  color: #3a4750;
+  color: white;
 }
 
 .indexDualsThumb {
@@ -586,7 +465,6 @@ i.fab.fa-github:hover {
 
 .subTitleImageIndividual, .subTitleImageIndex {
   border-radius: 50%;
-  border: 1px solid #3a4750;
   -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
           box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
   -webkit-transition: all .2s ease-in-out;
@@ -618,6 +496,17 @@ img.activeImageThumbnail:hover {
           transform: scale(1.15);
   -webkit-transition: all .3s ease-in-out;
   transition: all .3s ease-in-out;
+}
+
+a#alphaVolcanicThumb {
+  -webkit-filter: grayscale(100%);
+  /* Safari 6.0 - 9.0 */
+  filter: grayscale(100%);
+}
+
+a#alphaVolcanicThumb:hover {
+  -webkit-transform: none;
+          transform: none;
 }
 
 .card-container {
@@ -685,7 +574,7 @@ span#cardGeneralPercentChange {
 
 .cardActivityLength, span.cardGeneralLength {
   font-weight: bold;
-  color: #7367F0;
+  color: #c421c4 !important;
 }
 
 .cardActivityDepth {
@@ -735,17 +624,24 @@ table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:after, 
   opacity: 0;
 }
 
-@media (max-width: 1240px) {
-  .search-box {
-    top: 110%;
-  }
+.individual-card-title {
+  font-weight: normal;
+}
+
+.individual-card-text {
+  font-weight: bold;
+  font-size: 1.25em !important;
+  padding-bottom: 0%;
+}
+
+@media (min-width: 1230px) {
   .nav-search-box {
     display: none;
   }
 }
 
-@media (max-width: 600px) {
-  .search-box {
+@media (max-width: 1000px) {
+  .search-box-nav {
     display: none;
   }
 }

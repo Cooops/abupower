@@ -8,7 +8,7 @@ def create_tables():
     commands = (
         """
         CREATE TABLE active_products(
-            primary_ids SERIAL PRIMARY KEY,
+            primary_ids SERIAL PRIMARY KEY UNIQUE,
             active_product_nick VARCHAR(255) NOT NULL,
             active_product_titles VARCHAR(255) NOT NULL,
             active_product_ids BIGSERIAL NOT NULL UNIQUE,
@@ -28,7 +28,7 @@ def create_tables():
         """,
         """
         CREATE TABLE completed_products(
-            primary_ids SERIAL PRIMARY KEY,
+            primary_ids SERIAL PRIMARY KEY UNIQUE,
             completed_product_nick VARCHAR(255) NOT NULL,
             completed_product_titles VARCHAR(255) NOT NULL,
             completed_product_ids BIGSERIAL NOT NULL UNIQUE,
@@ -94,7 +94,8 @@ def create_tables():
            active_product_index_count_sum INT,
            active_product_index_sum FLOAT,
            timestamp timestamp default current_timestamp)
-        """)
+        """,
+        )
     conn = None
     try:
         cur = database_connection()
