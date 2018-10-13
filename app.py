@@ -1,10 +1,13 @@
+# -*- coding: utf-8 -*-
+import sys
+sys.path.append('/home/coopes/abupower/abupowerenv/lib/python3.6/site-packages')
 from flask import Flask, jsonify, request, render_template, make_response, redirect, url_for
 from flask_restful import Resource, Api
 from build_dataframes import *
 import json
 from jinja2 import Template
 import requests
-from gen_utils import fetch_data
+from gen_utils import *
 
 ##############################
 # assign global Flask values #
@@ -80,6 +83,20 @@ def get_premiums():
             'unlimitedToAlpha': unlimitedToAlphaPremium,
             'unlimitedToBeta': unlimitedToBetaPremium,}
 
+def calc_index_avg():
+    alphaIndexDataAvg = list(df_alphaAvgAllPower['completed_product_index_avg'])
+    betaIndexDataAvg = list(df_betaAvgAllPower['completed_product_index_avg'])
+    unlimitedIndexDataAvg = list(df_unlimitedAvgAllPower['completed_product_index_avg'])
+    metaIndexDominanceTimestamp = list(df_unlimitedAvgAllPower['timestamp'].values)
+
+    metaIndexSubtotal = [a + b + c for a, b, c in zip(alphaIndexDataAvg, betaIndexDataAvg, unlimitedIndexDataAvg)]
+    alphaIndexDominanceLevel = [(a / b) * 100 for a, b in zip(alphaIndexDataAvg, metaIndexSubtotal)]
+    betaIndexDominanceLevel = [(a / b) * 100 for a, b in zip(betaIndexDataAvg, metaIndexSubtotal)]
+    unlimitedIndexDominanceLevel = [(a / b) * 100 for a, b in zip(unlimitedIndexDataAvg, metaIndexSubtotal)]
+    metaIndexDominanceTimestamp = [str(each).split(',')[0] for each in metaIndexDominanceTimestamp]
+
+    return alphaIndexDominanceLevel, betaIndexDominanceLevel, unlimitedIndexDominanceLevel, metaIndexDominanceTimestamp
+    
 #TODO: can i move this into the function in an easy manner -- just pass as an argument perhaps? @ 9/24/2018
 # definitely do a write up on the speed difference between sending infinite queries vs 'caching' them w/
 # memoization, as it increases the speed _tenfold_
@@ -342,20 +359,6 @@ def clean_to_json(dataframe, apiValue):
                 )
         return json.dumps(jsonList)
 
-def calc_index_avg():
-    alphaIndexDataAvg = list(df_alphaAvgAllPower['completed_product_index_avg'])
-    betaIndexDataAvg = list(df_betaAvgAllPower['completed_product_index_avg'])
-    unlimitedIndexDataAvg = list(df_unlimitedAvgAllPower['completed_product_index_avg'])
-    metaIndexDominanceTimestamp = list(df_unlimitedAvgAllPower['timestamp'].values)
-
-    metaIndexSubtotal = [a + b + c for a, b, c in zip(alphaIndexDataAvg, betaIndexDataAvg, unlimitedIndexDataAvg)]
-    alphaIndexDominanceLevel = [(a / b) * 100 for a, b in zip(alphaIndexDataAvg, metaIndexSubtotal)]
-    betaIndexDominanceLevel = [(a / b) * 100 for a, b in zip(betaIndexDataAvg, metaIndexSubtotal)]
-    unlimitedIndexDominanceLevel = [(a / b) * 100 for a, b in zip(unlimitedIndexDataAvg, metaIndexSubtotal)]
-    metaIndexDominanceTimestamp = [str(each).split(',')[0] for each in metaIndexDominanceTimestamp]
-
-    return alphaIndexDominanceLevel, betaIndexDominanceLevel, unlimitedIndexDominanceLevel, metaIndexDominanceTimestamp
-
 # begin global legend variables
 legend = 'Index (average)'
 powerLegend = 'P9 Index (average)'
@@ -377,7 +380,7 @@ def renderIndividualAlphaCardPower(cardName):
     countLegend = 'Total Sold (listings)'
     sumLegend = 'Cumulative Sales (gross)'
     spotLegend = 'Spot Price'
-    depthLegend = 'Active Depth'
+    depthLegend = 'Active Listings'
     headers = {'Content-Type': 'text/html'}
     modName = cardName.replace('%20', ' ').replace('-', ' ').split(' ')
     wordLength = len(modName)
@@ -394,6 +397,7 @@ def renderIndividualAlphaCardPower(cardName):
     cardEndIndividual = list(df_allDataIndividual['enddate'])
     cardEndMonthIndividual = list(df_allDataIndividual['month'])
     cardEndDayIndividual = list(df_allDataIndividual['day'])
+    cardTimestampIndividual = list(df_allDataIndividual['timestamp'])
     cardDateIndividual = [f'{str(x).rstrip()} {float(str(y).lstrip()):.0f}' for x, y in zip(cardEndMonthIndividual, cardEndDayIndividual)]
     ######################
     # begin stats schema #
@@ -413,7 +417,7 @@ def renderIndividualAlphaCardPower(cardName):
     # cardStatsSumIndividual = list(df_allStatsIndividual['active_product_sum'])
     cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
     # fetch JSON data from api endpoint
-    url = "http://127.0.0.1:8050/api/alpha/power/table"
+    url = "https://www.abupower.com/api/alpha/power/table"
     # json_data = requests.get(url, timeout=15).json()
     json_data = requests.get(url).json()
     x = json_data['results']
@@ -426,14 +430,25 @@ def renderIndividualAlphaCardPower(cardName):
     lengthChange = [i['lengthChange'] for i in x if modCardName == i['nick']]
     cumSum = [i['cumSum'] for i in x if modCardName == i['nick']]
     cumSumChange = [i['sumChange'] for i in x if modCardName == i['nick']]
+    # begin modified dateRange (when piping the historical data we didn't properly document the dates)
+    periodLength = len(cardStatsTimestampIndividual)
+    dateRange = pd.date_range(get_timezones(periodLength), periods=periodLength).tolist()
+    dateRange = [i.strftime('%b. %d') for i in dateRange]
+    periodLengthSpot = len(cardDateIndividual)
+    dateRangeSpot = pd.date_range(get_timezones(periodLengthSpot), periods=periodLengthSpot).tolist()
+    dateRangeSpot = [i.strftime('%b. %d') for i in dateRangeSpot]
+    periodLengthActive = len(cardStatsActiveTimestampIndividual)
+    dateRangeActive = pd.date_range(get_timezones(periodLengthActive), periods=periodLengthActive).tolist()
+    dateRangeActive = [i.strftime('%b. %d') for i in dateRangeActive]
     return make_response(render_template('individual_card.html',
         priceLegend=priceLegend, lengthLegend=lengthLegend, countLegend=countLegend, sumLegend=sumLegend, spotLegend=spotLegend, depthLegend=depthLegend,
         cardName=modCardName.split('MTG')[0], cardNameIndividual=modCardName.split('MTG')[0].split(' ', 1)[0], secondCardNameIndividual=modCardName.split('MTG')[0].split(' ', 1)[1].rstrip(),
-        cardPriceIndividual=cardPriceIndividual, cardEndIndividual=cardEndIndividual, cardDateIndividual=cardDateIndividual,
+        cardPriceIndividual=cardPriceIndividual, cardEndIndividual=cardEndIndividual, cardDateIndividual=cardDateIndividual, cardTimestampIndividual=cardTimestampIndividual,
         cardStatsAvgIndividual=cardStatsAvgIndividual, cardStatsLengthIndividual=cardStatsLengthIndividual, cardStatsCountIndividual=cardStatsCountIndividual, cardStatsSumIndividual=cardStatsSumIndividual, cardStatsTimestampIndividual=cardStatsTimestampIndividual,
         cardStatsActiveCountIndividual=cardStatsActiveCountIndividual, cardStatsActiveTimestampIndividual=cardStatsActiveTimestampIndividual,
-        price=price, priceChange=priceChange, count=count, countChange=countChange, length=length, lengthChange=lengthChange, cumSum=cumSum, cumSumChange=cumSumChange,
+        price=price, priceChange=priceChange, count=count, countChange=countChange, length=length, lengthChange=lengthChange, cumSum=cumSum, cumSumChange=cumSumChange, dateRange=dateRange, dateRangeSpot=dateRangeSpot, dateRangeActive=dateRangeActive,
         ), 200, headers)
+
 # begin beta routes
 @app.route('/beta/stats/power/<cardName>')
 def renderIndividualBetaCardPower(cardName):
@@ -442,7 +457,7 @@ def renderIndividualBetaCardPower(cardName):
     countLegend = 'Total Sold (listings)'
     sumLegend = 'Cumulative Sales (gross)'
     spotLegend = 'Spot Price'
-    depthLegend = 'Active Depth'
+    depthLegend = 'Active Listings'
     headers = {'Content-Type': 'text/html'}
     modName = cardName.replace('%20', ' ').replace('-', ' ').split(' ')
     wordLength = len(modName)
@@ -482,7 +497,7 @@ def renderIndividualBetaCardPower(cardName):
     # cardStatsSumIndividual = list(df_allStatsIndividual['active_product_sum'])
     cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
     # fetch JSON data from api endpoint
-    url = "http://127.0.0.1:8050/api/beta/power/table"
+    url = "https://www.abupower.com/api/beta/power/table"
     # json_data = requests.get(url, timeout=15).json()
     json_data = requests.get(url).json()
     x = json_data['results']
@@ -495,14 +510,25 @@ def renderIndividualBetaCardPower(cardName):
     lengthChange = [i['lengthChange'] for i in x if modCardName == i['nick']]
     cumSum = [i['cumSum'] for i in x if modCardName == i['nick']]
     cumSumChange = [i['sumChange'] for i in x if modCardName == i['nick']]
+    # begin modified dateRange (when piping the historical data we didn't properly document the dates)
+    periodLength = len(cardStatsTimestampIndividual)
+    dateRange = pd.date_range(get_timezones(periodLength), periods=periodLength).tolist()
+    dateRange = [i.strftime('%b. %d') for i in dateRange]
+    periodLengthSpot = len(cardDateIndividual)
+    dateRangeSpot = pd.date_range(get_timezones(periodLengthSpot), periods=periodLengthSpot).tolist()
+    dateRangeSpot = [i.strftime('%b. %d') for i in dateRangeSpot]
+    periodLengthActive = len(cardStatsActiveTimestampIndividual)
+    dateRangeActive = pd.date_range(get_timezones(periodLengthActive), periods=periodLengthActive).tolist()
+    dateRangeActive = [i.strftime('%b. %d') for i in dateRangeActive]
     return make_response(render_template('individual_card.html',
         priceLegend=priceLegend, lengthLegend=lengthLegend, countLegend=countLegend, sumLegend=sumLegend, spotLegend=spotLegend, depthLegend=depthLegend,
         cardName=modCardName.split('MTG')[0], cardNameIndividual=modCardName.split('MTG')[0].split(' ', 1)[0], secondCardNameIndividual=modCardName.split('MTG')[0].split(' ', 1)[1].rstrip(),
         cardPriceIndividual=cardPriceIndividual, cardEndIndividual=cardEndIndividual, cardDateIndividual=cardDateIndividual,
         cardStatsAvgIndividual=cardStatsAvgIndividual, cardStatsLengthIndividual=cardStatsLengthIndividual, cardStatsCountIndividual=cardStatsCountIndividual, cardStatsSumIndividual=cardStatsSumIndividual, cardStatsTimestampIndividual=cardStatsTimestampIndividual,
         cardStatsActiveCountIndividual=cardStatsActiveCountIndividual, cardStatsActiveTimestampIndividual=cardStatsActiveTimestampIndividual,
-        price=price, priceChange=priceChange, count=count, countChange=countChange, length=length, lengthChange=lengthChange, cumSum=cumSum, cumSumChange=cumSumChange,
+        price=price, priceChange=priceChange, count=count, countChange=countChange, length=length, lengthChange=lengthChange, cumSum=cumSum, cumSumChange=cumSumChange, dateRange=dateRange, dateRangeSpot=dateRangeSpot, dateRangeActive=dateRangeActive,
         ), 200, headers)
+
 # begin unlimited routes
 @app.route('/unlimited/stats/power/<cardName>')
 def renderIndividualUnlimitedCardPower(cardName):
@@ -511,7 +537,7 @@ def renderIndividualUnlimitedCardPower(cardName):
     countLegend = 'Total Sold (listings)'
     sumLegend = 'Cumulative Sales (gross)'
     spotLegend = 'Spot Price'
-    depthLegend = 'Active Depth'
+    depthLegend = 'Active Listings'
     headers = {'Content-Type': 'text/html'}
     modName = cardName.replace('%20', ' ').replace('-', ' ').split(' ')
     wordLength = len(modName)
@@ -530,9 +556,11 @@ def renderIndividualUnlimitedCardPower(cardName):
     df_allDataIndividual = get_all_data_individual_general(modCardName)
     # print(df_allDataIndividual)
     cardPriceIndividual = list(df_allDataIndividual['completed_product_prices'])
+    cardTimestampIndividual = list(df_allDataIndividual['timestamp'])
     cardEndIndividual = list(df_allDataIndividual['enddate'])
     cardEndMonthIndividual = list(df_allDataIndividual['month'])
     cardEndDayIndividual = list(df_allDataIndividual['day'])
+    # cardDateIndividual = [f'{str(x).rstrip()} {float(str(y).lstrip()):.0f}' for x, y in zip(cardEndMonthIndividual, cardEndDayIndividual)]
     cardDateIndividual = [f'{str(x).rstrip()} {float(str(y).lstrip()):.0f}' for x, y in zip(cardEndMonthIndividual, cardEndDayIndividual)]
     ######################
     # begin stats schema #
@@ -552,7 +580,7 @@ def renderIndividualUnlimitedCardPower(cardName):
     # cardStatsSumIndividual = list(df_allStatsIndividual['active_product_sum'])
     cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
     # fetch JSON data from api endpoint
-    url = "http://127.0.0.1:8050/api/unlimited/power/table"
+    url = "https://www.abupower.com/api/unlimited/power/table"
     # json_data = requests.get(url, timeout=15).json()
     json_data = requests.get(url).json()
     x = json_data['results']
@@ -565,13 +593,23 @@ def renderIndividualUnlimitedCardPower(cardName):
     lengthChange = [i['lengthChange'] for i in x if modCardName == i['nick']]
     cumSum = [i['cumSum'] for i in x if modCardName == i['nick']]
     cumSumChange = [i['sumChange'] for i in x if modCardName == i['nick']]
+    # begin modified dateRange (when piping the historical data we didn't properly document the dates)
+    periodLength = len(cardStatsTimestampIndividual)
+    dateRange = pd.date_range(get_timezones(periodLength), periods=periodLength).tolist()
+    dateRange = [i.strftime('%b. %d') for i in dateRange]
+    periodLengthSpot = len(cardDateIndividual)
+    dateRangeSpot = pd.date_range(get_timezones(periodLengthSpot), periods=periodLengthSpot).tolist()
+    dateRangeSpot = [i.strftime('%b. %d') for i in dateRangeSpot]
+    periodLengthActive = len(cardStatsActiveTimestampIndividual)
+    dateRangeActive = pd.date_range(get_timezones(periodLengthActive), periods=periodLengthActive).tolist()
+    dateRangeActive = [i.strftime('%b. %d') for i in dateRangeActive]
     return make_response(render_template('individual_card.html',
         priceLegend=priceLegend, lengthLegend=lengthLegend, countLegend=countLegend, sumLegend=sumLegend, spotLegend=spotLegend, depthLegend=depthLegend,
         cardName=modCardName.split('MTG')[0], cardNameIndividual=modCardName.split('MTG')[0].split(' ', 1)[0], secondCardNameIndividual=modCardName.split('MTG')[0].split(' ', 1)[1].rstrip(),
-        cardPriceIndividual=cardPriceIndividual, cardEndIndividual=cardEndIndividual, cardDateIndividual=cardDateIndividual,
+        cardPriceIndividual=cardPriceIndividual, cardEndIndividual=cardEndIndividual, cardDateIndividual=cardDateIndividual, cardTimestampIndividual=cardTimestampIndividual,
         cardStatsAvgIndividual=cardStatsAvgIndividual, cardStatsLengthIndividual=cardStatsLengthIndividual, cardStatsCountIndividual=cardStatsCountIndividual, cardStatsSumIndividual=cardStatsSumIndividual, cardStatsTimestampIndividual=cardStatsTimestampIndividual,
         cardStatsActiveCountIndividual=cardStatsActiveCountIndividual, cardStatsActiveTimestampIndividual=cardStatsActiveTimestampIndividual,
-        price=price, priceChange=priceChange, count=count, countChange=countChange, length=length, lengthChange=lengthChange, cumSum=cumSum, cumSumChange=cumSumChange,
+        price=price, priceChange=priceChange, count=count, countChange=countChange, length=length, lengthChange=lengthChange, cumSum=cumSum, cumSumChange=cumSumChange, dateRange=dateRange, dateRangeSpot=dateRangeSpot, dateRangeActive=dateRangeActive,
         ), 200, headers)
 
 # begin duals routes
@@ -584,7 +622,7 @@ def renderIndividualAlphaCard(cardName):
     countLegend = 'Total Sold (listings)'
     sumLegend = 'Cumulative Sales (gross)'
     spotLegend = 'Spot Price'
-    depthLegend = 'Active Depth'
+    depthLegend = 'Active Listings'
     headers = {'Content-Type': 'text/html'}
     cardName = cardName.split('-')
     try:
@@ -619,7 +657,7 @@ def renderIndividualAlphaCard(cardName):
     # cardStatsSumIndividual = list(df_allStatsIndividual['active_product_sum'])
     cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
     # fetch JSON data from api endpoint
-    url = "http://127.0.0.1:8050/api/alpha/duals/table"
+    url = "https://www.abupower.com/api/alpha/duals/table"
     # json_data = requests.get(url, timeout=15).json()
     json_data = requests.get(url).json()
     x = json_data['results']
@@ -632,13 +670,23 @@ def renderIndividualAlphaCard(cardName):
     lengthChange = [i['lengthChange'] for i in x if modCardName == i['nick']]
     cumSum = [i['cumSum'] for i in x if modCardName == i['nick']]
     cumSumChange = [i['sumChange'] for i in x if modCardName == i['nick']]
+    # begin modified dateRange (when piping the historical data we didn't properly document the dates)
+    periodLength = len(cardStatsTimestampIndividual)
+    dateRange = pd.date_range(get_timezones(periodLength), periods=periodLength).tolist()
+    dateRange = [i.strftime('%b. %d') for i in dateRange]
+    periodLengthSpot = len(cardDateIndividual)
+    dateRangeSpot = pd.date_range(get_timezones(periodLengthSpot), periods=periodLengthSpot).tolist()
+    dateRangeSpot = [i.strftime('%b. %d') for i in dateRangeSpot]
+    periodLengthActive = len(cardStatsActiveTimestampIndividual)
+    dateRangeActive = pd.date_range(get_timezones(periodLengthActive), periods=periodLengthActive).tolist()
+    dateRangeActive = [i.strftime('%b. %d') for i in dateRangeActive]
     return make_response(render_template('individual_card.html',
         priceLegend=priceLegend, lengthLegend=lengthLegend, countLegend=countLegend, sumLegend=sumLegend, spotLegend=spotLegend, depthLegend=depthLegend,
         cardName=modCardName.split('MTG')[0], cardNameIndividual=modCardName.split('MTG')[0].split(' ', 1)[0], secondCardNameIndividual=modCardName.split('MTG')[0].split(' ', 1)[1].rstrip(),
         cardPriceIndividual=cardPriceIndividual, cardEndIndividual=cardEndIndividual, cardDateIndividual=cardDateIndividual,
         cardStatsAvgIndividual=cardStatsAvgIndividual, cardStatsLengthIndividual=cardStatsLengthIndividual, cardStatsCountIndividual=cardStatsCountIndividual, cardStatsSumIndividual=cardStatsSumIndividual, cardStatsTimestampIndividual=cardStatsTimestampIndividual,
         cardStatsActiveCountIndividual=cardStatsActiveCountIndividual, cardStatsActiveTimestampIndividual=cardStatsActiveTimestampIndividual,
-        price=price, priceChange=priceChange, count=count, countChange=countChange, length=length, lengthChange=lengthChange, cumSum=cumSum, cumSumChange=cumSumChange,
+        price=price, priceChange=priceChange, count=count, countChange=countChange, length=length, lengthChange=lengthChange, cumSum=cumSum, cumSumChange=cumSumChange, dateRange=dateRange, dateRangeSpot=dateRangeSpot, dateRangeActive=dateRangeActive,
         ), 200, headers)
 
 # begin beta routes
@@ -650,7 +698,7 @@ def renderIndividualBetaCard(cardName):
     countLegend = 'Total Sold (listings)'
     sumLegend = 'Cumulative Sales (gross)'
     spotLegend = 'Spot Price'
-    depthLegend = 'Active Depth'
+    depthLegend = 'Active Listings'
     headers = {'Content-Type': 'text/html'}
     cardName = cardName.split('-')
     try:
@@ -685,7 +733,7 @@ def renderIndividualBetaCard(cardName):
     # cardStatsSumIndividual = list(df_allStatsIndividual['active_product_sum'])
     cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
     # fetch JSON data from api endpoint
-    url = "http://127.0.0.1:8050/api/beta/duals/table"
+    url = "https://www.abupower.com/api/beta/duals/table"
     # json_data = requests.get(url, timeout=15).json()
     json_data = requests.get(url).json()
     x = json_data['results']
@@ -698,13 +746,23 @@ def renderIndividualBetaCard(cardName):
     lengthChange = [i['lengthChange'] for i in x if modCardName == i['nick']]
     cumSum = [i['cumSum'] for i in x if modCardName == i['nick']]
     cumSumChange = [i['sumChange'] for i in x if modCardName == i['nick']]
+    # begin modified dateRange (when piping the historical data we didn't properly document the dates)
+    periodLength = len(cardStatsTimestampIndividual)
+    dateRange = pd.date_range(get_timezones(periodLength), periods=periodLength).tolist()
+    dateRange = [i.strftime('%b. %d') for i in dateRange]
+    periodLengthSpot = len(cardDateIndividual)
+    dateRangeSpot = pd.date_range(get_timezones(periodLengthSpot), periods=periodLengthSpot).tolist()
+    dateRangeSpot = [i.strftime('%b. %d') for i in dateRangeSpot]
+    periodLengthActive = len(cardStatsActiveTimestampIndividual)
+    dateRangeActive = pd.date_range(get_timezones(periodLengthActive), periods=periodLengthActive).tolist()
+    dateRangeActive = [i.strftime('%b. %d') for i in dateRangeActive]
     return make_response(render_template('individual_card.html',
         priceLegend=priceLegend, lengthLegend=lengthLegend, countLegend=countLegend, sumLegend=sumLegend, spotLegend=spotLegend, depthLegend=depthLegend,
         cardName=modCardName.split('MTG')[0], cardNameIndividual=modCardName.split('MTG')[0].split(' ', 1)[0], secondCardNameIndividual=modCardName.split('MTG')[0].split(' ', 1)[1].rstrip(),
         cardPriceIndividual=cardPriceIndividual, cardEndIndividual=cardEndIndividual, cardDateIndividual=cardDateIndividual,
         cardStatsAvgIndividual=cardStatsAvgIndividual, cardStatsLengthIndividual=cardStatsLengthIndividual, cardStatsCountIndividual=cardStatsCountIndividual, cardStatsSumIndividual=cardStatsSumIndividual, cardStatsTimestampIndividual=cardStatsTimestampIndividual,
         cardStatsActiveCountIndividual=cardStatsActiveCountIndividual, cardStatsActiveTimestampIndividual=cardStatsActiveTimestampIndividual,
-        price=price, priceChange=priceChange, count=count, countChange=countChange, length=length, lengthChange=lengthChange, cumSum=cumSum, cumSumChange=cumSumChange,
+        price=price, priceChange=priceChange, count=count, countChange=countChange, length=length, lengthChange=lengthChange, cumSum=cumSum, cumSumChange=cumSumChange, dateRange=dateRange, dateRangeSpot=dateRangeSpot, dateRangeActive=dateRangeActive,
         ), 200, headers)
 
 # begin unlimited routes
@@ -716,7 +774,7 @@ def renderIndividualUnlimitedCard(cardName):
     countLegend = 'Total Sold (listings)'
     sumLegend = 'Cumulative Sales (gross)'
     spotLegend = 'Spot Price'
-    depthLegend = 'Active Depth'
+    depthLegend = 'Active Listings'
     headers = {'Content-Type': 'text/html'}
     modName = cardName.replace('%20', ' ').replace('-', ' ').split(' ')
     wordLength = len(modName)
@@ -752,7 +810,7 @@ def renderIndividualUnlimitedCard(cardName):
     # cardStatsSumIndividual = list(df_allStatsIndividual['active_product_sum'])
     cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
     # fetch JSON data from api endpoint
-    url = "http://127.0.0.1:8050/api/unlimited/duals/table"
+    url = "https://www.abupower.com/api/unlimited/duals/table"
     # json_data = requests.get(url, timeout=15).json()
     json_data = requests.get(url).json()
     x = json_data['results']
@@ -765,13 +823,23 @@ def renderIndividualUnlimitedCard(cardName):
     lengthChange = [i['lengthChange'] for i in x if modCardName == i['nick']]
     cumSum = [i['cumSum'] for i in x if modCardName == i['nick']]
     cumSumChange = [i['sumChange'] for i in x if modCardName == i['nick']]
+    # begin modified dateRange (when piping the historical data we didn't properly document the dates)
+    periodLength = len(cardStatsTimestampIndividual)
+    dateRange = pd.date_range(get_timezones(periodLength), periods=periodLength).tolist()
+    dateRange = [i.strftime('%b. %d') for i in dateRange]
+    periodLengthSpot = len(cardDateIndividual)
+    dateRangeSpot = pd.date_range(get_timezones(periodLengthSpot), periods=periodLengthSpot).tolist()
+    dateRangeSpot = [i.strftime('%b. %d') for i in dateRangeSpot]
+    periodLengthActive = len(cardStatsActiveTimestampIndividual)
+    dateRangeActive = pd.date_range(get_timezones(periodLengthActive), periods=periodLengthActive).tolist()
+    dateRangeActive = [i.strftime('%b. %d') for i in dateRangeActive]
     return make_response(render_template('individual_card.html',
         priceLegend=priceLegend, lengthLegend=lengthLegend, countLegend=countLegend, sumLegend=sumLegend, spotLegend=spotLegend, depthLegend=depthLegend,
         cardName=modCardName.split('MTG')[0], cardNameIndividual=modCardName.split('MTG')[0].split(' ', 1)[0], secondCardNameIndividual=modCardName.split('MTG')[0].split(' ', 1)[1].rstrip(),
         cardPriceIndividual=cardPriceIndividual, cardEndIndividual=cardEndIndividual, cardDateIndividual=cardDateIndividual,
         cardStatsAvgIndividual=cardStatsAvgIndividual, cardStatsLengthIndividual=cardStatsLengthIndividual, cardStatsCountIndividual=cardStatsCountIndividual, cardStatsSumIndividual=cardStatsSumIndividual, cardStatsTimestampIndividual=cardStatsTimestampIndividual,
         cardStatsActiveCountIndividual=cardStatsActiveCountIndividual, cardStatsActiveTimestampIndividual=cardStatsActiveTimestampIndividual,
-        price=price, priceChange=priceChange, count=count, countChange=countChange, length=length, lengthChange=lengthChange, cumSum=cumSum, cumSumChange=cumSumChange,
+        price=price, priceChange=priceChange, count=count, countChange=countChange, length=length, lengthChange=lengthChange, cumSum=cumSum, cumSumChange=cumSumChange, dateRange=dateRange, dateRangeSpot=dateRangeSpot, dateRangeActive=dateRangeActive,
         ), 200, headers)
         
 # begin revised routes
@@ -782,7 +850,7 @@ def renderIndividualRevisedCard(cardName):
     countLegend = 'Total Sold (listings)'
     sumLegend = 'Cumulative Sales (gross)'
     spotLegend = 'Spot Price'
-    depthLegend = 'Active Depth'
+    depthLegend = 'Active Listings'
     headers = {'Content-Type': 'text/html'}
     modName = cardName.replace('%20', ' ').replace('-', ' ').split(' ')
     wordLength = len(modName)
@@ -831,7 +899,7 @@ def renderIndividualRevisedCard(cardName):
     # cardStatsSumIndividual = list(df_allStatsIndividual['active_product_sum'])
     cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
     # fetch JSON data from api endpoint
-    url = "http://127.0.0.1:8050/api/revised/duals/table"
+    url = "https://www.abupower.com/api/revised/duals/table"
     # json_data = requests.get(url, timeout=15).json()
     json_data = requests.get(url).json()
     x = json_data['results']
@@ -844,50 +912,41 @@ def renderIndividualRevisedCard(cardName):
     lengthChange = [i['lengthChange'] for i in x if modCardName == i['nick']]
     cumSum = [i['cumSum'] for i in x if modCardName == i['nick']]
     cumSumChange = [i['sumChange'] for i in x if modCardName == i['nick']]
+    # begin modified dateRange (when piping the historical data we didn't properly document the dates)
+    periodLength = len(cardStatsTimestampIndividual)
+    dateRange = pd.date_range(get_timezones(periodLength), periods=periodLength).tolist()
+    dateRange = [i.strftime('%b. %d') for i in dateRange]
+    periodLengthSpot = len(cardDateIndividual)
+    dateRangeSpot = pd.date_range(get_timezones(periodLengthSpot), periods=periodLengthSpot).tolist()
+    dateRangeSpot = [i.strftime('%b. %d') for i in dateRangeSpot]
+    periodLengthActive = len(cardStatsActiveTimestampIndividual)
+    dateRangeActive = pd.date_range(get_timezones(periodLengthActive), periods=periodLengthActive).tolist()
+    dateRangeActive = [i.strftime('%b. %d') for i in dateRangeActive]
     return make_response(render_template('individual_card.html',
         priceLegend=priceLegend, lengthLegend=lengthLegend, countLegend=countLegend, sumLegend=sumLegend, spotLegend=spotLegend, depthLegend=depthLegend,
         cardName=modCardName.split('MTG')[0], cardNameIndividual=modCardName.split('MTG')[0].split(' ', 1)[0], secondCardNameIndividual=modCardName.split('MTG')[0].split(' ', 1)[1].rstrip(),
         cardPriceIndividual=cardPriceIndividual, cardEndIndividual=cardEndIndividual, cardDateIndividual=cardDateIndividual,
         cardStatsAvgIndividual=cardStatsAvgIndividual, cardStatsLengthIndividual=cardStatsLengthIndividual, cardStatsCountIndividual=cardStatsCountIndividual, cardStatsSumIndividual=cardStatsSumIndividual, cardStatsTimestampIndividual=cardStatsTimestampIndividual,
         cardStatsActiveCountIndividual=cardStatsActiveCountIndividual, cardStatsActiveTimestampIndividual=cardStatsActiveTimestampIndividual,
-        price=price, priceChange=priceChange, count=count, countChange=countChange, length=length, lengthChange=lengthChange, cumSum=cumSum, cumSumChange=cumSumChange,
+        price=price, priceChange=priceChange, count=count, countChange=countChange, length=length, lengthChange=lengthChange, cumSum=cumSum, cumSumChange=cumSumChange, dateRange=dateRange, dateRangeSpot=dateRangeSpot, dateRangeActive=dateRangeActive,
         ), 200, headers)
 
-@app.route("/search", methods=['GET'])
-def search():
-    # cursor = g.con.cursor()
-    # cursor.execute('SELECT * FROM nutzer, kategorien, rezepte WHERE Nutzername OR Titel = %s', (request.form["search"],))
-    # result = cursor.fetchall()
-    # cursor.close()
-    # print(request.form['name'])
-    # data = requests.get()
-    # print(data)
-    # print(query)
-    name = request.args.get('search')
-    print(name)
-    print('test')
-    return 'test!'
-    try:
-        return redirect("http://www.example.com", code=302)
-    except Exception as e:
-        print(e)
-        return 'temp 404 :/'
-    #return render_template('Results.html', result = result)  
-
 @app.route('/location/')
-# @app.route('/location/<int:id>/')
 def location():
-    # return redirect(url_for('location', id=request.args['info']))
+    headers = {'Content-Type': 'text/html'}
     query = request.args.get('search')
     if len(query) > 1:
-        set = query.split(' ')[0].lower()
-        cardName = query.split(' ', 1)[1].title()  # split only on the first occurence (to avoid filter words with spaces, e.g. Black Lotus)
-        if cardName in ('Tundra', 'Underground Sea', 'Badlands', 'Taiga', 'Savannah', 'Scrubland', 'Volcanic Island', 'Bayou', 'Plateau', 'Tropical Island'):
-            return redirect(url_for(f'renderIndividual{set.capitalize()}Card', cardName=cardName))
-        elif cardName in ('Black Lotus', 'Mox Jet', 'Mox Ruby', 'Mox Emerald', 'Mox Sapphire', 'Mox Pearl', 'Timetwister', 'Time Walk', 'Ancestral Recall'):
-            return redirect(url_for(f'renderIndividual{set.capitalize()}CardPower', cardName=cardName))
+        try:
+            set = query.split(' ')[0].lower()
+            cardName = query.split(' ', 1)[1].title()  # split only on the first occurence (to avoid filter words with spaces, e.g. Black Lotus)
+            if cardName in ('Tundra', 'Underground Sea', 'Badlands', 'Taiga', 'Savannah', 'Scrubland', 'Volcanic Island', 'Bayou', 'Plateau', 'Tropical Island'):
+                return redirect(url_for(f'renderIndividual{set.capitalize()}Card', cardName=cardName))
+            elif cardName in ('Black Lotus', 'Mox Jet', 'Mox Ruby', 'Mox Emerald', 'Mox Sapphire', 'Mox Pearl', 'Timetwister', 'Time Walk', 'Ancestral Recall'):
+                return redirect(url_for(f'renderIndividual{set.capitalize()}CardPower', cardName=cardName))
+        except:
+            return make_response(render_template('404.html'), 404, headers)  
     else:
-        return 'temp 404'
+        return make_response(render_template('404.html'), 404, headers)  
 
 @app.route('/email', methods=['POST'])
 def email():
@@ -967,10 +1026,20 @@ class Alpha(Resource):
         maxHeightLength = round(max(alphaDataLengthPower)) + 2
         minHeightLength = round(min(alphaDataLengthPower)) - 10
         headers = {'Content-Type': 'text/html'}
+        # begin modified dateRange (when piping the historical data we didn't properly document the dates)
+        alphaDate = alphaDataLengthTimestampPower
+        periodLength = len(alphaDate)
+        dateRange = pd.date_range(get_timezones(periodLength), periods=periodLength).tolist()
+        dateRange = [i.strftime('%b. %d') for i in dateRange]
+        alphaDateDuals = alphaDataLengthTimestampDuals
+        periodLengthDuals = len(alphaDateDuals)
+        dateRangeDuals = pd.date_range(get_timezones(periodLengthDuals), periods=periodLengthDuals).tolist()
+        dateRangeDuals = [i.strftime('%b. %d') for i in dateRangeDuals]
         return make_response(render_template('alpha.html',
-            dualsLegend=dualsLegend, maxHeight=maxHeight, minHeight=minHeight, maxHeightLength=maxHeightLength, minHeightLength=minHeightLength, countLegend=countLegend, lengthLegend=lengthLegend, sumLegend=sumLegend, powerLegend=powerLegend,
+            dualsLegend=dualsLegend, maxHeight=maxHeight, minHeight=minHeight, maxHeightLength=maxHeightLength, minHeightLength=minHeightLength, countLegend=countLegend, lengthLegend=lengthLegend, sumLegend=sumLegend, powerLegend=powerLegend, 
+            dateRange=dateRange, dateRangeDuals=dateRangeDuals,
             # begin duals
-            alphaDataAvgDuals=alphaDataAvgDuals[2::], alphaDataAvgTimestampDuals=alphaDataAvgTimestampDuals, 
+            alphaDataAvgDuals=alphaDataAvgDuals, alphaDataAvgTimestampDuals=alphaDataAvgTimestampDuals, 
             alphaDataLengthDuals=alphaDataLengthDuals, alphaDataLengthTimestampDuals=alphaDataLengthTimestampDuals, 
             alphaDataCountDuals=alphaDataCountDuals, alphaDataCountTimestampDuals=alphaDataCountTimestampDuals,
             alphaDataBreakdownNameDuals=alphaDataBreakdownNameDuals, alphaDataBreakdownavg=alphaDataBreakdownAvgDuals,
@@ -979,7 +1048,7 @@ class Alpha(Resource):
             get_percent_change_last_sold=get_percent_change_last_sold, get_premiums=get_premiums, get_count=get_data_single_product_count_90, get_length=get_data_single_product_avg_length_90, get_depth=get_data_single_product_depth, 
             alphaDataCumulativePriceDuals=alphaDataCumulativePriceDuals, alphaDataCumulativeTimestampDuals=alphaDataCumulativeTimestampDuals, 
             # begin power
-            alphaDataAvgPower=alphaDataAvgPower[2::], alphaDataAvgTimestampPower=alphaDataAvgTimestampPower, 
+            alphaDataAvgPower=alphaDataAvgPower, alphaDataAvgTimestampPower=alphaDataAvgTimestampPower, 
             alphaDataLengthPower=alphaDataLengthPower, alphaDataLengthTimestampPower=alphaDataLengthTimestampPower, 
             alphaDataCountPower=alphaDataCountPower, alphaDataCountTimestampPower=alphaDataCountTimestampPower,
             alphaDataAllEndPower=alphaDataAllEndPower, alphaDataAllNamePower=alphaDataAllNamePower, alphaDataAllHrefPower=alphaDataAllHrefPower, alphaDataAllPricePower=alphaDataAllPricePower,
@@ -1085,10 +1154,19 @@ class Beta(Resource):
         maxHeightLength = round(max(betaDataLengthPower)) + 2
         minHeightLength = round(min(betaDataLengthPower)) - 10
         headers = {'Content-Type': 'text/html'}
+        betaDate = betaDataLengthTimestampPower
+        periodLength = len(betaDate)
+        dateRange = pd.date_range(get_timezones(periodLength), periods=periodLength).tolist()
+        dateRange = [i.strftime('%b. %d') for i in dateRange]
+        betaDateDuals = betaDataLengthTimestampDuals
+        periodLengthDuals = len(betaDateDuals)
+        dateRangeDuals = pd.date_range(get_timezones(periodLengthDuals), periods=periodLengthDuals).tolist()
+        dateRangeDuals = [i.strftime('%b. %d') for i in dateRangeDuals]
         return make_response(render_template('beta.html', 
             dualsLegend=dualsLegend, maxHeight=maxHeight, minHeight=minHeight, maxHeightLength=maxHeightLength, minHeightLength=minHeightLength, countLegend=countLegend, lengthLegend=lengthLegend, sumLegend=sumLegend, powerLegend=powerLegend,
+            dateRange=dateRange, dateRangeDuals=dateRangeDuals,
             # begin duals
-            betaDataAvgDuals=betaDataAvgDuals[15::], betaDataAvgTimestampDuals=betaDataAvgTimestampDuals, 
+            betaDataAvgDuals=betaDataAvgDuals, betaDataAvgTimestampDuals=betaDataAvgTimestampDuals, 
             betaDataLengthDuals=betaDataLengthDuals, betaDataLengthTimestampDuals=betaDataLengthTimestampDuals, 
             betaDataCountDuals=betaDataCountDuals, betaDataCountTimestampDuals=betaDataCountTimestampDuals,
             betaDataBreakdownNameDuals=betaDataBreakdownNameDuals, betaDataBreakdownavg=betaDataBreakdownAvgDuals,
@@ -1097,7 +1175,7 @@ class Beta(Resource):
             get_percent_change_last_sold=get_percent_change_last_sold, get_premiums=get_premiums, get_count=get_data_single_product_count_90, get_length=get_data_single_product_avg_length_90, get_depth=get_data_single_product_depth, 
             betaDataCumulativePriceDuals=betaDataCumulativePriceDuals, betaDataCumulativeTimestampDuals=betaDataCumulativeTimestampDuals, 
             # begin power
-            betaDataAvgPower=betaDataAvgPower[8::], betaDataAvgTimestampPower=betaDataAvgTimestampPower, 
+            betaDataAvgPower=betaDataAvgPower, betaDataAvgTimestampPower=betaDataAvgTimestampPower, 
             betaDataLengthPower=betaDataLengthPower, betaDataLengthTimestampPower=betaDataLengthTimestampPower, 
             betaDataCountPower=betaDataCountPower, betaDataCountTimestampPower=betaDataCountTimestampPower,
             betaDataAllEndPower=betaDataAllEndPower, betaDataAllNamePower=betaDataAllNamePower, betaDataAllHrefPower=betaDataAllHrefPower, betaDataAllPricePower=betaDataAllPricePower,
@@ -1206,24 +1284,33 @@ class Unlimited(Resource):
         maxHeightLength = round(max(unlimitedDataLengthPower)) + 2
         minHeightLength = round(min(unlimitedDataLengthPower)) - 10
         headers = {'Content-Type': 'text/html'}
+        unlimitedDate = unlimitedDataLengthTimestampPower
+        periodLength = len(unlimitedDate)
+        dateRange = pd.date_range(get_timezones(periodLength), periods=periodLength).tolist()
+        dateRange = [i.strftime('%b. %d') for i in dateRange]
+        unlimitedDateDuals = unlimitedDataLengthTimestampDuals
+        periodLengthDuals = len(unlimitedDateDuals)
+        dateRangeDuals = pd.date_range(get_timezones(periodLengthDuals), periods=periodLengthDuals).tolist()
+        dateRangeDuals = [i.strftime('%b. %d') for i in dateRangeDuals]
         return make_response(render_template('unlimited.html', 
             dualsLegend=dualsLegend, maxHeight=maxHeight, minHeight=minHeight, maxHeightLength=maxHeightLength, minHeightLength=minHeightLength, countLegend=countLegend, lengthLegend=lengthLegend, sumLegend=sumLegend, powerLegend=powerLegend,
+            dateRange=dateRange[3::], dateRangeDuals=dateRangeDuals[7::],
             # begin duals
             unlimitedDataAvgDuals=unlimitedDataAvgDuals[7::], unlimitedDataAvgTimestampDuals=unlimitedDataAvgTimestampDuals, 
-            unlimitedDataLengthDuals=unlimitedDataLengthDuals, unlimitedDataLengthTimestampDuals=unlimitedDataLengthTimestampDuals, 
-            unlimitedDataCountDuals=unlimitedDataCountDuals, unlimitedDataCountTimestampDuals=unlimitedDataCountTimestampDuals,
+            unlimitedDataLengthDuals=unlimitedDataLengthDuals[7::], unlimitedDataLengthTimestampDuals=unlimitedDataLengthTimestampDuals, 
+            unlimitedDataCountDuals=unlimitedDataCountDuals[7::], unlimitedDataCountTimestampDuals=unlimitedDataCountTimestampDuals,
             unlimitedDataBreakdownNameDuals=unlimitedDataBreakdownNameDuals, unlimitedDataBreakdownavg=unlimitedDataBreakdownAvgDuals,
             unlimitedDataAllEndDuals=unlimitedDataAllEndDuals, unlimitedDataAllNameDuals=unlimitedDataAllNameDuals, unlimitedDataAllHrefDuals=unlimitedDataAllHrefDuals, unlimitedDataAllPriceDuals=unlimitedDataAllPriceDuals,
             unlimitedActiveDataAllStartDuals=unlimitedActiveDataAllStartDuals, unlimitedActiveDataAllNameDuals=unlimitedActiveDataAllNameDuals, unlimitedActiveDataAllHrefDuals=unlimitedActiveDataAllHrefDuals, unlimitedActiveDataAllPriceDuals=unlimitedActiveDataAllPriceDuals,
             get_percent_change_last_sold=get_percent_change_last_sold, get_premiums=get_premiums, get_count=get_data_single_product_count_90, get_length=get_data_single_product_avg_length_90, get_depth=get_data_single_product_depth, 
-            unlimitedDataCumulativePriceDuals=unlimitedDataCumulativePriceDuals, unlimitedDataCumulativeTimestampDuals=unlimitedDataCumulativeTimestampDuals, 
+            unlimitedDataCumulativePriceDuals=unlimitedDataCumulativePriceDuals[7::], unlimitedDataCumulativeTimestampDuals=unlimitedDataCumulativeTimestampDuals, 
             # begin power
             unlimitedDataAvgPower=unlimitedDataAvgPower[3::], unlimitedDataAvgTimestampPower=unlimitedDataAvgTimestampPower, 
-            unlimitedDataLengthPower=unlimitedDataLengthPower, unlimitedDataLengthTimestampPower=unlimitedDataLengthTimestampPower, 
-            unlimitedDataCountPower=unlimitedDataCountPower, unlimitedDataCountTimestampPower=unlimitedDataCountTimestampPower,
+            unlimitedDataLengthPower=unlimitedDataLengthPower[3::], unlimitedDataLengthTimestampPower=unlimitedDataLengthTimestampPower, 
+            unlimitedDataCountPower=unlimitedDataCountPower[3::], unlimitedDataCountTimestampPower=unlimitedDataCountTimestampPower,
             unlimitedDataAllEndPower=unlimitedDataAllEndPower, unlimitedDataAllNamePower=unlimitedDataAllNamePower, unlimitedDataAllHrefPower=unlimitedDataAllHrefPower, unlimitedDataAllPricePower=unlimitedDataAllPricePower,
             unlimitedActiveDataAllStartPower=unlimitedActiveDataAllStartPower, unlimitedActiveDataAllNamePower=unlimitedActiveDataAllNamePower, unlimitedActiveDataAllHrefPower=unlimitedActiveDataAllHrefPower, unlimitedActiveDataAllPricePower=unlimitedActiveDataAllPricePower,
-            unlimitedDataCumulativePricePower=unlimitedDataCumulativePricePower, unlimitedDataCumulativeTimestampPower=unlimitedDataCumulativeTimestampPower,
+            unlimitedDataCumulativePricePower=unlimitedDataCumulativePricePower[3::], unlimitedDataCumulativeTimestampPower=unlimitedDataCumulativeTimestampPower,
             get_cumulative=get_data_unlimited_cumulative_totals, get_active_depth=get_data_active_index_count_sum), 200, headers)
 
 class UnlimitedPowerTable(Resource):
@@ -1334,17 +1421,22 @@ class Revised(Resource):
         maxHeightLength = round(max(revisedDataLengthDuals)) + 2
         minHeightLength = round(min(revisedDataLengthDuals)) - 10
         headers = {'Content-Type': 'text/html'}
+        revisedDate = revisedDataLengthTimestampDuals
+        periodLength = len(revisedDate)								  
+        dateRange = pd.date_range(get_timezones(periodLength), periods=periodLength).tolist()
+        dateRange = [i.strftime('%b. %d') for i in dateRange]				
         return make_response(render_template('revised.html', 
             dualsLegend=dualsLegend, maxHeight=maxHeight, minHeight=minHeight, maxHeightLength=maxHeightLength, minHeightLength=minHeightLength,
+            dateRange=dateRange[2::],
             revisedDataAvgDuals=revisedDataAvgDuals[2::], revisedDataAvgTimestampDuals=revisedDataAvgTimestampDuals, 
-            revisedDataLengthDuals=revisedDataLengthDuals, revisedDataLengthTimestampDuals=revisedDataLengthTimestampDuals, revisedDataLengthLegendDuals=revisedDataLengthLegendDuals,
-            revisedDataCountDuals=revisedDataCountDuals, revisedDataCountTimestampDuals=revisedDataCountTimestampDuals, revisedDataCountLegendDuals=revisedDataCountLegendDuals,
+            revisedDataLengthDuals=revisedDataLengthDuals[2::], revisedDataLengthTimestampDuals=revisedDataLengthTimestampDuals, revisedDataLengthLegendDuals=revisedDataLengthLegendDuals,
+            revisedDataCountDuals=revisedDataCountDuals[2::], revisedDataCountTimestampDuals=revisedDataCountTimestampDuals, revisedDataCountLegendDuals=revisedDataCountLegendDuals,
             revisedDataBreakdownNameDuals=revisedDataBreakdownNameDuals, revisedDataBreakdownavg=revisedDataBreakdownAvgDuals,
             revisedDataAllEndDuals=revisedDataAllEndDuals, revisedDataAllNameDuals=revisedDataAllNameDuals, revisedDataAllHrefDuals=revisedDataAllHrefDuals, revisedDataAllPriceDuals=revisedDataAllPriceDuals,
             # revisedDataStatsNameDuals=revisedDataStatsNameDuals, revisedDataStatsAvgDuals=revisedDataStatsAvgDuals, revisedDataStatsDepthDuals=revisedDataStatsDepthDuals, revisedDataStatsLengthDuals=revisedDataStatsLengthDuals, revisedDataStatsSumDuals=revisedDataStatsSumDuals,
             revisedActiveDataAllStartDuals=revisedActiveDataAllStartDuals, revisedActiveDataAllNameDuals=revisedActiveDataAllNameDuals, revisedActiveDataAllHrefDuals=revisedActiveDataAllHrefDuals, revisedActiveDataAllPriceDuals=revisedActiveDataAllPriceDuals,
             get_percent_change_last_sold=get_percent_change_last_sold, get_premiums=get_premiums, get_count=get_data_single_product_count_90, get_length=get_data_single_product_avg_length_90, get_depth=get_data_single_product_depth, 
-            revisedDataCumulativePriceDuals=revisedDataCumulativePriceDuals, revisedDataCumulativeTimestampDuals=revisedDataCumulativeTimestampDuals, revisedDataCumulativeLegendDuals=revisedDataCumulativeLegendDuals,
+            revisedDataCumulativePriceDuals=revisedDataCumulativePriceDuals[2::], revisedDataCumulativeTimestampDuals=revisedDataCumulativeTimestampDuals, revisedDataCumulativeLegendDuals=revisedDataCumulativeLegendDuals,
             get_cumulative=get_data_revised_cumulative_totals, get_active_depth=get_data_active_index_count_sum), 200, headers)
 
 
@@ -1451,5 +1543,4 @@ api.add_resource(GeneralIndexAverage, '/api/general/index')
 
 # initalize application
 if __name__ == "__main__":
-    # TEMPLATES_AUTO_RELOAD = True
-    app.run(debug=True, port=8050, threaded=True)
+    app.run(host='0.0.0.0')
