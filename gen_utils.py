@@ -72,7 +72,7 @@ def get_search_words():
     """() -> list
 
     Reads a .txt file for search words and returns the corresponding values in list form."""
-    # the txt file format DOES NOT WORK, as it is inserting some sort of characters into the DB that we CANNOT remove. 
+    # The txt file format DOES NOT WORK, as it is inserting some sort of characters into the DB that we CANNOT remove. 
     # The hard-coded array method is all that works so far.
     # with open("search_words.txt") as txtFile:
     #     words = []
