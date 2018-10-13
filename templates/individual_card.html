@@ -10,11 +10,11 @@
   </header>
   <body id="body" class="dark-mode" style="background: inherit; padding-bottom: 15%;">
     <div class="container-fluid">
-        <div class="dualsNotifier" style="text-align: center;"><h1 class="titleNotifier" style="color: white; font-size: 3.5em; font-weight: bold; padding-bottom: 1%;">{{ cardNameIndividual }} <span style="color: #000;"><u>{{ secondCardNameIndividual }}</text-muted></u> <img class="subTitleImageIndividual" src="/static/{{ secondCardNameIndividual|replace(' ', '_')|lower() }}.jpg" width="100px" height="100px" style="margin-right: 1%;"></h1></div>
+        <div class="dualsNotifier" style="text-align: center;"><h1 class="titleNotifier" style="color: white; font-size: 3.5em; font-weight: bold; padding-bottom: 1%;">{{ cardNameIndividual }} <span style="color: #000000;"><u>{{ secondCardNameIndividual }}</text-muted></u> <img class="subTitleImageIndividual" src="/static/{{ secondCardNameIndividual|replace(' ', '_')|lower() }}.jpg" width="100px" height="100px" style="margin-right: 1%;"></h1></div>
         <script src="/static/colorize.js"></script>
         <div class="card-container">
             <div class="card-deck">
-                    <div id="individualCardAveragePrice" class="card">
+                    <div id="individualCardAveragePrice" class="card" title="90 day rolling average (all conditions)">
                         <i class="fas fa-hand-holding-usd"></i>
                         <div class="card-body">
                         <h5 class="individual-card-title" style="text-align: center; font-size: 1.5em; color: black;">Avg Price</h5>                        
@@ -29,7 +29,7 @@
                             </p>
                         </div>
                     </div>
-                    <div id="individualCardTotalSold" class="card">
+                    <div id="individualCardTotalSold" class="card" title="90 day rolling sum (cumulative listings sold)">
                         <i class="fas fa-box-open"></i>
                         <div class="card-body">
                         <h5 class="individual-card-title" style="text-align: center; font-size: 1.5em; color: black;">Total Sold</h5>                        
@@ -44,7 +44,7 @@
                             </p>
                         </div>
                     </div>
-                    <div id="individualCardAverageLength" class="card">
+                    <div id="individualCardAverageLength" class="card" title="90 day rolling average length (elapsed time from listed->sold)">
                         <i class="fas fa-ruler"></i>
                         <div class="card-body">
                         <h5 class="individual-card-title" style="text-align: center; font-size: 1.5em; color: black;">Avg Length</h5>                        
@@ -59,7 +59,7 @@
                             </p>
                         </div>
                     </div>
-                    <div id="individualCardGross" class="card">
+                    <div id="individualCardGross" class="card" title="90 day rolling gross (average price*total sold)">
                         <i class="fas fa-cart-plus"></i>
                         <div class="card-body">
                         <h5 class="individual-card-title" style="text-align: center; font-size: 1.5em; color: black;">Gross Sold</h5>                        
@@ -74,7 +74,7 @@
                             </p>
                         </div>
                     </div>
-                    <div id="individualCardActive" class="card">
+                    <div id="individualCardActive" class="card" title="Active listings count (market depth)">
                         <i class="fas fa-bell"></i>
                         <div class="card-body">
                         <h5 class="individual-card-title" style="text-align: center; font-size: 1.5em; color: black;">Active Listings</h5>                        
@@ -190,7 +190,7 @@
         //labels : [{% for item in cardDateIndividual %}
                    // "{{ item[0:3] }}. {{ item[-2] }}{{ item[-1] }}",
                //  {% endfor %}],
-        labels : [{% for item in cardStatsTimestampIndividual %}
+        labels : [{% for item in dateRange %}
                     "{{ item }}",
                  {% endfor %}],
         datasets : [{
@@ -240,7 +240,7 @@
                     }
             },
             animation: {
-                easing: "linear"
+                duration: 0,
                 },
             legend: {
                 position: "top",
@@ -255,7 +255,7 @@
                     ticks: {
                         fontSize: 10,
                         autoSkip: true,
-                        maxTicksLimit: 15,
+                        maxTicksLimit: 5,
                         suggestedMax: {{ (cardStatsAvgIndividual[-1]*1.0005)|round }},
                         scaleLabel: "padding",
                         fontColor: "hsl(208, 7%, 46%)",
@@ -275,7 +275,8 @@
                         fontSize: 10,
                         stepSize: 100,
                         autoSkip: true,
-                        maxTicksLimit: 8,
+                        maxTicksLimit: 7,
+                        scaleLabel: "<%= ' ' + value%>",
                         fontColor: "hsl(208, 7%, 46%)",
                         maxRotation: 0,
                         minRotation: 0
@@ -297,7 +298,7 @@
         // define the chart data
 
         var chartData = {
-        labels : [{% for item in cardStatsTimestampIndividual %}
+        labels : [{% for item in dateRange %}
                     "{{ item }}",
                   {% endfor %}],
         datasets : [{
@@ -346,7 +347,7 @@
                     }
             },
             animation: {
-                easing: "linear"
+                duration: 0,
                 },
             legend: {
                 position: "top",
@@ -361,7 +362,7 @@
                     ticks: {
                         fontSize: 10,
                         autoSkip: true,
-                        maxTicksLimit: 15,
+                        maxTicksLimit: 5,
                         suggestedMax: {{ (cardStatsCountIndividual[-1]*1.0005)|round }},
                         scaleLabel: "padding",
                         fontColor: "hsl(208, 7%, 46%)",
@@ -378,7 +379,7 @@
                         fontSize: 10,
                         stepSize: 100,
                         autoSkip: true,
-                        maxTicksLimit: 8,
+                        maxTicksLimit: 7,
                         scaleLabel: "<%= ' ' + value%>",
                         fontColor: "hsl(208, 7%, 46%)",
                         maxRotation: 0,
@@ -401,8 +402,8 @@
         // define the chart data
 
         var chartData = {
-        labels : [{% for item in cardStatsTimestampIndividual %}
-                    "{{item}}",
+        labels : [{% for item in dateRange %}
+                    "{{ item }}",
                     {% endfor %}],
         datasets : [{
             label: '{{ lengthLegend }}',
@@ -450,7 +451,7 @@
                     }
             },
             animation: {
-                easing: "linear"
+                duration: 0,
                 },
             legend: {
                 position: "top",
@@ -465,7 +466,7 @@
                     ticks: {
                         fontSize: 10,
                         autoSkip: true,
-                        maxTicksLimit: 15,
+                        maxTicksLimit: 5,
                         suggestedMax: {{ (cardStatsLengthIndividual[-1]*1.0005)|round }},
                         scaleLabel: "padding",
                         fontColor: "hsl(208, 7%, 46%)",
@@ -482,7 +483,7 @@
                         fontSize: 10,
                         stepSize: 100,
                         autoSkip: true,
-                        maxTicksLimit: 8,
+                        maxTicksLimit: 7,
                         scaleLabel: "<%= ' ' + value%>",
                         fontColor: "hsl(208, 7%, 46%)",
                         maxRotation: 0,
@@ -505,7 +506,7 @@
         // define the chart data
 
         var chartData = {
-        labels : [{% for item in cardStatsTimestampIndividual %}
+        labels : [{% for item in dateRange %}
                     "{{item}}",
                     {% endfor %}],
         datasets : [{
@@ -554,7 +555,7 @@
                     }
             },
             animation: {
-                easing: "linear"
+                duration: 0,
                 },
             legend: {
                 position: "top",
@@ -569,7 +570,7 @@
                     ticks: {
                         fontSize: 10,
                         autoSkip: true,
-                        maxTicksLimit: 15,
+                        maxTicksLimit: 5,
                         suggestedMax: {{ (cardStatsSumIndividual[-1]*1.0005)|round }},
                         scaleLabel: "padding",
                         fontColor: "hsl(208, 7%, 46%)",
@@ -588,7 +589,7 @@
                         fontSize: 10,
                         stepSize: 100,
                         autoSkip: true,
-                        maxTicksLimit: 8,
+                        maxTicksLimit: 7,
                         scaleLabel: "<%= ' ' + value%>",
                         fontColor: "hsl(208, 7%, 46%)",
                         maxRotation: 0,
@@ -611,9 +612,8 @@
         // define the chart data
 
         var chartData = {
-            labels : [
-                    {% for item in cardDateIndividual %}
-                        "{{ item[0:3] }}. {{ item[-2] }}{{ item[-1] }}",
+        labels :  [{% for item in dateRangeSpot %}
+                        "{{item}}",
                     {% endfor %}],
         datasets : [{
             label: '{{ spotLegend }}',
@@ -661,7 +661,7 @@
                     }
             },
             animation: {
-                easing: "linear"
+                duration: 0,
                 },
             legend: {
                 position: "top",
@@ -676,7 +676,7 @@
                     ticks: {
                         fontSize: 10,
                         autoSkip: true,
-                        maxTicksLimit: 15,
+                        maxTicksLimit: 5,
                         suggestedMax: {{ (cardPriceIndividual[-1]*1.0005)|round }},
                         scaleLabel: "padding",
                         fontColor: "hsl(208, 7%, 46%)",
@@ -696,7 +696,7 @@
                         fontSize: 10,
                         stepSize: 100,
                         autoSkip: true,
-                        maxTicksLimit: 8,
+                        maxTicksLimit: 7,
                         scaleLabel: "<%= ' ' + value%>",
                         fontColor: "hsl(208, 7%, 46%)",
                         maxRotation: 0,
@@ -719,9 +719,8 @@
         // define the chart data
 
         var chartData = {
-            labels : [
-                    {% for item in cardStatsActiveTimestampIndividual %}
-                        "{{ item }} ",
+        labels :  [{% for item in dateRangeActive %}
+                        "{{item}}",
                     {% endfor %}],
         datasets : [{
             label: '{{ depthLegend }}',
@@ -769,7 +768,7 @@
                     }
             },
             animation: {
-                easing: "linear"
+                duration: 0,
                 },
             legend: {
                 position: "top",
@@ -784,7 +783,7 @@
                     ticks: {
                         fontSize: 10,
                         autoSkip: true,
-                        maxTicksLimit: 15,
+                        maxTicksLimit: 5,
                         suggestedMax: {{ (cardStatsActiveCountIndividual[-1] + (cardStatsActiveCountIndividual[-1]/4))|round }},
                         scaleLabel: "padding",
                         fontColor: "hsl(208, 7%, 46%)",
@@ -801,7 +800,7 @@
                         fontSize: 10,
                         stepSize: 100,
                         autoSkip: true,
-                        maxTicksLimit: 8,
+                        maxTicksLimit: 7,
                         scaleLabel: "<%= ' ' + value%>",
                         fontColor: "hsl(208, 7%, 46%)",
                         maxRotation: 0,
