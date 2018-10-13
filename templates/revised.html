@@ -174,7 +174,7 @@
         gradientFill.addColorStop(1, "#6b8ee0");
         // draw the chart
         var chartData = {
-            labels : [{% for item in revisedDataAvgTimestampDuals %}
+            labels : [{% for item in dateRange %}
                          "{{ item }}",
                      {% endfor %}],
             datasets : [{
@@ -223,7 +223,7 @@
                         }
                 },
                 animation: {
-                    easing: "linear"
+                    duration: 0,
                     },
                 legend: {
                     position: "top",
@@ -255,12 +255,14 @@
                     }],
                     xAxes: [{
                         ticks: {
+                            padding: 5,
                             fontSize: 10,
-                            stepSize: 100,
                             autoSkip: true,
                             maxTicksLimit: 8,
                             scaleLabel: "<%= ' ' + value%>",
                             fontColor: "hsl(208, 7%, 46%)",
+                            maxRotation: 0,
+                            minRotation: 0
                             },
                         gridLines: {
                             display: false,
@@ -279,7 +281,7 @@
         // define the chart data
 
         var chartData = {
-        labels : [{% for item in revisedDataCountTimestampDuals %}
+        labels : [{% for item in dateRange %}
                     "{{item}}",
                     {% endfor %}],
         datasets : [{
@@ -328,7 +330,7 @@
                     }
             },
             animation: {
-                easing: "linear"
+                duration: 0,
                 },
             legend: {
                 position: "top",
@@ -357,12 +359,14 @@
                 }],
                 xAxes: [{
                     ticks: {
+                        padding: 5,
                         fontSize: 10,
-                        stepSize: 100,
                         autoSkip: true,
                         maxTicksLimit: 8,
                         scaleLabel: "<%= ' ' + value%>",
                         fontColor: "hsl(208, 7%, 46%)",
+                        maxRotation: 0,
+                        minRotation: 0
                         },
                     gridLines: {
                         display: false,
@@ -381,7 +385,7 @@
         // define the chart data
 
         var chartData = {
-        labels : [{% for item in revisedDataLengthTimestampDuals %}
+        labels : [{% for item in dateRange %}
                     "{{item}}",
                     {% endfor %}],
         datasets : [{
@@ -430,7 +434,7 @@
                     }
             },
             animation: {
-                easing: "linear"
+                duration: 0,
                 },
             legend: {
                 position: "top",
@@ -459,12 +463,14 @@
                 }],
                 xAxes: [{
                     ticks: {
+                        padding: 5,
                         fontSize: 10,
-                        stepSize: 100,
                         autoSkip: true,
                         maxTicksLimit: 8,
                         scaleLabel: "<%= ' ' + value%>",
                         fontColor: "hsl(208, 7%, 46%)",
+                        maxRotation: 0,
+                        minRotation: 0
                         },
                     gridLines: {
                         display: false,
@@ -484,7 +490,7 @@
 
         var chartData = {
             labels : [
-                    {% for item in revisedDataCumulativeTimestampDuals %}
+                    {% for item in dateRange %}
                         "{{item}}",
                     {% endfor %}],
         datasets : [{
@@ -533,7 +539,7 @@
                     }
             },
             animation: {
-                easing: "linear"
+                duration: 0,
                 },
             legend: {
                 position: "top",
@@ -565,12 +571,14 @@
                 }],
                 xAxes: [{
                     ticks: {
+                        padding: 5,
                         fontSize: 10,
-                        stepSize: 100,
                         autoSkip: true,
                         maxTicksLimit: 8,
                         scaleLabel: "<%= ' ' + value%>",
                         fontColor: "hsl(208, 7%, 46%)",
+                        maxRotation: 0,
+                        minRotation: 0
                         },
                     gridLines: {
                         display: false,

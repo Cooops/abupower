@@ -12,8 +12,35 @@ import pytz
 #TODO: assert checks if need be
 #TODO: memory profiling if need be
 
+# begin global paths
+ALPHA_PATH = 'C:\\Users\\coope\\production_abupower\\csvs\\alpha.csv'
+BETA_PATH = 'C:\\Users\\coope\\production_abupower\\csvs\\beta.csv'
+UNLIMITED_PATH = 'C:\\Users\\coope\\production_abupower\\csvs\\unlimited.csv'
+REVISED_PATH = 'C:\\Users\\coope\\production_abupower\\csvs\\revised.csv'
+LEGENDS_PATH = 'C:\\Users\\coope\\production_abupower\\csvs\\leg.csv'
+ARABIAN_NIGHTS_PATH = 'C:\\Users\\coope\\production_abupower\\csvs\\arn.csv'
+DARK_PATH = 'C:\\Users\\coope\\production_abupower\\csvs\\dark.csv'
+ANTIQUITIES_PATH = 'C:\\Users\\coope\\production_abupower\\csvs\\atq.csv'
+HOMELANDS_PATH = 'C:\\Users\\coope\\production_abupower\\csvs\\home.csv'
+FALLEN_EMPIRES_PATH = 'C:\\Users\\coope\\production_abupower\\csvs\\fem.csv'
+COLLECTORS_EDITION_PATH = 'C:\\Users\\coope\\production_abupower\\csvs\\ce.csv'
+INTERNATIONAL_COLLECTORS_EDITION_PATH = 'C:\\Users\\coope\\production_abupower\\csvs\\ice.csv'
+
+# begin global configs
+POWER_CONFIG = {
+    'Alpha': 'Power',
+    'Beta': 'Power',
+    'Unlimited': 'Power',
+}
+DUALS_CONFIG = {
+    'Alpha': 'Duals',
+    'Beta': 'Duals',
+    'Unlimited': 'Duals',
+    'Revised': 'Duals'
+}
 CONFIG = configparser.ConfigParser()
 CONFIG.read('CONFIG.ini')
+
 
 def database_connection():
     try:
@@ -72,7 +99,7 @@ def get_search_words():
     """() -> list
 
     Reads a .txt file for search words and returns the corresponding values in list form."""
-    # The txt file format DOES NOT WORK, as it is inserting some sort of characters into the DB that we CANNOT remove. 
+    # the txt file format DOES NOT WORK, as it is inserting some sort of characters into the DB that we CANNOT remove. 
     # The hard-coded array method is all that works so far.
     # with open("search_words.txt") as txtFile:
     #     words = []

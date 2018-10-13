@@ -26,7 +26,7 @@ def prune_completed(value, cursor):
         '''
     )
     cursor.execute(query)
-    cursor.close()
+    # cursor.close()
 
 def prune_active(value, cursor):
     #TODO: add logger here so we can see how many items are getting pruned (and which ones) on average @ 9/22/2018
@@ -45,7 +45,7 @@ def prune_active(value, cursor):
         '''
     )
     cursor.execute(query)
-    cursor.close()
+    # cursor.close()
 
 def get_data_single_product_avg(value):
     """() -> variable
@@ -196,7 +196,7 @@ def get_data_alpha_avg_length():
     Returns a list of all of the alpha values' avg length inserted into the database, in descending order by the primary id."""
     query = (
         f'''
-        SELECT completed_product_index_length_avg, timestamp::date
+        SELECT completed_product_index_length_avg, timestamp
         FROM production_completed_products_index
         WHERE completed_product_set_id = '1'
         AND completed_product_index_length_avg != 0
@@ -364,7 +364,7 @@ def get_data_beta_avg_length():
     Returns a list of all of the beta index avg length values inserted into the database, in ascending order by the primary id."""
     query = (
         f'''
-        SELECT completed_product_index_length_avg, timestamp::date
+        SELECT completed_product_index_length_avg, timestamp
         FROM production_completed_products_index
         WHERE completed_product_set_id = '2'
         AND completed_product_index_length_avg != 0
@@ -500,7 +500,7 @@ def get_data_unlimited_avg_all():
     Returns a list of all of the unlimited avg values inserted into the database, in ascending order by timestamp."""
     query = (
         f'''
-        SELECT completed_product_index_avg, timestamp::date
+        SELECT completed_product_index_avg, timestamp
         FROM production_completed_products_index
         WHERE completed_product_set_id = '3'
 		AND completed_product_index_avg IS NOT NULL
@@ -516,7 +516,7 @@ def get_data_unlimited_avg_length():
        Returns a list of the averages of each respective product in the database, in ascending order by primary id."""
     query = (
         f'''
-        SELECT completed_product_index_length_avg, timestamp::date
+        SELECT completed_product_index_length_avg, timestamp
         FROM production_completed_products_index
         WHERE completed_product_set_id = '3'
         AND completed_product_index_length_avg != 0
@@ -532,7 +532,7 @@ def get_data_unlimited_total_sold():
     Returns a list of all of the values avg inserted into the database, in descending order by the primary id."""
     query = (
         f'''
-        SELECT completed_product_index_count_sum, timestamp::date
+        SELECT completed_product_index_count_sum, timestamp
         FROM production_completed_products_index
         WHERE completed_product_set_id = '3'
         AND completed_product_index_count_sum != 0
@@ -613,7 +613,7 @@ def get_data_unlimited_cumulative_totals():
     Returns a list of the cumulative sum of unlimited cards in the database, sorted in ascending order by timestmap."""
     query = (
         f'''
-        SELECT completed_product_index_sum, timestamp::date FROM production_completed_products_index WHERE completed_product_set_id = '3' AND completed_product_index_sum IS NOT NULL ORDER BY timestamp ASC; 
+        SELECT completed_product_index_sum, timestamp FROM production_completed_products_index WHERE completed_product_set_id = '3' AND completed_product_index_sum IS NOT NULL ORDER BY timestamp ASC; 
         ''')
     data = fetch_data(query)
     return data
@@ -624,7 +624,7 @@ def get_data_unlimited_power_cumulative_totals():
     Returns a list of all of the data points for unlimited power in the database, sorted in ascending order by start date."""
     query = (
         f'''
-        SELECT completed_product_index_sum, timestamp::date FROM production_completed_products_index WHERE completed_product_set_id = '3' AND completed_product_index_sum IS NOT NULL ORDER BY timestamp ASC; 
+        SELECT completed_product_index_sum, timestamp FROM production_completed_products_index WHERE completed_product_set_id = '3' AND completed_product_index_sum IS NOT NULL ORDER BY timestamp ASC; 
         ''')
     data = fetch_data(query)
     return data
@@ -671,7 +671,7 @@ def get_data_alpha_duals_avg_length():
        Returns a list of the averages of each respective product in the database, in ascending order by primary id."""
     query = (
         f'''
-        SELECT completed_product_index_length_avg, timestamp::date 
+        SELECT completed_product_index_length_avg, timestamp 
         FROM (SELECT completed_product_index_length_avg, timestamp
             FROM production_completed_products_index
             WHERE completed_product_set_id = '4'
@@ -813,7 +813,7 @@ def get_data_beta_duals_avg_length():
        Returns a list of the averages of each respective product in the database, in ascending order by primary id."""
     query = (
         f'''
-        SELECT completed_product_index_length_avg, timestamp::date 
+        SELECT completed_product_index_length_avg, timestamp
         FROM (SELECT completed_product_index_length_avg, timestamp
             FROM production_completed_products_index
             WHERE completed_product_set_id = '5'
@@ -911,7 +911,7 @@ def get_data_beta_duals_cumulative_totals():
     Returns a list of all of the active beta cards in the database, sorted in ascending order by start date."""
     query = (
         f'''
-        SELECT completed_product_index_sum, timestamp::date FROM production_completed_products_index WHERE completed_product_set_id = '5' AND completed_product_index_sum IS NOT NULL ORDER BY timestamp ASC; 
+        SELECT completed_product_index_sum, timestamp FROM production_completed_products_index WHERE completed_product_set_id = '5' AND completed_product_index_sum IS NOT NULL ORDER BY timestamp ASC; 
         ''')
     data = fetch_data(query)
     return data
@@ -939,7 +939,7 @@ def get_data_unlimited_duals_avg_all():
     Returns a list of all of the values avg inserted into the database, in descending order by the primary id."""
     query = (
         f'''
-        SELECT completed_product_index_avg, timestamp::date
+        SELECT completed_product_index_avg, timestamp
         FROM production_completed_products_index
         WHERE completed_product_set_id = '6'
 		AND completed_product_index_avg IS NOT NULL
@@ -955,7 +955,7 @@ def get_data_unlimited_duals_avg_length():
        Returns a list of the averages of each respective product in the database, in ascending order by primary id."""
     query = (
         f'''
-        SELECT completed_product_index_length_avg, timestamp::date 
+        SELECT completed_product_index_length_avg, timestamp
         FROM (SELECT completed_product_index_length_avg, timestamp
             FROM production_completed_products_index
             WHERE completed_product_set_id = '6'
@@ -1053,7 +1053,7 @@ def get_data_unlimited_duals_cumulative_totals():
     Returns a list of all of the active unlimited cards in the database, sorted in ascending order by start date."""
     query = (
         f'''
-        SELECT completed_product_index_sum, timestamp::date FROM production_completed_products_index WHERE completed_product_set_id = '6' AND completed_product_index_sum IS NOT NULL ORDER BY timestamp ASC; 
+        SELECT completed_product_index_sum, timestamp FROM production_completed_products_index WHERE completed_product_set_id = '6' AND completed_product_index_sum IS NOT NULL ORDER BY timestamp ASC; 
         ''')
     data = fetch_data(query)
     return data
@@ -1082,7 +1082,7 @@ def get_data_revised_avg_all():
     Returns a list of all of the values avg inserted into the database, in descending order by the primary id."""
     query = (
         f'''
-        SELECT completed_product_index_avg, timestamp::date
+        SELECT completed_product_index_avg, timestamp
         FROM production_completed_products_index
         WHERE completed_product_set_id = '7'
 		AND completed_product_index_avg IS NOT NULL
@@ -1212,7 +1212,7 @@ def get_data_revised_cumulative_totals():
     Returns a list of all of the active revised cards in the database, sorted in ascending order by start date."""
     query = (
         f'''
-        SELECT completed_product_index_sum, timestamp::date FROM production_completed_products_index WHERE completed_product_set_id = '7' AND completed_product_index_sum IS NOT NULL ORDER BY timestamp ASC; 
+        SELECT completed_product_index_sum, timestamp FROM production_completed_products_index WHERE completed_product_set_id = '7' AND completed_product_index_sum IS NOT NULL ORDER BY timestamp ASC; 
         ''')
     data = fetch_data(query)
     return data

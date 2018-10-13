@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     {% include 'styles_generic.html' %}
-    <title>Home</title>
+    <title>abupower</title>
   </head>
 <header>
     {% include 'nav_home.html' %}
@@ -17,15 +17,26 @@
                 <input type="text" name="search" id="locationfield">
                 <button type="submit">Go!</button>
             </form> -->
-        <form id="search" method="get" action="{{ url_for('location') }}" class="search-box">
-            <!-- <input class="s-box" type="text" name="search" placeholder="Unlimited Black Lotus.. "> -->
-            <input id="locationfield" class="s-box" type="text" name="search" placeholder="Unlimited Black Lotus..">
-            <!-- <a class="s-btn" href="http://127.0.0.1:8050/unlimited/stats/power/black-lotus"> -->
-            <a class="s-btn" href="">
-                <!-- <i class="fab fa-searchengin"></i> -->
-                <i class="fas fa-search"></i>
-            </a>
-        </form>
+            <!--  style="position: fixed; text-align: center; float: center;" -->
+        <!-- <span>
+            <form id="search" method="get" action="{{ url_for('location') }}" class="search-box">
+                <input id="locationfield" class="s-box" type="text" name="search" placeholder="Unlimited Black Lotus..">
+                <a class="s-btn" href="">
+                    <i class="fas fa-search"></i>
+                </a>
+            </form>
+        </span> -->
+        <span>
+            <form id="search" method="get" action="{{ url_for('location') }}" class="search-box">
+                <!-- <input class="s-box" type="text" name="search" placeholder="Unlimited Black Lotus.. "> -->
+                <input id="locationfield" class="s-box" type="text" name="search" placeholder="Unlimited Black Lotus..">
+                <!-- <a class="s-btn" href="http://127.0.0.1:8050/unlimited/stats/power/black-lotus"> -->
+                <a class="s-btn" href="">
+                    <!-- <i class="fab fa-searchengin"></i> -->
+                    <i class="fas fa-search"></i>
+                </a>
+            </form>
+        </span>
     </div>
 </section>
 <section id="features">
@@ -34,19 +45,19 @@
         <div class="grid">
             <div class="bg-shd" id="feat"><i class="far fa-clock"></i>
                 <h3>Updated daily</h3>
-                <p>Data pulled once a day at 12:30pm CST via a schedule Cron Job.</p><a href="#">More ></a></div>
+                <p>Data pulled once a day at 12:30pm CST via a scheduled Cron Job.</p><a href="/about">More ></a></div>
             <div class="bg-shd" id="feat"><i class="fas fa-cogs"></i>
                 <h3>Pre-filtered</h3>
-                <p>Leverages the power of regex to pre-filter a massive amount of false positives.</p><a href="#">More ></a></div>
+                <p>Leverages the power of regex to pre-filter a massive amount of false positives.</p><a href="/about">More ></a></div>
             <div class="bg-shd" id="feat"><i class="far fa-chart-bar"></i>
                 <h3>Beautifully plotted</h3>
-                <p>Cleaned, normalized, and plotted in one easy-to-view location.</p><a href="#">More ></a></div>
+                <p>Cleaned, normalized, and plotted in one easy-to-view location.</p><a href="/about">More ></a></div>
         </div>
     </div>
 </section>
 <section class="bg-shd" id="contacts">
     <div class="box">
-        <h2>Subscribe below to received updates about this and other projects. No spam, ever 👍.</h2>
+        <h2>Subscribe below to receive updates about this and other projects. No spam, ever 👍.</h2>
         <form id="email" method="post" action="email">
             <label for="user">
                 <input id="user" type="text" name="name" placeholder="Name"/>
