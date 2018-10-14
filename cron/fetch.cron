@@ -1,0 +1,1 @@
+1 5 * * * /home/coopes/abupower/abupowerenv/bin/python /home/coopes/abupower/test.py >> /home/coopes/abupower/cronlog.txt ; /home/coopes/abupower/abupowerenv/bin/python /home/coopes/abupower/test2.py >> /home/coopes/abupower/cronlog.txt 2>&1
