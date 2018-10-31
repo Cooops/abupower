@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
 import sys
+print(sys.version)
 sys.path.append('/home/coopes/abupower/abupowerenv/lib/python3.6/site-packages')
 from flask import Flask, jsonify, request, render_template, make_response, redirect, url_for
 from flask_restful import Resource, Api
-from build_dataframes import *
-import json
 from jinja2 import Template
+import json
 import requests
 from gen_utils import *
+from build_dataframes import *
+# import utils.gen_utils
+# import utils.build_dataframes
+# from utils.gen_utils import *
+# from utils.build_dataframes import *
 
 ##############################
 # assign global Flask values #
@@ -392,7 +397,6 @@ def renderIndividualAlphaCardPower(cardName):
     # begin general schema #
     ########################
     df_allDataIndividual = get_all_data_individual_general(modCardName)
-    # print(df_allDataIndividual)
     cardPriceIndividual = list(df_allDataIndividual['completed_product_prices'])
     cardEndIndividual = list(df_allDataIndividual['enddate'])
     cardEndMonthIndividual = list(df_allDataIndividual['month'])
@@ -411,14 +415,9 @@ def renderIndividualAlphaCardPower(cardName):
     cardStatsTimestampIndividual = list(df_allStatsIndividual['timestamp'])
     # begin active
     df_allActiveStatsIndividual = get_all_data_individual_stats_active(modCardName)
-    # cardStatsAvgIndividual = list(df_allStatsIndividual['active_product_avg'])
-    # cardStatsLengthIndividual = list(df_allStatsIndividual['active_product_avg_length'])
     cardStatsActiveCountIndividual = list(df_allActiveStatsIndividual['active_product_depth'])
-    # cardStatsSumIndividual = list(df_allStatsIndividual['active_product_sum'])
     cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
-    # fetch JSON data from api endpoint
-    url = "https://www.abupower.com/api/alpha/power/table"
-    # json_data = requests.get(url, timeout=15).json()
+    url = "https://abupower/api/alpha/power/table"
     json_data = requests.get(url).json()
     x = json_data['results']
     # iterate over parsed JSON results
@@ -473,7 +472,6 @@ def renderIndividualBetaCardPower(cardName):
     # begin general schema #
     ########################
     df_allDataIndividual = get_all_data_individual_general(modCardName)
-    # print(df_allDataIndividual)
     cardPriceIndividual = list(df_allDataIndividual['completed_product_prices'])
     cardEndIndividual = list(df_allDataIndividual['enddate'])
     cardEndMonthIndividual = list(df_allDataIndividual['month'])
@@ -491,14 +489,9 @@ def renderIndividualBetaCardPower(cardName):
     cardStatsTimestampIndividual = list(df_allStatsIndividual['timestamp'])
     # begin active
     df_allActiveStatsIndividual = get_all_data_individual_stats_active(modCardName)
-    # cardStatsAvgIndividual = list(df_allStatsIndividual['active_product_avg'])
-    # cardStatsLengthIndividual = list(df_allStatsIndividual['active_product_avg_length'])
     cardStatsActiveCountIndividual = list(df_allActiveStatsIndividual['active_product_depth'])
-    # cardStatsSumIndividual = list(df_allStatsIndividual['active_product_sum'])
     cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
-    # fetch JSON data from api endpoint
-    url = "https://www.abupower.com/api/beta/power/table"
-    # json_data = requests.get(url, timeout=15).json()
+    url = "https://abupower/api/beta/power/table"
     json_data = requests.get(url).json()
     x = json_data['results']
     # iterate over parsed JSON results
@@ -542,7 +535,7 @@ def renderIndividualUnlimitedCardPower(cardName):
     modName = cardName.replace('%20', ' ').replace('-', ' ').split(' ')
     wordLength = len(modName)
     if wordLength > 1:
-        print(modName)
+        # print(modName)
         if modName[0].lower() == 'black':
             modCardName = f'Unlimited {modName[0].capitalize()} {modName[1].capitalize()} MTG'
         else:
@@ -550,11 +543,11 @@ def renderIndividualUnlimitedCardPower(cardName):
     else:
         # print(cardName)
         modCardName = f'Unlimited {cardName.capitalize()}'
+
     ########################
     # begin general schema #
     ########################
     df_allDataIndividual = get_all_data_individual_general(modCardName)
-    # print(df_allDataIndividual)
     cardPriceIndividual = list(df_allDataIndividual['completed_product_prices'])
     cardTimestampIndividual = list(df_allDataIndividual['timestamp'])
     cardEndIndividual = list(df_allDataIndividual['enddate'])
@@ -574,14 +567,86 @@ def renderIndividualUnlimitedCardPower(cardName):
     cardStatsTimestampIndividual = list(df_allStatsIndividual['timestamp'])
     # begin active
     df_allActiveStatsIndividual = get_all_data_individual_stats_active(modCardName)
-    # cardStatsAvgIndividual = list(df_allStatsIndividual['active_product_avg'])
-    # cardStatsLengthIndividual = list(df_allStatsIndividual['active_product_avg_length'])
     cardStatsActiveCountIndividual = list(df_allActiveStatsIndividual['active_product_depth'])
-    # cardStatsSumIndividual = list(df_allStatsIndividual['active_product_sum'])
     cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
-    # fetch JSON data from api endpoint
-    url = "https://www.abupower.com/api/unlimited/power/table"
-    # json_data = requests.get(url, timeout=15).json()
+    url = "https://abupower/api/unlimited/power/table"
+    json_data = requests.get(url).json()
+    x = json_data['results']
+    # iterate over parsed JSON results
+    price = [i['price'] for i in x if modCardName == i['nick']]
+    priceChange = [i['priceChange'] for i in x if modCardName == i['nick']]
+    count = [i['count'] for i in x if modCardName == i['nick']]
+    countChange = [i['countChange'] for i in x if modCardName == i['nick']]
+    length = [i['length'] for i in x if modCardName == i['nick']]
+    lengthChange = [i['lengthChange'] for i in x if modCardName == i['nick']]
+    cumSum = [i['cumSum'] for i in x if modCardName == i['nick']]
+    cumSumChange = [i['sumChange'] for i in x if modCardName == i['nick']]
+    # begin modified dateRange (when piping the historical data we didn't properly document the dates)
+    periodLength = len(cardStatsTimestampIndividual)
+    dateRange = pd.date_range(get_timezones(periodLength), periods=periodLength).tolist()
+    dateRange = [i.strftime('%b. %d') for i in dateRange]
+    periodLengthSpot = len(cardDateIndividual)
+    dateRangeSpot = pd.date_range(get_timezones(periodLengthSpot), periods=periodLengthSpot).tolist()
+    dateRangeSpot = [i.strftime('%b. %d') for i in dateRangeSpot]
+    periodLengthActive = len(cardStatsActiveTimestampIndividual)
+    dateRangeActive = pd.date_range(get_timezones(periodLengthActive), periods=periodLengthActive).tolist()
+    dateRangeActive = [i.strftime('%b. %d') for i in dateRangeActive]
+    return make_response(render_template('individual_card.html',
+        priceLegend=priceLegend, lengthLegend=lengthLegend, countLegend=countLegend, sumLegend=sumLegend, spotLegend=spotLegend, depthLegend=depthLegend,
+        cardName=modCardName.split('MTG')[0], cardNameIndividual=modCardName.split('MTG')[0].split(' ', 1)[0], secondCardNameIndividual=modCardName.split('MTG')[0].split(' ', 1)[1].rstrip(),
+        cardPriceIndividual=cardPriceIndividual, cardEndIndividual=cardEndIndividual, cardDateIndividual=cardDateIndividual, cardTimestampIndividual=cardTimestampIndividual,
+        cardStatsAvgIndividual=cardStatsAvgIndividual, cardStatsLengthIndividual=cardStatsLengthIndividual, cardStatsCountIndividual=cardStatsCountIndividual, cardStatsSumIndividual=cardStatsSumIndividual, cardStatsTimestampIndividual=cardStatsTimestampIndividual,
+        cardStatsActiveCountIndividual=cardStatsActiveCountIndividual, cardStatsActiveTimestampIndividual=cardStatsActiveTimestampIndividual,
+        price=price, priceChange=priceChange, count=count, countChange=countChange, length=length, lengthChange=lengthChange, cumSum=cumSum, cumSumChange=cumSumChange, dateRange=dateRange, dateRangeSpot=dateRangeSpot, dateRangeActive=dateRangeActive,
+        ), 200, headers)
+
+# ce & ice routes
+# begin ce routes
+@app.route('/collectors/stats/power/<cardName>')
+def renderIndividualCollectorsCardPower(cardName):
+    priceLegend = 'Price (avg)'
+    lengthLegend = 'Avg Length (days)'
+    countLegend = 'Total Sold (listings)'
+    sumLegend = 'Cumulative Sales (gross)'
+    spotLegend = 'Spot Price'
+    depthLegend = 'Active Listings'
+    headers = {'Content-Type': 'text/html'}
+    modName = cardName.replace('%20', ' ').replace('-', ' ').split(' ')
+    wordLength = len(modName)
+    if wordLength > 1:
+        # print(modName)
+        if modName[0].lower() == 'black':
+            modCardName = f'Collectors {modName[0].capitalize()} {modName[1].capitalize()} MTG'
+        else:
+            modCardName = f'Collectors {modName[0].capitalize()} {modName[1].capitalize()}'
+    else:
+        # print(cardName)
+        modCardName = f'Collectors {cardName.capitalize()}'
+    ########################
+    # begin general schema #
+    ########################
+    df_allDataIndividual = get_all_data_individual_general(modCardName)
+    cardPriceIndividual = list(df_allDataIndividual['completed_product_prices'])
+    cardTimestampIndividual = list(df_allDataIndividual['timestamp'])
+    cardEndIndividual = list(df_allDataIndividual['enddate'])
+    cardEndMonthIndividual = list(df_allDataIndividual['month'])
+    cardEndDayIndividual = list(df_allDataIndividual['day'])
+    cardDateIndividual = [f'{str(x).rstrip()} {float(str(y).lstrip()):.0f}' for x, y in zip(cardEndMonthIndividual, cardEndDayIndividual)]
+    ######################
+    # begin stats schema #
+    ######################
+    # begin completed
+    df_allStatsIndividual = get_all_data_individual_stats(modCardName)
+    cardStatsAvgIndividual = list(df_allStatsIndividual['completed_product_avg'])
+    cardStatsLengthIndividual = list(df_allStatsIndividual['completed_product_avg_length'])
+    cardStatsCountIndividual = list(df_allStatsIndividual['completed_product_depth'])
+    cardStatsSumIndividual = list(df_allStatsIndividual['completed_product_sum'])
+    cardStatsTimestampIndividual = list(df_allStatsIndividual['timestamp'])
+    # begin active
+    df_allActiveStatsIndividual = get_all_data_individual_stats_active(modCardName)
+    cardStatsActiveCountIndividual = list(df_allActiveStatsIndividual['active_product_depth'])
+    cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
+    url = "https://abupower/api/collectors/power/table"
     json_data = requests.get(url).json()
     x = json_data['results']
     # iterate over parsed JSON results
@@ -633,7 +698,6 @@ def renderIndividualAlphaCard(cardName):
     # begin general schema #
     ########################
     df_allDataIndividual = get_all_data_individual_general(modCardName)
-    # print(df_allDataIndividual)
     cardPriceIndividual = list(df_allDataIndividual['completed_product_prices'])
     cardEndIndividual = list(df_allDataIndividual['enddate'])
     cardEndMonthIndividual = list(df_allDataIndividual['month'])
@@ -651,14 +715,9 @@ def renderIndividualAlphaCard(cardName):
     cardStatsTimestampIndividual = list(df_allStatsIndividual['timestamp'])
     # begin active
     df_allActiveStatsIndividual = get_all_data_individual_stats_active(modCardName)
-    # cardStatsAvgIndividual = list(df_allStatsIndividual['active_product_avg'])
-    # cardStatsLengthIndividual = list(df_allStatsIndividual['active_product_avg_length'])
     cardStatsActiveCountIndividual = list(df_allActiveStatsIndividual['active_product_depth'])
-    # cardStatsSumIndividual = list(df_allStatsIndividual['active_product_sum'])
     cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
-    # fetch JSON data from api endpoint
-    url = "https://www.abupower.com/api/alpha/duals/table"
-    # json_data = requests.get(url, timeout=15).json()
+    url = "https://abupower/api/alpha/duals/table"
     json_data = requests.get(url).json()
     x = json_data['results']
     # iterate over parsed JSON results
@@ -709,7 +768,6 @@ def renderIndividualBetaCard(cardName):
     # begin general schema #
     ########################
     df_allDataIndividual = get_all_data_individual_general(modCardName)
-    # print(df_allDataIndividual)
     cardPriceIndividual = list(df_allDataIndividual['completed_product_prices'])
     cardEndIndividual = list(df_allDataIndividual['enddate'])
     cardEndMonthIndividual = list(df_allDataIndividual['month'])
@@ -727,14 +785,9 @@ def renderIndividualBetaCard(cardName):
     cardStatsTimestampIndividual = list(df_allStatsIndividual['timestamp'])
     # begin active
     df_allActiveStatsIndividual = get_all_data_individual_stats_active(modCardName)
-    # cardStatsAvgIndividual = list(df_allStatsIndividual['active_product_avg'])
-    # cardStatsLengthIndividual = list(df_allStatsIndividual['active_product_avg_length'])
     cardStatsActiveCountIndividual = list(df_allActiveStatsIndividual['active_product_depth'])
-    # cardStatsSumIndividual = list(df_allStatsIndividual['active_product_sum'])
     cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
-    # fetch JSON data from api endpoint
-    url = "https://www.abupower.com/api/beta/duals/table"
-    # json_data = requests.get(url, timeout=15).json()
+    url = "https://abupower/api/beta/duals/table"
     json_data = requests.get(url).json()
     x = json_data['results']
     # iterate over parsed JSON results
@@ -786,7 +839,6 @@ def renderIndividualUnlimitedCard(cardName):
     # begin general schema #
     ########################
     df_allDataIndividual = get_all_data_individual_general(modCardName)
-    # print(df_allDataIndividual)
     cardPriceIndividual = list(df_allDataIndividual['completed_product_prices'])
     cardEndIndividual = list(df_allDataIndividual['enddate'])
     cardEndMonthIndividual = list(df_allDataIndividual['month'])
@@ -804,14 +856,9 @@ def renderIndividualUnlimitedCard(cardName):
     cardStatsTimestampIndividual = list(df_allStatsIndividual['timestamp'])
     # begin active
     df_allActiveStatsIndividual = get_all_data_individual_stats_active(modCardName)
-    # cardStatsAvgIndividual = list(df_allStatsIndividual['active_product_avg'])
-    # cardStatsLengthIndividual = list(df_allStatsIndividual['active_product_avg_length'])
     cardStatsActiveCountIndividual = list(df_allActiveStatsIndividual['active_product_depth'])
-    # cardStatsSumIndividual = list(df_allStatsIndividual['active_product_sum'])
     cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
-    # fetch JSON data from api endpoint
-    url = "https://www.abupower.com/api/unlimited/duals/table"
-    # json_data = requests.get(url, timeout=15).json()
+    url = "https://abupower/api/unlimited/duals/table"
     json_data = requests.get(url).json()
     x = json_data['results']
     # iterate over parsed JSON results
@@ -841,7 +888,77 @@ def renderIndividualUnlimitedCard(cardName):
         cardStatsActiveCountIndividual=cardStatsActiveCountIndividual, cardStatsActiveTimestampIndividual=cardStatsActiveTimestampIndividual,
         price=price, priceChange=priceChange, count=count, countChange=countChange, length=length, lengthChange=lengthChange, cumSum=cumSum, cumSumChange=cumSumChange, dateRange=dateRange, dateRangeSpot=dateRangeSpot, dateRangeActive=dateRangeActive,
         ), 200, headers)
-        
+# begin ce routes
+@app.route('/collectors/stats/duals/<cardName>')
+def renderIndividualCollectorsCard(cardName):
+    # print(cardName)
+    priceLegend = 'Price (avg)'
+    lengthLegend = 'Avg Length (days)'
+    countLegend = 'Total Sold (listings)'
+    sumLegend = 'Cumulative Sales (gross)'
+    spotLegend = 'Spot Price'
+    depthLegend = 'Active Listings'
+    headers = {'Content-Type': 'text/html'}
+    modName = cardName.replace('%20', ' ').replace('-', ' ').split(' ')
+    wordLength = len(modName)
+    if wordLength > 1:
+        modCardName = f'Collectors {modName[0].capitalize()} {modName[1].capitalize()} MTG'
+    else:
+        modCardName = f'Collectors {modName[0].capitalize()} MTG'
+    ########################
+    # begin general schema #
+    ########################
+    df_allDataIndividual = get_all_data_individual_general(modCardName)
+    cardPriceIndividual = list(df_allDataIndividual['completed_product_prices'])
+    cardEndIndividual = list(df_allDataIndividual['enddate'])
+    cardEndMonthIndividual = list(df_allDataIndividual['month'])
+    cardEndDayIndividual = list(df_allDataIndividual['day'])
+    cardDateIndividual = [f'{str(x).rstrip()} {float(str(y).lstrip()):.0f}' for x, y in zip(cardEndMonthIndividual, cardEndDayIndividual)]
+    ######################
+    # begin stats schema #
+    ######################
+    # begin completed
+    df_allStatsIndividual = get_all_data_individual_stats(modCardName)
+    cardStatsAvgIndividual = list(df_allStatsIndividual['completed_product_avg'])
+    cardStatsLengthIndividual = list(df_allStatsIndividual['completed_product_avg_length'])
+    cardStatsCountIndividual = list(df_allStatsIndividual['completed_product_depth'])
+    cardStatsSumIndividual = list(df_allStatsIndividual['completed_product_sum'])
+    cardStatsTimestampIndividual = list(df_allStatsIndividual['timestamp'])
+    # begin active
+    df_allActiveStatsIndividual = get_all_data_individual_stats_active(modCardName)
+    cardStatsActiveCountIndividual = list(df_allActiveStatsIndividual['active_product_depth'])
+    cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
+    url = "https://abupower/api/collectors/duals/table"
+    json_data = requests.get(url).json()
+    x = json_data['results']
+    # iterate over parsed JSON results
+    price = [i['price'] for i in x if modCardName == i['nick']]
+    priceChange = [i['priceChange'] for i in x if modCardName == i['nick']]
+    count = [i['count'] for i in x if modCardName == i['nick']]
+    countChange = [i['countChange'] for i in x if modCardName == i['nick']]
+    length = [i['length'] for i in x if modCardName == i['nick']]
+    lengthChange = [i['lengthChange'] for i in x if modCardName == i['nick']]
+    cumSum = [i['cumSum'] for i in x if modCardName == i['nick']]
+    cumSumChange = [i['sumChange'] for i in x if modCardName == i['nick']]
+    # begin modified dateRange (when piping the historical data we didn't properly document the dates)
+    periodLength = len(cardStatsTimestampIndividual)
+    dateRange = pd.date_range(get_timezones(periodLength), periods=periodLength).tolist()
+    dateRange = [i.strftime('%b. %d') for i in dateRange]
+    periodLengthSpot = len(cardDateIndividual)
+    dateRangeSpot = pd.date_range(get_timezones(periodLengthSpot), periods=periodLengthSpot).tolist()
+    dateRangeSpot = [i.strftime('%b. %d') for i in dateRangeSpot]
+    periodLengthActive = len(cardStatsActiveTimestampIndividual)
+    dateRangeActive = pd.date_range(get_timezones(periodLengthActive), periods=periodLengthActive).tolist()
+    dateRangeActive = [i.strftime('%b. %d') for i in dateRangeActive]
+    return make_response(render_template('individual_card.html',
+        priceLegend=priceLegend, lengthLegend=lengthLegend, countLegend=countLegend, sumLegend=sumLegend, spotLegend=spotLegend, depthLegend=depthLegend,
+        cardName=modCardName.split('MTG')[0], cardNameIndividual=modCardName.split('MTG')[0].split(' ', 1)[0], secondCardNameIndividual=modCardName.split('MTG')[0].split(' ', 1)[1].rstrip(),
+        cardPriceIndividual=cardPriceIndividual, cardEndIndividual=cardEndIndividual, cardDateIndividual=cardDateIndividual,
+        cardStatsAvgIndividual=cardStatsAvgIndividual, cardStatsLengthIndividual=cardStatsLengthIndividual, cardStatsCountIndividual=cardStatsCountIndividual, cardStatsSumIndividual=cardStatsSumIndividual, cardStatsTimestampIndividual=cardStatsTimestampIndividual,
+        cardStatsActiveCountIndividual=cardStatsActiveCountIndividual, cardStatsActiveTimestampIndividual=cardStatsActiveTimestampIndividual,
+        price=price, priceChange=priceChange, count=count, countChange=countChange, length=length, lengthChange=lengthChange, cumSum=cumSum, cumSumChange=cumSumChange, dateRange=dateRange, dateRangeSpot=dateRangeSpot, dateRangeActive=dateRangeActive,
+        ), 200, headers)
+
 # begin revised routes
 @app.route('/revised/stats/duals/<cardName>')
 def renderIndividualRevisedCard(cardName):
@@ -858,28 +975,14 @@ def renderIndividualRevisedCard(cardName):
         modCardName = f'Revised {modName[0].capitalize()} {modName[1].capitalize()} MTG'
     else:
         modCardName = f'Revised {cardName.capitalize()} MTG'
-    # cardName = cardName.split('-')
-    # try:
-    #     modCardName = f'Revised {cardName[0].capitalize()} {cardName[1].capitalize()} MTG'
-    # except:
-    #     modCardName = f'Revised {cardName[0].capitalize()} MTG'
     ########################
     # begin general schema #
     ########################
     df_allDataIndividual = get_all_data_individual_general(modCardName)
-    # cardNameIndividual = list(df_allDataIndividual['completed_product_nick'])
-    # cardTitleIndividual = list(df_allDataIndividual['completed_product_titles'])
     cardPriceIndividual = list(df_allDataIndividual['completed_product_prices'])
-    # cardThumbIndividual = list(df_allDataIndividual['completed_product_img_thumb'])
-    # cardHrefIndividual = list(df_allDataIndividual['completed_product_img_url'])
-    # cardTypeIndividual = list(df_allDataIndividual['completed_product_lst_type'])
-    # cardLocIndividual = list(df_allDataIndividual['completed_product_loc'])
-    # cardStartIndividual = list(df_allDataIndividual['completed_product_start'])
     cardEndIndividual = list(df_allDataIndividual['enddate'])
     cardEndMonthIndividual = list(df_allDataIndividual['month'])
     cardEndDayIndividual = list(df_allDataIndividual['day'])
-    # cardTimestampIndividual = list(df_allDataIndividual['timestamp'])
-    # cardDepthIndividual = list(df_allDataIndividual['completed_product_depth'])
     cardDateIndividual = [f'{str(x).rstrip()} {float(str(y).lstrip()):.0f}' for x, y in zip(cardEndMonthIndividual, cardEndDayIndividual)]
     ######################
     # begin stats schema #
@@ -893,14 +996,9 @@ def renderIndividualRevisedCard(cardName):
     cardStatsTimestampIndividual = list(df_allStatsIndividual['timestamp'])
     # begin active
     df_allActiveStatsIndividual = get_all_data_individual_stats_active(modCardName)
-    # cardStatsAvgIndividual = list(df_allStatsIndividual['active_product_avg'])
-    # cardStatsLengthIndividual = list(df_allStatsIndividual['active_product_avg_length'])
     cardStatsActiveCountIndividual = list(df_allActiveStatsIndividual['active_product_depth'])
-    # cardStatsSumIndividual = list(df_allStatsIndividual['active_product_sum'])
     cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
-    # fetch JSON data from api endpoint
-    url = "https://www.abupower.com/api/revised/duals/table"
-    # json_data = requests.get(url, timeout=15).json()
+    url = "https://abupower/api/revised/duals/table"
     json_data = requests.get(url).json()
     x = json_data['results']
     # iterate over parsed JSON results
@@ -976,7 +1074,7 @@ class HomePage(Resource):
         return make_response(render_template('home.html',
             # alphaDataAvg=alphaDataAvg, alphaDataAvgTimestamp=alphaDataAvgTimestamp,
             # betaDataAvg=betaDataAvg, betaDataAvgTimestamp=betaDataAvgTimestamp,
-            # unlimitedDataAvgPower=unlimitedDataAvgPower, unlimitedDataAvgTimestampPower=unlimitedDataAvgTimestampPower,
+    nlimitedDataAvgPower=unlimitedDataAvgPower, unlimitedDataAvgTimestampPower=unlimitedDataAvgTimestampPower,
             # legend=legend
             get_cumulative_power=get_cumulative_power(), get_cumulative_count_power=get_cumulative_count_power(),
             get_cumulative_duals=get_cumulative_duals(), get_cumulative_count_duals=get_cumulative_count_duals()),
@@ -1294,7 +1392,7 @@ class Unlimited(Resource):
         dateRangeDuals = [i.strftime('%b. %d') for i in dateRangeDuals]
         return make_response(render_template('unlimited.html', 
             dualsLegend=dualsLegend, maxHeight=maxHeight, minHeight=minHeight, maxHeightLength=maxHeightLength, minHeightLength=minHeightLength, countLegend=countLegend, lengthLegend=lengthLegend, sumLegend=sumLegend, powerLegend=powerLegend,
-            dateRange=dateRange[3::], dateRangeDuals=dateRangeDuals[7::],
+            dateRange=dateRange[6::], dateRangeDuals=dateRangeDuals[7::],
             # begin duals
             unlimitedDataAvgDuals=unlimitedDataAvgDuals[7::], unlimitedDataAvgTimestampDuals=unlimitedDataAvgTimestampDuals, 
             unlimitedDataLengthDuals=unlimitedDataLengthDuals[7::], unlimitedDataLengthTimestampDuals=unlimitedDataLengthTimestampDuals, 
@@ -1305,12 +1403,12 @@ class Unlimited(Resource):
             get_percent_change_last_sold=get_percent_change_last_sold, get_premiums=get_premiums, get_count=get_data_single_product_count_90, get_length=get_data_single_product_avg_length_90, get_depth=get_data_single_product_depth, 
             unlimitedDataCumulativePriceDuals=unlimitedDataCumulativePriceDuals[7::], unlimitedDataCumulativeTimestampDuals=unlimitedDataCumulativeTimestampDuals, 
             # begin power
-            unlimitedDataAvgPower=unlimitedDataAvgPower[3::], unlimitedDataAvgTimestampPower=unlimitedDataAvgTimestampPower, 
-            unlimitedDataLengthPower=unlimitedDataLengthPower[3::], unlimitedDataLengthTimestampPower=unlimitedDataLengthTimestampPower, 
-            unlimitedDataCountPower=unlimitedDataCountPower[3::], unlimitedDataCountTimestampPower=unlimitedDataCountTimestampPower,
+            unlimitedDataAvgPower=unlimitedDataAvgPower[6::], unlimitedDataAvgTimestampPower=unlimitedDataAvgTimestampPower, 
+            unlimitedDataLengthPower=unlimitedDataLengthPower[6::], unlimitedDataLengthTimestampPower=unlimitedDataLengthTimestampPower, 
+            unlimitedDataCountPower=unlimitedDataCountPower[6::], unlimitedDataCountTimestampPower=unlimitedDataCountTimestampPower,
             unlimitedDataAllEndPower=unlimitedDataAllEndPower, unlimitedDataAllNamePower=unlimitedDataAllNamePower, unlimitedDataAllHrefPower=unlimitedDataAllHrefPower, unlimitedDataAllPricePower=unlimitedDataAllPricePower,
             unlimitedActiveDataAllStartPower=unlimitedActiveDataAllStartPower, unlimitedActiveDataAllNamePower=unlimitedActiveDataAllNamePower, unlimitedActiveDataAllHrefPower=unlimitedActiveDataAllHrefPower, unlimitedActiveDataAllPricePower=unlimitedActiveDataAllPricePower,
-            unlimitedDataCumulativePricePower=unlimitedDataCumulativePricePower[3::], unlimitedDataCumulativeTimestampPower=unlimitedDataCumulativeTimestampPower,
+            unlimitedDataCumulativePricePower=unlimitedDataCumulativePricePower[6::], unlimitedDataCumulativeTimestampPower=unlimitedDataCumulativeTimestampPower,
             get_cumulative=get_data_unlimited_cumulative_totals, get_active_depth=get_data_active_index_count_sum), 200, headers)
 
 class UnlimitedPowerTable(Resource):
@@ -1408,6 +1506,141 @@ class UnlimitedPowerIndividualCardCompletedStats(Resource):
                 return jsonify({'results': 'failed'},
                             {'error': e})
 
+
+# begin ce API endpoints
+class Ce(Resource):
+    def __init__(self):
+        pass
+    def get(self):
+        maxHeight = round(max(ceDataCountPower)) + 1
+        minHeight = round(min(ceDataCountPower)) - 10
+        maxHeightLength = round(max(ceDataLengthPower)) + 2
+        minHeightLength = round(min(ceDataLengthPower)) - 10
+        headers = {'Content-Type': 'text/html'}
+        ceDate = ceDataLengthTimestampPower
+        periodLength = len(ceDate)
+        dateRange = pd.date_range(get_timezones(periodLength), periods=periodLength).tolist()
+        dateRange = [i.strftime('%b. %d') for i in dateRange]
+        ceDateDuals = ceDataLengthTimestampDuals
+        periodLengthDuals = len(ceDateDuals)
+        dateRangeDuals = pd.date_range(get_timezones(periodLengthDuals), periods=periodLengthDuals).tolist()
+        dateRangeDuals = [i.strftime('%b. %d') for i in dateRangeDuals]
+        return make_response(render_template('ce.html', 
+            dualsLegend=dualsLegend, maxHeight=maxHeight, minHeight=minHeight, maxHeightLength=maxHeightLength, minHeightLength=minHeightLength, countLegend=countLegend, lengthLegend=lengthLegend, sumLegend=sumLegend, powerLegend=powerLegend,
+            dateRange=dateRange[6::], dateRangeDuals=dateRangeDuals[7::],
+            # begin duals
+            ceDataAvgDuals=ceDataAvgDuals[7::], ceDataAvgTimestampDuals=ceDataAvgTimestampDuals, 
+            ceDataLengthDuals=ceDataLengthDuals[7::], ceDataLengthTimestampDuals=ceDataLengthTimestampDuals, 
+            ceDataCountDuals=ceDataCountDuals[7::], ceDataCountTimestampDuals=ceDataCountTimestampDuals,
+            ceDataBreakdownNameDuals=ceDataBreakdownNameDuals, ceDataBreakdownavg=ceDataBreakdownAvgDuals,
+            ceDataAllEndDuals=ceDataAllEndDuals, ceDataAllNameDuals=ceDataAllNameDuals, ceDataAllHrefDuals=ceDataAllHrefDuals, ceDataAllPriceDuals=ceDataAllPriceDuals,
+            ceActiveDataAllStartDuals=ceActiveDataAllStartDuals, ceActiveDataAllNameDuals=ceActiveDataAllNameDuals, ceActiveDataAllHrefDuals=ceActiveDataAllHrefDuals, ceActiveDataAllPriceDuals=ceActiveDataAllPriceDuals,
+            get_percent_change_last_sold=get_percent_change_last_sold, get_premiums=get_premiums, get_count=get_data_single_product_count_90, get_length=get_data_single_product_avg_length_90, get_depth=get_data_single_product_depth, 
+            ceDataCumulativePriceDuals=ceDataCumulativePriceDuals[7::], ceDataCumulativeTimestampDuals=ceDataCumulativeTimestampDuals, 
+            # begin power
+            ceDataAvgPower=ceDataAvgPower[6::], ceDataAvgTimestampPower=ceDataAvgTimestampPower, 
+            ceDataLengthPower=ceDataLengthPower[6::], ceDataLengthTimestampPower=ceDataLengthTimestampPower, 
+            ceDataCountPower=ceDataCountPower[6::], ceDataCountTimestampPower=ceDataCountTimestampPower,
+            ceDataAllEndPower=ceDataAllEndPower, ceDataAllNamePower=ceDataAllNamePower, ceDataAllHrefPower=ceDataAllHrefPower, ceDataAllPricePower=ceDataAllPricePower,
+            ceActiveDataAllStartPower=ceActiveDataAllStartPower, ceActiveDataAllNamePower=ceActiveDataAllNamePower, ceActiveDataAllHrefPower=ceActiveDataAllHrefPower, ceActiveDataAllPricePower=ceActiveDataAllPricePower,
+            ceDataCumulativePricePower=ceDataCumulativePricePower[3::], ceDataCumulativeTimestampPower=ceDataCumulativeTimestampPower,
+            get_cumulative=get_data_ce_cumulative_totals, get_active_depth=get_data_active_index_count_sum), 200, headers)
+
+class CePowerTable(Resource):
+    def __init__(self):
+        pass
+    def get(self):
+        cePowerTable = clean_to_json(df_ceStatsPower, 'indexTable')
+        cePowerTableJSON = json.loads(cePowerTable)
+        try:
+            return jsonify({'results': cePowerTableJSON})
+        except Exception as e:
+            return jsonify({'results': 'failed'},
+                        {'error': e})
+
+class CePowerIndexAverage(Resource):
+    def __init__(self):
+        pass
+    def get(self):
+        cePowerIndexAvg = clean_to_json(df_ceAvgAllPower, 'avg')
+        cePowerIndexAvgJSON = json.loads(cePowerIndexAvg)
+        try:
+            return jsonify({'results': cePowerIndexAvgJSON})
+        except Exception as e:
+            return jsonify({'results': 'failed'},
+                        {'error': e}) 
+                     #TODO: this => .strftime('%m-%d-%Y')      
+                     #                      
+class CePowerActive(Resource):
+    def __init__(self):
+        pass
+    def get(self):
+        ceActivePower = clean_to_json(df_ceActiveAllPower, 'active')
+        ceActivePowerJSON = json.loads(ceActivePower)
+        try:
+            return jsonify({'results': ceActivePowerJSON})
+            # return jsonify({'results': []})
+        except Exception as e:
+            return jsonify({'results': 'failed'},
+                        {'error': e})
+
+class CeDualsTable(Resource):
+    def __init__(self):
+        pass
+    def get(self):
+        ceDualsTable = clean_to_json(df_ceStatsDuals, 'indexTable')
+        ceDualsTableJSON = json.loads(ceDualsTable)
+        try:
+            return jsonify({'results': ceDualsTableJSON})
+        except Exception as e:
+            return jsonify({'results': 'failed'},
+                        {'error': e})
+
+class CeDualsIndividualCardCompletedStats(Resource):
+        def __init__(self):
+            pass    
+        def get(self, name):
+            modName = name.replace('%20', ' ').replace('-', ' ').split(' ')
+            wordLength = len(modName)
+            if wordLength > 1:
+                modCardName = f'Collectors {modName[0].capitalize()} {modName[1].capitalize()} MTG'
+            else:
+                modCardName = f'Collectors {name.capitalize()} MTG'
+            df_ceIndividualCardCompletedStats = get_all_data_individual_general(modCardName)
+            # print(df_ceIndividualCardCompletedStats)
+            ceDualsIndividualTable = clean_to_json(df_ceIndividualCardCompletedStats, 'table')
+            ceDualsIndividualTableJSON = json.loads(ceDualsIndividualTable)
+            try:
+                return jsonify({'results': ceDualsIndividualTableJSON})
+            except Exception as e:
+                return jsonify({'results': 'failed'},
+                            {'error': e})
+
+class CePowerIndividualCardCompletedStats(Resource):
+        def __init__(self):
+            pass    
+        def get(self, name):
+            modName = name.replace('%20', ' ').replace('-', ' ').split(' ')
+            wordLength = len(modName)
+            if wordLength > 1:
+                # print(modName)
+                if modName[0] == 'black':
+                    modCardName = f'Collectors {modName[0].capitalize()} {modName[1].capitalize()} MTG'
+                else:
+                    modCardName = f'Collectors {modName[0].capitalize()} {modName[1].capitalize()}'
+            else:
+                modCardName = f'Collectors {name.capitalize()}'
+            # print(modCardName)
+            df_ceIndividualCardCompletedStats = get_all_data_individual_general(modCardName)
+            # print(df_ceIndividualCardCompletedStats)
+            cePowerIndividualTable = clean_to_json(df_ceIndividualCardCompletedStats, 'table')
+            cePowerIndividualTableJSON = json.loads(cePowerIndividualTable)
+            try:
+                return jsonify({'results': cePowerIndividualTableJSON})
+            except Exception as e:
+                return jsonify({'results': 'failed'},
+                            {'error': e})
+                            
 # begin revised API endpoints
 class Revised(Resource):
     def __init__(self):
@@ -1511,6 +1744,7 @@ api.add_resource(Alpha, '/alpha')
 api.add_resource(Beta, '/beta')
 api.add_resource(Unlimited, '/unlimited')
 api.add_resource(Revised, '/revised')
+api.add_resource(Ce, '/collectors')
 # begin alpha api endpoints
 api.add_resource(AlphaPowerIndexAverage, '/api/alpha/power/index/avg')
 api.add_resource(AlphaPowerActive, '/api/alpha/power/active')
@@ -1532,6 +1766,13 @@ api.add_resource(UnlimitedDualsTable, '/api/unlimited/duals/table')
 api.add_resource(UnlimitedPowerTable, '/api/unlimited/power/table')
 api.add_resource(UnlimitedDualsIndividualCardCompletedStats, '/api/unlimited/duals/<name>')
 api.add_resource(UnlimitedPowerIndividualCardCompletedStats, '/api/unlimited/power/<name>')
+# begin ce & ice api endpoints
+api.add_resource(CePowerIndexAverage, '/api/collectors/power/index/avg')
+api.add_resource(CePowerActive, '/api/collectors/power/active')
+api.add_resource(CeDualsTable, '/api/collectors/duals/table')
+api.add_resource(CePowerTable, '/api/collectors/power/table')
+api.add_resource(CeDualsIndividualCardCompletedStats, '/api/collectors/duals/<name>')
+api.add_resource(CePowerIndividualCardCompletedStats, '/api/collectors/power/<name>')
 # begin revised api endpoints
 api.add_resource(RevisedDualsIndexAverage, '/api/revised/duals/index/avg')
 api.add_resource(RevisedDualsActive, '/api/revised/duals/active')
@@ -1543,4 +1784,6 @@ api.add_resource(GeneralIndexAverage, '/api/general/index')
 
 # initalize application
 if __name__ == "__main__":
+    TEMPLATES_AUTO_RELOAD = True
     app.run(host='0.0.0.0')
+    # app.run(debug=True, port=8050, threaded=True)
