@@ -2,8 +2,8 @@ import pandas as pd
 import psycopg2
 import json
 import datetime
-from gen_utils import get_trace_and_log, fetch_data
 import configparser
+from gen_utils import get_trace_and_log, fetch_data
 
 ###################
 # general queries #
@@ -129,10 +129,10 @@ def get_data_single_product_depth(value):
 def get_cumulative_power():
     """() -> list
 
-    Returns the sum of the cumulative values for the last 6 products in the power indexes in the database (ABU)."""
+    Returns the sum of the cumulative values for the last 6 products in the power indexes in the database (ABUC)."""
     query = (
         f'''
-        SELECT completed_product_index_sum FROM production_completed_products_index WHERE primary_ids IN (SELECT primary_ids FROM production_completed_products_index WHERE completed_product_set_id IN ('1', '2', '3') ORDER BY primary_ids DESC LIMIT 6);
+        SELECT completed_product_index_sum FROM production_completed_products_index WHERE primary_ids IN (SELECT primary_ids FROM production_completed_products_index WHERE completed_product_set_id IN ('1', '2', '3', '8') ORDER BY primary_ids DESC LIMIT 6);
         '''
     )
     data = fetch_data(query)
@@ -143,11 +143,11 @@ def get_cumulative_power():
 def get_cumulative_count_power():
     """() -> list
 
-    Returns the sum of the cumulative count for the last 6 products in the power indexes in the database (ABU)."""
+    Returns the sum of the cumulative count for the last 6 products in the power indexes in the database (ABUC)."""
     # SELECT CAST (CAST (sum(completed_product_index_sum) AS text) AS money)::numeric FROM completed_products_index WHERE primary_ids IN (SELECT primary_ids FROM completed_products_index WHERE completed_product_set_id IN ('4', '5', '6', '7') ORDER BY timestamp DESC LIMIT 4);
     query = (
         f'''
-        SELECT completed_product_index_count_sum FROM production_completed_products_index WHERE primary_ids IN (SELECT primary_ids FROM production_completed_products_index WHERE completed_product_set_id IN ('1', '2', '3') ORDER BY timestamp DESC LIMIT 6);
+        SELECT completed_product_index_count_sum FROM production_completed_products_index WHERE primary_ids IN (SELECT primary_ids FROM production_completed_products_index WHERE completed_product_set_id IN ('1', '2', '3', '8') ORDER BY timestamp DESC LIMIT 6);
         '''
     )
     data = fetch_data(query)
@@ -158,11 +158,11 @@ def get_cumulative_count_power():
 def get_cumulative_duals():
     """() -> list
 
-    Returns the sum of the cumulative values for the last 6 values in the duals indexes in the database (ABUR)."""
+    Returns the sum of the cumulative values for the last 6 values in the duals indexes in the database (ABURC)."""
     # SELECT CAST (CAST (sum(completed_product_index_sum) AS text) AS money)::numeric FROM completed_products_index WHERE primary_ids IN (SELECT primary_ids FROM completed_products_index WHERE completed_product_set_id IN ('4', '5', '6', '7') ORDER BY timestamp DESC LIMIT 4);
     query = (
         f'''
-        SELECT completed_product_index_sum FROM production_completed_products_index WHERE primary_ids IN (SELECT primary_ids FROM production_completed_products_index WHERE completed_product_set_id IN ('4', '5', '6', '7') ORDER BY timestamp DESC LIMIT 8);
+        SELECT completed_product_index_sum FROM production_completed_products_index WHERE primary_ids IN (SELECT primary_ids FROM production_completed_products_index WHERE completed_product_set_id IN ('4', '5', '6', '7', '10') ORDER BY timestamp DESC LIMIT 8);
         '''
     )
     data = fetch_data(query)
@@ -173,11 +173,11 @@ def get_cumulative_duals():
 def get_cumulative_count_duals():
     """() -> list
 
-    Returns the sum of the cumulative count for the last 6 products in the duals indexes in the database (ABUR)."""
+    Returns the sum of the cumulative count for the last 6 products in the duals indexes in the database (ABURC)."""
     # SELECT CAST (CAST (sum(completed_product_index_sum) AS text) AS money)::numeric FROM completed_products_index WHERE primary_ids IN (SELECT primary_ids FROM completed_products_index WHERE completed_product_set_id IN ('4', '5', '6', '7') ORDER BY timestamp DESC LIMIT 4);
     query = (
         f'''
-        SELECT completed_product_index_count_sum FROM production_completed_products_index WHERE primary_ids IN (SELECT primary_ids FROM production_completed_products_index WHERE completed_product_set_id IN ('4', '5', '6', '7') ORDER BY timestamp DESC LIMIT 8);
+        SELECT completed_product_index_count_sum FROM production_completed_products_index WHERE primary_ids IN (SELECT primary_ids FROM production_completed_products_index WHERE completed_product_set_id IN ('4', '5', '6', '7', '10') ORDER BY timestamp DESC LIMIT 8);
         '''
     )
     data = fetch_data(query)
@@ -645,6 +645,158 @@ def get_data_unlimited_power_stats():
     data = fetch_data(query)
     return data
 
+# begin ce & ice queries
+def get_data_ce_avg_all():
+    """() -> list
+
+    Returns a list of all of the ce avg values inserted into the database, in ascending order by timestamp."""
+    query = (
+        f'''
+        SELECT completed_product_index_avg, timestamp
+        FROM production_completed_products_index
+        WHERE completed_product_set_id = '8'
+		AND completed_product_index_avg IS NOT NULL
+        ORDER BY timestamp ASC;
+        '''
+    )
+    data = fetch_data(query)
+    return data
+
+def get_data_ce_avg_length():
+    """() -> list
+
+       Returns a list of the averages of each respective product in the database, in ascending order by primary id."""
+    query = (
+        f'''
+        SELECT completed_product_index_length_avg, timestamp
+        FROM production_completed_products_index
+        WHERE completed_product_set_id = '8'
+        AND completed_product_index_length_avg != 0
+        ORDER BY primary_ids ASC;
+        '''
+    )
+    data = fetch_data(query)
+    return data
+
+def get_data_ce_total_sold():
+    """() -> list
+
+    Returns a list of all of the values avg inserted into the database, in descending order by the primary id."""
+    query = (
+        f'''
+        SELECT completed_product_index_count_sum, timestamp
+        FROM production_completed_products_index
+        WHERE completed_product_set_id = '8'
+        AND completed_product_index_count_sum != 0
+        ORDER BY primary_ids ASC;
+        '''
+    )
+    data = fetch_data(query)
+    return data
+
+def get_data_ce_breakdown():
+    """() -> list
+
+        Returns a list of all of the values avg inserted into the database, in descending order by the primary id."""
+    query = (
+        f'''
+        SELECT DISTINCT * 
+        FROM production_completed_products_stats
+        WHERE completed_product_nick IN ('Collectors Black Lotus MTG', 'Collectors Mox Sapphire', 'Collectors Mox Jet', 'Collectors Mox Pearl', 'Collectors Mox Ruby', 'Collectors Mox Emerald', 'Collectors Timetwister', 'Collectors Ancestral Recall', 'Collectors Time Walk')
+        ORDER BY timestamp DESC
+        LIMIT 9;
+        '''
+    )
+    data = fetch_data(query)
+    return data
+
+def get_data_ce_all():
+    """() -> list
+
+    Returns a list of the ce data in the database, in descending order by end date."""
+    query = (
+        f'''
+        SELECT completed_product_nick, completed_product_titles, CAST (CAST (completed_product_prices AS text) AS money), completed_product_end::timestamp::date, completed_product_lst_type, completed_product_img_url, completed_product_loc, completed_product_img_thumb, completed_product_depth
+        FROM completed_products
+        WHERE completed_product_nick IN ('Collectors Black Lotus MTG', 'Collectors Mox Sapphire', 'Collectors Mox Jet', 'Collectors Mox Pearl', 'Collectors Mox Ruby', 'Collectors Mox Emerald', 'Collectors Timetwister', 'Collectors Ancestral Recall', 'Collectors Time Walk')
+        ORDER BY completed_product_end DESC;
+        ''')
+    data = fetch_data(query)
+    return data
+
+def get_data_ce_avg():
+    """() -> list
+
+    Returns a list of last 2 values avg inserted into the database, in descending order by the primary id."""
+    query = (
+        f'''
+        SELECT completed_product_index_avg
+        FROM production_completed_products_index
+        WHERE completed_product_set_id = '8'
+        ORDER BY primary_ids DESC
+        LIMIT 2
+        '''
+    )
+    data = fetch_data(query)
+    data = list(data['completed_product_index_avg'])
+    calc = ((data[0]-data[1])/data[1])*100
+    if calc >= 0:
+        return f'${data[0]:,.0f} (±{calc:,.2f}%)'
+    else:
+        return f'${data[0]:,.0f} (±{calc:,.2f}%)'
+
+def get_data_ce_active_all():
+    """() -> list
+
+    Returns a list of all of the active ce cards in the database, sorted in ascending order by start date."""
+    query = (
+        f'''
+        SELECT active_product_nick, active_product_titles, CAST (CAST (active_product_prices AS text) AS money), active_product_start::timestamp::date, active_product_lst_type, active_product_img_url, active_product_loc, active_product_img_thumb, active_product_depth, active_product_watch_count
+        FROM active_products
+        WHERE active_product_nick IN ('Collectors Black Lotus MTG', 'Collectors Mox Sapphire', 'Collectors Mox Jet', 'Collectors Mox Pearl', 'Collectors Mox Ruby', 'Collectors Mox Emerald', 'Collectors Timetwister', 'Collectors Ancestral Recall', 'Collectors Time Walk')
+        ORDER BY active_product_start DESC;
+        ''')
+    data = fetch_data(query)
+    return data
+
+def get_data_ce_cumulative_totals():
+    """() -> list
+
+    Returns a list of the cumulative sum of ce cards in the database, sorted in ascending order by timestmap."""
+    query = (
+        f'''
+        SELECT completed_product_index_sum, timestamp FROM production_completed_products_index WHERE completed_product_set_id = '8' AND completed_product_index_sum IS NOT NULL ORDER BY timestamp ASC; 
+        ''')
+    data = fetch_data(query)
+    return data
+
+def get_data_ce_power_cumulative_totals():
+    """() -> list
+
+    Returns a list of all of the data points for ce power in the database, sorted in ascending order by start date."""
+    query = (
+        f'''
+        SELECT completed_product_index_sum, timestamp FROM production_completed_products_index WHERE completed_product_set_id = '8' AND completed_product_index_sum IS NOT NULL ORDER BY timestamp ASC; 
+        ''')
+    data = fetch_data(query)
+    return data
+
+def get_data_ce_power_stats():
+    """() -> list
+
+    Returns the last 10 data points for each distinct (unique) power related value from the ce set, in descending order by timestamp."""
+    query = (
+        f'''
+        SELECT DISTINCT * 
+        FROM production_completed_products_stats
+        WHERE completed_product_nick IN ('Collectors Black Lotus MTG', 'Collectors Mox Sapphire', 'Collectors Mox Jet', 'Collectors Mox Pearl', 'Collectors Mox Ruby', 'Collectors Mox Emerald', 'Collectors Timetwister', 'Collectors Ancestral Recall', 'Collectors Time Walk')
+        ORDER BY timestamp DESC
+        LIMIT 10;
+        '''
+    )
+    data = fetch_data(query)
+    return data
+
 #######################
 # begin duals queries #
 #######################
@@ -1074,6 +1226,148 @@ def get_data_unlimited_duals_stats():
     data = fetch_data(query)
     return data
 
+# begin ce queries
+def get_data_ce_duals_avg_all():
+    """() -> list
+
+    Returns a list of all of the values avg inserted into the database, in descending order by the primary id."""
+    query = (
+        f'''
+        SELECT completed_product_index_avg, timestamp
+        FROM production_completed_products_index
+        WHERE completed_product_set_id = '6'
+		AND completed_product_index_avg IS NOT NULL
+        ORDER BY timestamp ASC;
+        '''
+    )
+    data = fetch_data(query)
+    return data
+
+def get_data_ce_duals_avg_length():
+    """() -> list
+
+       Returns a list of the averages of each respective product in the database, in ascending order by primary id."""
+    query = (
+        f'''
+        SELECT completed_product_index_length_avg, timestamp
+        FROM (SELECT completed_product_index_length_avg, timestamp
+            FROM production_completed_products_index
+            WHERE completed_product_set_id = '6'
+            AND completed_product_index_count_sum != 0
+            ORDER BY timestamp ASC) sub;
+        '''
+    )
+    data = fetch_data(query)
+    return data
+
+def get_data_ce_duals_total_sold():
+    """() -> list
+
+    Returns a list of all of the values avg inserted into the database, in descending order by the primary id."""
+    query = (
+        f'''
+        SELECT completed_product_index_count_sum, timestamp::date
+        FROM production_completed_products_index
+        WHERE completed_product_set_id = '6'
+        AND completed_product_index_count_sum != 0
+        ORDER BY primary_ids ASC;
+        '''
+    )
+    data = fetch_data(query)
+    return data
+
+def get_data_ce_duals_breakdown():
+    """() -> list
+
+    Returns a list of all of the values avg inserted into the database, in descending order by the primary id."""
+    query = (
+        f'''
+        SELECT DISTINCT *
+        FROM production_completed_products_stats
+        WHERE completed_product_nick IN ('Collectors Tundra MTG', 'Collectors Underground Sea MTG', 'Collectors Badlands MTG', 'Collectors Taiga MTG', 'Collectors Savannah MTG', 'Collectors Scrubland MTG', 'Collectors Volcanic Island MTG', 'Collectors Bayou MTG', 'Collectors Plateau MTG', 'Collectors Tropical Island MTG')
+        ORDER BY timestamp DESC
+        LIMIT 10;
+        '''
+    )
+    data = fetch_data(query)
+    return data
+
+def get_data_ce_duals_all():
+    """() -> list
+
+    Returns a list of the ce data in the database, in descending order by end date."""
+    query = (
+        f'''
+        SELECT completed_product_nick, completed_product_titles, CAST (CAST (completed_product_prices AS text) AS money), completed_product_end::timestamp::date, completed_product_lst_type, completed_product_img_url, completed_product_loc, completed_product_img_thumb, completed_product_depth
+        FROM completed_products
+        WHERE completed_product_nick IN ('Collectors Tundra MTG', 'Collectors Underground Sea MTG', 'Collectors Badlands MTG', 'Collectors Taiga MTG', 'Collectors Savannah MTG', 'Collectors Scrubland MTG', 'Collectors Volcanic Island MTG', 'Collectors Bayou MTG', 'Collectors Plateau MTG', 'Collectors Tropical Island MTG')
+        ORDER BY completed_product_end DESC;
+        ''')
+    data = fetch_data(query)
+    return data
+
+def get_data_ce_duals_avg():
+    """() -> list
+
+    Returns a list of last 2 ce index average values inserted into the database, in descending order by the primary id."""
+    query = (
+        f'''
+        SELECT completed_product_index_avg
+        FROM production_completed_products_index
+        WHERE completed_product_set_id = '6'
+        ORDER BY primary_ids DESC
+        LIMIT 2
+        '''
+    )
+    data = fetch_data(query)
+    data = list(data['completed_product_index_avg'])
+    calc = ((data[0]-data[1])/data[1])*100
+    if calc >= 0:
+        return f'${data[0]:,.0f} (±{calc:,.2f}%)'
+    else:
+        return f'${data[0]:,.0f} (±{calc:,.2f}%)'
+
+def get_data_ce_duals_active_all():
+    """() -> list
+
+    Returns a list of all of the active ce cards in the database, sorted in ascending order by start date."""
+    query = (
+        f'''
+        SELECT active_product_nick, active_product_titles, CAST (CAST (active_product_prices AS text) AS money), active_product_start::timestamp::date, active_product_lst_type, active_product_img_url, active_product_loc, active_product_img_thumb, active_product_depth, active_product_watch_count
+        FROM active_products
+        WHERE active_product_nick IN ('Collectors Tundra MTG', 'Collectors Underground Sea MTG', 'Collectors Badlands MTG', 'Collectors Taiga MTG', 'Collectors Savannah MTG', 'Collectors Scrubland MTG', 'Collectors Volcanic Island MTG', 'Collectors Bayou MTG', 'Collectors Plateau MTG', 'Collectors Tropical Island MTG')
+        ORDER BY active_product_start DESC;
+        ''')
+    data = fetch_data(query)
+    return data
+
+def get_data_ce_duals_cumulative_totals():
+    """() -> list
+
+    Returns a list of all of the active ce cards in the database, sorted in ascending order by start date."""
+    query = (
+        f'''
+        SELECT completed_product_index_sum, timestamp FROM production_completed_products_index WHERE completed_product_set_id = '6' AND completed_product_index_sum IS NOT NULL ORDER BY timestamp ASC; 
+        ''')
+    data = fetch_data(query)
+    return data
+
+def get_data_ce_duals_stats():
+    """() -> list
+
+    Returns the last 10 data points for each distinct (unique) value from the ce set, in descending order by timestamp."""
+    query = (
+        f'''
+        SELECT DISTINCT * 
+        FROM production_completed_products_stats
+        WHERE completed_product_nick IN ('Collectors Tundra MTG', 'Collectors Underground Sea MTG', 'Collectors Badlands MTG', 'Collectors Taiga MTG', 'Collectors Savannah MTG', 'Collectors Scrubland MTG', 'Collectors Volcanic Island MTG', 'Collectors Bayou MTG', 'Collectors Plateau MTG', 'Collectors Tropical Island MTG')
+        ORDER BY timestamp DESC
+        LIMIT 10;
+        '''
+    )
+    data = fetch_data(query)
+    return data
+
 #######################
 # begin revised queries
 def get_data_revised_avg_all():
@@ -1237,12 +1531,13 @@ def get_all_data_individual_stats(value):
 
     Returns a list of all of the data points for the specific value, sorted in ascending order by start date."""
     # SELECT completed_product_avg, timestamp::date, completed_product_avg_length, completed_product_depth, completed_product_sum
+    #TODO: changed timestamp::date @ 10/29/2018
     query = (
         f'''
-        SELECT completed_product_avg, timestamp::date, completed_product_avg_length, completed_product_depth, completed_product_sum
+        SELECT completed_product_avg, timestamp, completed_product_avg_length, completed_product_depth, completed_product_sum
         FROM production_completed_products_stats 
         WHERE completed_product_nick = '{value}'
-        ORDER BY timestamp::date ASC;
+        ORDER BY timestamp ASC;
         ''')
     data = fetch_data(query)
     return data
