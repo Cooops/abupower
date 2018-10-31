@@ -31,6 +31,16 @@ df_unlimitedAllPower = get_data_unlimited_all()
 df_unlimitedCumulativeAllPower = get_data_unlimited_cumulative_totals()
 df_unlimitedStatsPower = get_data_unlimited_power_stats()
 df_unlimitedCumulativeAllPower = get_data_unlimited_power_cumulative_totals()
+# begin ce & ice power
+df_ceAvgAllPower = get_data_ce_avg_all()
+df_ceLengthPower = get_data_ce_avg_length()
+df_ceCountPower = get_data_ce_total_sold()
+df_ceBreakdownPower = get_data_ce_breakdown()
+df_ceAllPower = get_data_ce_all()
+df_ceCumulativeAllPower = get_data_ce_cumulative_totals()
+df_ceStatsPower = get_data_ce_power_stats()
+df_ceCumulativeAllPower = get_data_ce_power_cumulative_totals()
+
 # begin duals
 # begin alpha duals
 df_alphaAvgAllDuals = get_data_alpha_duals_avg_all()
@@ -64,6 +74,14 @@ df_revisedBreakdownDuals = get_data_revised_breakdown()
 df_revisedAllDuals = get_data_revised_all()
 df_revisedStatsDuals = get_data_revised_stats()
 df_revisedCumulativeAllDuals = get_data_revised_cumulative_totals()
+# begin ce & ice duals
+df_ceAvgAllDuals = get_data_ce_duals_avg_all()
+df_ceLengthDuals = get_data_ce_duals_avg_length()
+df_ceCountDuals = get_data_ce_duals_total_sold()
+df_ceBreakdownDuals = get_data_ce_duals_breakdown()
+df_ceAllDuals = get_data_ce_duals_all()
+df_ceStatsDuals = get_data_ce_duals_stats()
+df_ceCumulativeAllDuals = get_data_ce_duals_cumulative_totals()
 
 ##################################
 # begin active global dataframes #
@@ -72,11 +90,13 @@ df_revisedCumulativeAllDuals = get_data_revised_cumulative_totals()
 df_alphaActiveAllPower = get_data_alpha_active_all()
 df_betaActiveAllPower = get_data_beta_active_all()
 df_unlimitedActiveAllPower = get_data_unlimited_active_all()
+df_ceActiveAllPower = get_data_ce_active_all()
 # begin duals
 df_alphaActiveAllDuals = get_data_alpha_duals_active_all()
 df_betaActiveAllDuals = get_data_beta_duals_active_all()
 df_unlimitedActiveAllDuals = get_data_unlimited_duals_active_all()
 df_revisedActiveAllDuals = get_data_revised_active_all()
+df_ceActiveAllDuals = get_data_ce_active_all()
 
 ####################################
 # begin completed global variables #
@@ -127,6 +147,22 @@ unlimitedDataAllHrefPower = list(df_unlimitedAllPower['completed_product_img_url
 unlimitedDataAllPricePower = list(df_unlimitedAllPower['completed_product_prices'])
 unlimitedDataCumulativePricePower = list(df_unlimitedCumulativeAllPower['completed_product_index_sum'])
 unlimitedDataCumulativeTimestampPower = list(df_unlimitedCumulativeAllPower['timestamp'])
+# begin ce & ice power
+
+ceDataAvgPower = list(df_ceAvgAllPower['completed_product_index_avg'])
+ceDataAvgTimestampPower = list(df_ceAvgAllPower['timestamp'])
+ceDataLengthPower = list(df_ceLengthPower['completed_product_index_length_avg'])
+ceDataLengthTimestampPower = list(df_ceLengthPower['timestamp'])
+ceDataCountPower = list(df_ceCountPower['completed_product_index_count_sum'])
+ceDataCountTimestampPower = list(df_ceCountPower['timestamp'])
+ceDataBreakdownNamePower = list(df_ceBreakdownPower['completed_product_nick'])
+ceDataBreakdownAvgPower = list(df_ceBreakdownPower['completed_product_avg'])
+ceDataAllEndPower = list(df_ceAllPower['completed_product_end'])
+ceDataAllNamePower = list(df_ceAllPower['completed_product_nick'])
+ceDataAllHrefPower = list(df_ceAllPower['completed_product_img_url'])
+ceDataAllPricePower = list(df_ceAllPower['completed_product_prices'])
+ceDataCumulativePricePower = list(df_ceCumulativeAllPower['completed_product_index_sum'])
+ceDataCumulativeTimestampPower = list(df_ceCumulativeAllPower['timestamp'])
 # begin duals
 # begin unlimited duals
 unlimitedDataAvgDuals = list(df_unlimitedAvgAllDuals['completed_product_index_avg'])
@@ -208,6 +244,26 @@ revisedDataStatsLengthDuals = list(df_revisedStatsDuals['completed_product_avg_l
 revisedDataStatsSumDuals = list(df_revisedStatsDuals['completed_product_sum'])
 revisedDataCumulativePriceDuals = list(df_revisedCumulativeAllDuals['completed_product_index_sum'])
 revisedDataCumulativeTimestampDuals = list(df_revisedCumulativeAllDuals['timestamp'])
+# begin ce & ice duals
+ceDataAvgDuals = list(df_ceAvgAllDuals['completed_product_index_avg'])
+ceDataAvgTimestampDuals = list(df_ceAvgAllDuals['timestamp'])
+ceDataLengthDuals = list(df_ceLengthDuals['completed_product_index_length_avg'])
+ceDataLengthTimestampDuals = list(df_ceLengthDuals['timestamp'])
+ceDataCountDuals = list(df_ceCountDuals['completed_product_index_count_sum'])
+ceDataCountTimestampDuals = list(df_ceCountDuals['timestamp'])
+ceDataBreakdownNameDuals = list(df_ceBreakdownDuals['completed_product_nick'])
+ceDataBreakdownAvgDuals = list(df_ceBreakdownDuals['completed_product_avg'])
+ceDataAllEndDuals = list(df_ceAllDuals['completed_product_end'])
+ceDataAllNameDuals = list(df_ceAllDuals['completed_product_nick'])
+ceDataAllHrefDuals = list(df_ceAllDuals['completed_product_img_url'])
+ceDataAllPriceDuals = list(df_ceAllDuals['completed_product_prices'])
+ceDataStatsNameDuals = list(df_ceStatsDuals['completed_product_nick'])
+ceDataStatsAvgDuals = list(df_ceStatsDuals['completed_product_avg'])
+ceDataStatsDepthDuals = list(df_ceStatsDuals['completed_product_depth'])
+ceDataStatsLengthDuals = list(df_ceStatsDuals['completed_product_avg_length'])
+ceDataStatsSumDuals = list(df_ceStatsDuals['completed_product_sum'])
+ceDataCumulativePriceDuals = list(df_ceCumulativeAllDuals['completed_product_index_sum'])
+ceDataCumulativeTimestampDuals = list(df_ceCumulativeAllDuals['timestamp'])
 
 #################################
 # begin active global variables #
@@ -228,6 +284,11 @@ unlimitedActiveDataAllStartPower = list(df_unlimitedActiveAllPower['active_produ
 unlimitedActiveDataAllNamePower = list(df_unlimitedActiveAllPower['active_product_nick'])
 unlimitedActiveDataAllHrefPower = list(df_unlimitedActiveAllPower['active_product_img_url'])
 unlimitedActiveDataAllPricePower = list(df_unlimitedActiveAllPower['active_product_prices'])
+# begin ce & ice power
+ceActiveDataAllStartPower = list(df_ceActiveAllPower['active_product_start'])
+ceActiveDataAllNamePower = list(df_ceActiveAllPower['active_product_nick'])
+ceActiveDataAllHrefPower = list(df_ceActiveAllPower['active_product_img_url'])
+ceActiveDataAllPricePower = list(df_ceActiveAllPower['active_product_prices'])
 
 # begin duals
 # begin alpha duals
@@ -250,3 +311,8 @@ revisedActiveDataAllStartDuals = list(df_revisedActiveAllDuals['active_product_s
 revisedActiveDataAllNameDuals = list(df_revisedActiveAllDuals['active_product_nick'])
 revisedActiveDataAllHrefDuals = list(df_revisedActiveAllDuals['active_product_img_url'])
 revisedActiveDataAllPriceDuals = list(df_revisedActiveAllDuals['active_product_prices'])
+# begin ce & ice duals
+ceActiveDataAllStartDuals = list(df_ceActiveAllDuals['active_product_start'])
+ceActiveDataAllNameDuals = list(df_ceActiveAllDuals['active_product_nick'])
+ceActiveDataAllHrefDuals = list(df_ceActiveAllDuals['active_product_img_url'])
+ceActiveDataAllPriceDuals = list(df_ceActiveAllDuals['active_product_prices'])
