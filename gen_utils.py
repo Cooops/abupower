@@ -31,12 +31,14 @@ POWER_CONFIG = {
     'Alpha': 'Power',
     'Beta': 'Power',
     'Unlimited': 'Power',
+    'Collectors': 'Power',
 }
 DUALS_CONFIG = {
     'Alpha': 'Duals',
     'Beta': 'Duals',
     'Unlimited': 'Duals',
-    'Revised': 'Duals'
+    'Revised': 'Duals',
+    'Collectors': 'Duals'
 }
 CONFIG = configparser.ConfigParser()
 CONFIG.read('CONFIG.ini')
@@ -98,14 +100,7 @@ def get_api_key():
 def get_search_words():
     """() -> list
 
-    Reads a .txt file for search words and returns the corresponding values in list form."""
-    # the txt file format DOES NOT WORK, as it is inserting some sort of characters into the DB that we CANNOT remove. 
-    # The hard-coded array method is all that works so far.
-    # with open("search_words.txt") as txtFile:
-    #     words = []
-    #     for line in txtFile:
-    #         words.append(line)
-    #     return words
+    Returns a static list with pre-defined search words. Used for searching active & completed products."""
     words = ['Alpha Black Lotus', 'Alpha Mox Sapphire', 'Alpha Mox Jet', 'Alpha Mox Pearl', 'Alpha Mox Ruby', 'Alpha Mox Emerald', 'Alpha Timetwister', 'Alpha Ancestral Recall', 'Alpha Time Walk',
                 'Beta Black Lotus MTG', 'Beta Mox Sapphire', 'Beta Mox Jet', 'Beta Mox Pearl', 'Beta Mox Ruby', 'Beta Mox Emerald', 'Beta Timetwister', 'Beta Ancestral Recall', 'Beta Time Walk',
                 'Unlimited Black Lotus MTG', 'Unlimited Mox Sapphire', 'Unlimited Mox Jet', 'Unlimited Mox Pearl', 'Unlimited Mox Ruby', 'Unlimited Mox Emerald', 'Unlimited Timetwister', 'Unlimited Ancestral Recall', 'Unlimited Time Walk',
@@ -113,7 +108,11 @@ def get_search_words():
                 'Beta Tundra MTG', 'Beta Underground Sea MTG', 'Beta Badlands MTG', 'Beta Taiga MTG', 'Beta Savannah MTG', 'Beta Scrubland MTG', 'Beta Volcanic Island MTG', 'Beta Bayou MTG', 'Beta Plateau MTG', 'Beta Tropical Island MTG',
                 'Unlimited Tundra MTG', 'Unlimited Underground Sea MTG', 'Unlimited Badlands MTG', 'Unlimited Taiga MTG', 'Unlimited Savannah MTG', 'Unlimited Scrubland MTG', 'Unlimited Volcanic Island MTG', 'Unlimited Bayou MTG', 'Unlimited Plateau MTG', 'Unlimited Tropical Island MTG',
                 'Revised Tundra MTG', 'Revised Underground Sea MTG', 'Revised Badlands MTG', 'Revised Taiga MTG', 'Revised Savannah MTG', 'Revised Scrubland MTG', 'Revised Volcanic Island MTG', 'Revised Bayou MTG', 'Revised Plateau MTG', 'Revised Tropical Island MTG',
-                'Alpha Time Vault MTG', 'Beta Time Vault MTG', 'Unlimited Time Vault MTG']
+                'Alpha Time Vault MTG', 'Beta Time Vault MTG', 'Unlimited Time Vault MTG', "Collectors Time Vault MTG", "International Collectors Time Vault MTG",
+                "Collectors Black Lotus MTG", "Collectors Mox Sapphire", "Collectors Mox Jet", "Collectors Mox Pearl", "Collectors Mox Ruby", "Collectors Mox Emerald", "Collectors Timetwister", "Collectors Ancestral Recall", "Collectors Time Walk",
+                "International Collectors Black Lotus MTG", "International Collectors Mox Sapphire", "International Collectors Mox Jet", "International Collectors Mox Pearl", "International Collectors Mox Ruby", "International Collectors Mox Emerald", "International Collectors Timetwister", "International Collectors Ancestral Recall", "International Collectors Time Walk",
+                "Collectors Tundra MTG", "Collectors Underground Sea MTG", "Collectors Badlands MTG", "Collectors Taiga MTG", "Collectors Savannah MTG", "Collectors Scrubland MTG", "Collectors Volcanic Island MTG", "Collectors Bayou MTG", "Collectors Plateau MTG", "Collectors Tropical Island MTG",
+                "International Collectors Tundra MTG", "International Collectors Underground Sea MTG", "International Collectors Badlands MTG", "International Collectors Taiga MTG", "International Collectors Savannah MTG", "International Collectors Scrubland MTG", "International Collectors Volcanic Island MTG", "International Collectors Bayou MTG", "International Collectors Plateau MTG", "International Collectors Tropical Island MTG"]
     return words
 
 def get_test_search_words():
