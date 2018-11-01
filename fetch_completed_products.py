@@ -3,13 +3,12 @@ from ebaysdk.exception import ConnectionError
 import time
 import psycopg2
 import re
-from db_queries import prune_completed
 from gen_utils import database_connection, get_api_key, get_search_words, get_test_search_words, get_trace_and_log
 
 class SearchRequest(object):
     def __init__(self, api_key, keyword):
         self.api_key, self.keyword = api_key, keyword
-        # defin which site we wish to connect to and feed in our api-key
+        # define which site we wish to connect to and feed in our api-key
         self.api = Connection(siteid='EBAY-US', appid=self.api_key, config_file=None)
         # create a live db cursor
         self.cursor = database_connection()
