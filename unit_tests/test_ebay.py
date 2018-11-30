@@ -12,6 +12,9 @@ os.environ.setdefault("EBAY_CONFIG", "CONFIG.ini")
 class TestEbay(unittest.TestCase):
 
     def test_motors_compat_request_xml(self):
+        print('----------------------------------------------------------------------')
+        print('Testing ebay: general')
+
         motors_dict = {
             'Item': {
                 'Category': '101',
@@ -54,6 +57,9 @@ class TestEbay(unittest.TestCase):
         motors_xml = re.sub(r'\s+$', '', motors_xml)
 
         self.assertEqual(dict2xml(motors_dict), motors_xml)
+
+        print('All tests passed ✅')
+        print('----------------------------------------------------------------------')
 
 
 def main():
