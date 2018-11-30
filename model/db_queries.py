@@ -3,7 +3,7 @@ import psycopg2
 import json
 import datetime
 import configparser
-from gen_utils import get_trace_and_log, fetch_data
+from utils.gen_utils import get_trace_and_log, fetch_data
 
 ###################
 # general queries #
