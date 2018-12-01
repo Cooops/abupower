@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-import sys
-print(sys.version)
-sys.path.append('/home/coopes/abupower/abupowerenv/lib/python3.6/site-packages')
 
 from flask import Flask, jsonify, request, render_template, make_response, redirect, url_for
 from flask_restful import Resource, Api
