@@ -65,7 +65,7 @@ def renderIndividualAlphaCardPower(cardName):
     cardStatsActiveCountIndividual = list(df_allActiveStatsIndividual['active_product_depth'])
     cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
 
-    url = "http://127.0.0.1:8050/api/alpha/power/table"
+    url = "https://abupower.com/api/alpha/power/table"
     json_data = requests.get(url).json()
     x = json_data['results']
     price = [i['price'] for i in x if modCardName == i['nick']]
@@ -124,7 +124,7 @@ def renderIndividualBetaCardPower(cardName):
     cardStatsActiveCountIndividual = list(df_allActiveStatsIndividual['active_product_depth'])
     cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
 
-    url = "http://127.0.0.1:8050/api/beta/power/table"
+    url = "https://abupower.com/api/beta/power/table"
     json_data = requests.get(url).json()
     x = json_data['results']
     price = [i['price'] for i in x if modCardName == i['nick']]
@@ -185,7 +185,7 @@ def renderIndividualUnlimitedCardPower(cardName):
     cardStatsActiveCountIndividual = list(df_allActiveStatsIndividual['active_product_depth'])
     cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
    
-    url = "http://127.0.0.1:8050/api/unlimited/power/table"
+    url = "https://abupower.com/api/unlimited/power/table"
     json_data = requests.get(url).json()
     x = json_data['results']
     price = [i['price'] for i in x if modCardName == i['nick']]
@@ -246,7 +246,7 @@ def renderIndividualCollectorsCardPower(cardName):
     cardStatsActiveCountIndividual = list(df_allActiveStatsIndividual['active_product_depth'])
     cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
 
-    url = "http://127.0.0.1:8050/api/collectors/power/table"
+    url = "https://abupower.com/api/collectors/power/table"
     json_data = requests.get(url).json()
     x = json_data['results']
     price = [i['price'] for i in x if modCardName == i['nick']]
@@ -301,7 +301,7 @@ def renderIndividualAlphaCard(cardName):
     cardStatsActiveCountIndividual = list(df_allActiveStatsIndividual['active_product_depth'])
     cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
 
-    url = "http://127.0.0.1:8050/api/alpha/duals/table"
+    url = "https://abupower.com/api/alpha/duals/table"
     json_data = requests.get(url).json()
     x = json_data['results']
     price = [i['price'] for i in x if modCardName == i['nick']]
@@ -356,7 +356,7 @@ def renderIndividualBetaCard(cardName):
     cardStatsActiveCountIndividual = list(df_allActiveStatsIndividual['active_product_depth'])
     cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
 
-    url = "http://127.0.0.1:8050/api/beta/duals/table"
+    url = "https://abupower.com/api/beta/duals/table"
     json_data = requests.get(url).json()
     x = json_data['results']
     price = [i['price'] for i in x if modCardName == i['nick']]
@@ -412,7 +412,7 @@ def renderIndividualUnlimitedCard(cardName):
     cardStatsActiveCountIndividual = list(df_allActiveStatsIndividual['active_product_depth'])
     cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
 
-    url = "http://127.0.0.1:8050/api/unlimited/duals/table"
+    url = "https://abupower.com/api/unlimited/duals/table"
     json_data = requests.get(url).json()
     x = json_data['results']
     price = [i['price'] for i in x if modCardName == i['nick']]
@@ -468,7 +468,7 @@ def renderIndividualCollectorsCard(cardName):
     cardStatsActiveCountIndividual = list(df_allActiveStatsIndividual['active_product_depth'])
     cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
 
-    url = "http://127.0.0.1:8050/api/collectors/duals/table"
+    url = "https://abupower.com/api/collectors/duals/table"
     json_data = requests.get(url).json()
     x = json_data['results']
     price = [i['price'] for i in x if modCardName == i['nick']]
@@ -524,7 +524,7 @@ def renderIndividualRevisedCard(cardName):
     cardStatsActiveCountIndividual = list(df_allActiveStatsIndividual['active_product_depth'])
     cardStatsActiveTimestampIndividual = list(df_allActiveStatsIndividual['timestamp'])
 
-    url = "http://127.0.0.1:8050/api/revised/duals/table"
+    url = "https://abupower.com/api/revised/duals/table"
     json_data = requests.get(url).json()
     x = json_data['results']
     price = [i['price'] for i in x if modCardName == i['nick']]
